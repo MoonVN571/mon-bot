@@ -47,7 +47,7 @@ client.on('messageCreate', async (message) => {
             })
         }).catch(e => {
             // console.log(e.toString());
-            client.sendError(err);
+            client.sendError(e);
         });
     }
 
