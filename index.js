@@ -61,7 +61,7 @@ client.giveawaysManager = manager;
 function sendError(error) {
     if(!error) return;
     if(!error.message) return;
-    client.users.cache.get("881016544396709898").send(err.message);
+    client.channels.cache.get("881016544396709898").send(err.message);
 }
 
 function sendWarn(error) {
@@ -73,7 +73,7 @@ function sendWarn(error) {
 function sendLog(content) {
     console.log(content);
     if(!content) return;
-    client.users.cache.get("885542310165753986").send(content);
+    client.channels.cache.get("885542310165753986").send(content);
 }
 
 client.sendError = sendError;
