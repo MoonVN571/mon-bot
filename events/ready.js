@@ -34,8 +34,7 @@ client.on('ready', () => {
     var i = -1;
     setInterval(() => {
         let random = [
-            "Chung tay đẩy lùi dịch bệnh | PLAYING",
-            `${client.guilds.cache.size} servers! | WATCHING`,
+            `${client.guilds.cache.size}/20 servers! | WATCHING`,
             `${client.guilds.cache.reduce((a, g) => a + g.memberCount, 0)} users! | LISTENING`,
             '@Mon Bot lấy prefix! | PLAYING',
         ];

@@ -42,8 +42,12 @@ client.on('messageCreate', async (message) => {
         }).then(callback => {
             if (!callback.data.success) return;
             console.log(callback.data.success);
+            message.channel.send(callback.data.success).catch(err => {
+                client.sendError(err);
+            })
         }).catch(e => {
             // console.log(e.toString());
+            client.sendError(err);
         });
     }
 
@@ -144,7 +148,7 @@ client.on('messageCreate', async (message) => {
         if (!message.content.startsWith(prefix) || !message.content.startsWith(prefix)) return;
     }
 
-    console.log(`[${new Date().toLocaleString()}] ${message.guild.name} || ${message.channel.name} || ${message.author.tag} - ${message.author.id} : ${message.content}`);
+    client.sendLog(`[${new Date().toLocaleString()}] ${message.guild.name} || ${message.channel.name} || ${message.author.tag} - ${message.author.id} : ${message.content}`);
 
     var args = message.content.slice(prefix.length).split(/ +/);
     if (args[0] == "") args = args.slice(1);

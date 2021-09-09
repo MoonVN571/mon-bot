@@ -57,24 +57,29 @@ const manager = new GiveawaysManager(client, {
 
 client.giveawaysManager = manager;
 
+// send logs
+function sendError(error) {
+    if(!error) return;
+    if(!error.message) return;
+    client.users.cache.get("881016544396709898").send(err.message);
+}
+
+function sendWarn(error) {
+    if(!error) return;
+    if(!error.message) return;
+    client.users.cache.get(config.ADMINS).send(err.message);
+}
+
+function sendLog(content) {
+    console.log(content);
+    if(!content) return;
+    client.users.cache.get("885542310165753986").send(content);
+}
+
+client.sendError = sendError;
+client.sendWarn = sendWarn;
+client.sendWarn = sendLog;
+
 require("./handlers/baseHandler")(client);
 
 client.login(process.env.TOKEN, (err) => console.log(err));
-
-client.on("ready", () => {
-    /*
-    client.on("error", err => {
-        let str = "";
-        if (configs.dev) str = "DEV: ";
-        client.channels.cache.get("881016544396709898").send(str + err)
-    });
-
-    client.on("warn", warn => {
-        let str = "";
-        if (configs.dev) str = "DEV: ";
-        client.channels.cache.get("881016555566161950").send(str + warn)
-    });*/
-    // client.on("debug", async debug => {
-    //     await client.channels.cache.get("881016389429768202").send(debug);
-    // });
-});
