@@ -75,10 +75,10 @@ module.exports = (client) => {
             const pull = require(`../commands/${dir}/${file}`);
 
             if (pull.name) {
-                table.addRow(pull.name, "✅");
+                table.addRow(pull.name, "Successful");
                 client.commands.set(pull.name, pull);
             } else {
-                table.addRow(file, "❌ -> Thiếu cmd.name");
+                table.addRow(file, "Failed -> cmd.name");
             }
         });
     });

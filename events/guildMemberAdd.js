@@ -36,12 +36,14 @@ client.on('guildMemberAdd', async (member) => {
             // client.channels.cache.get(channel.id).pe
             if(!member.guild.me.permissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) return;
 
+            if(!member.guild.me.permissionsIn(channel).has(Permissions.FLAGS.MANAGE_CHANNELS)) return;
+
             channel.permissionOverwrites.create(getMuteRole, {
                 SEND_MESSAGES: false,
             });
         });
 
-        if (member.guild.me.roles.highest.position > getMuteRole.position) member.roles.add(getMuteRoles, {reason: "Muted user: Cố gắng tránh Mute"}).catch(err => {});
+        if (member.guild.me.roles.highest.position > getMuteRole.position) member.roles.add(getMuteRole, "Muted user: Cố gắng tránh Mute").catch(err => {});
     }
 
 
