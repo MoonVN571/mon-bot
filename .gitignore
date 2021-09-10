@@ -9,3 +9,4 @@ test*
 /data/*.json
 package-lock.json
 TODO.js
+config.json
