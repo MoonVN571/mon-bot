@@ -55,7 +55,7 @@ function getAge(time) {
 
     let years = up.getUTCFullYear() - 1970;
     let months = up.getUTCMonth();
-    let days = up.getUTCDate() - 2;
+    let days = up.getUTCDate() - 1;
     let hours = up.getUTCHours();
     let minutes = up.getUTCMinutes();
 

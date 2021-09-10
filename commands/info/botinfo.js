@@ -2,7 +2,7 @@ var os = require("os");
 
 var { MessageEmbed } = require('discord.js');
 
-const { calculate, getTimestamp } = require('../../utils/utils');
+const { getAge, getTimestamp } = require('../../utils/utils');
 
 module.exports = {
     name: "botinfo",
@@ -30,7 +30,7 @@ module.exports = {
             )
             .addField("\u300B System",
                 `-   **Platform:** ${os.type()}` + "\n"
-                + `-   **Window Uptime:** ${calculate(os.uptime())}` + "\n"
+                + `-   **Window Uptime:** ${getAge(new Date().getTime() - os.uptime() * 1000)}` + "\n"
                 + `-   **Ram used:** ${((process.memoryUsage().heapUsed / 1024) / 1024).toFixed(2)} MB\n`
                 + "-   **Process:** " + os.cpus()[0].model + "\n"
                 + "-   **Core:** " + os.cpus().length + "\n"

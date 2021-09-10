@@ -56,7 +56,7 @@ module.exports = {
                     embeds: [{
                         author: {
                             name: "Thông tin nhóm: " + message.guild.name,
-                            url: client.user.avatarURL()
+                            icon_url: client.user.avatarURL()
                         },
                         thumbnail: { url: message.guild.iconURL() },
                         
@@ -69,7 +69,7 @@ module.exports = {
                                     "**Bộ lộc**: " + serverFilter[message.guild.explicitContentFilter] + "\n" +
                                     "**Bảo mật**: " + verificationLevels[message.guild.verificationLevel] + "\n" +
                                     "**Ngày tạo nhóm**: " + getTimestamp(time) + " (*" + getAge(time) + " trước*) \n" +
-                                    `**Roles [${roleCount}]**: ${role}`,
+                                    `**Roles [${roleCount}]**: ${role} \n \u200B`,
                                 inline: false
                             }, {
                                 name: "\u300B Chỉ số",
