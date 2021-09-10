@@ -12,6 +12,6 @@ module.exports = {
      * @param {String[]} args
      */
     run: async (client, interaction, args) => {
-        await interaction.followUp({ content: client.ws.ping + "ms!", ephemeral: true });
+        await interaction.followUp({ content: client.ws.ping + "ms!" });
     },
 };

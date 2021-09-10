@@ -11,21 +11,6 @@ module.exports = (client) => {
     // Event handler
     readdirSync('./events/').forEach(files => require("../events/" + files));
 
-    /*for (const file of files) {
-        if (file.endsWith('.js')) {
-            const eventName = file.substring(0, file.indexOf('.js'));
-            try {
-                const eventModule = require('../events/' + file);
-                client.on(eventName, eventModule.bind(null, client));
-            }
-            catch(err) {
-                console.error(err);
-                table.addRow(eventName, '❌');
-                continue;
-            }
-        }
-    } */
-
     // Slash handler
     const arrayOfSlashCommands = [];
 
@@ -44,26 +29,8 @@ module.exports = (client) => {
         });
     });
 
-    /*
-    const arrayOfSlashCommands = [];
-    slashCommands.map((value) => {
-        const file = require(value);
-        if (!file?.name) return;
-        client.slashCommands.set(file.name, file);
-
-        if (["MESSAGE", "USER"].includes(file.type)) delete file.description;
-        arrayOfSlashCommands.push(file);
-    }); */
     client.on("ready", async () => {
-        // Register for a single guild
-
-        await client.guilds.cache
-            .get("869076561075261460")
-            .commands.set(arrayOfSlashCommands);
-
-
-        // Register for all the guilds the bot is in
-        //client.application.commands.set(arrayOfSlashCommands)
+        await client.application.commands.set(arrayOfSlashCommands)
     });
 
 
