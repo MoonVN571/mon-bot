@@ -5,6 +5,9 @@ const client = require('../index');
 
 client.on('guildCreate', async (guild) => {
 	new Database({ path: "./data/guilds/" + guild.id + ".json" });
+	console.log(guild.name + " joined");
+
+	client.channels.cache.get("880676073778581535").send("Fetching new guild data");
 
 	const verificationLevels = {
 		"NONE": 'Không',
@@ -61,6 +64,4 @@ client.on('guildCreate', async (guild) => {
 			color: client.config.DEF_COLOR
 		}]
 	});
-
-	console.log(guild.name + " joined");
 });

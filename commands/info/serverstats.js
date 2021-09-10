@@ -55,7 +55,7 @@ module.exports = {
                 await message.reply({
                     embeds: [{
                         author: {
-                            name: "Thông tin nhóm: *" + message.guild.name + "*",
+                            name: "Thông tin nhóm: " + message.guild.name,
                             url: client.user.avatarURL()
                         },
                         thumbnail: { url: message.guild.iconURL() },

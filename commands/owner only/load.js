@@ -24,12 +24,9 @@ module.exports = {
                     if (err) throw err;
 
                     if (files.find(f => f.split('.')[0] == cmdReload)) {
-                        delete require.cache[require.resolve(`../../commands/${dir}/${cmdReload.split('.')[0]}`)]
-
-                        const cmd = require(`../../commands/${dir}/${cmdReload.split('.')[0]}`);
+                        const cmd = require(`../../commands/${dir}/${cmdReload}`);
 
                         client.commands.set(cmd.name, cmd);
-
                         found = true;
 
                         message.reply({

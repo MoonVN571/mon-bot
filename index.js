@@ -78,7 +78,7 @@ function sendLog(content) {
 
 client.sendError = sendError;
 client.sendWarn = sendWarn;
-client.sendWarn = sendLog;
+client.sendLog = sendLog;
 
 require("./handlers/baseHandler")(client);
 
