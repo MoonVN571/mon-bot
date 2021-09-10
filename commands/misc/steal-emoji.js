@@ -41,7 +41,7 @@ module.exports = {
             let parse = `${emoji.id}.${emoji.animated ? "gif" : "png"}`;
 
             if (emoji.id) emoji = `https://cdn.discordapp.com/emojis/${emoji.id}.${emoji.animated ? "gif" : "png"}`;
-            console.log(emojis)
+
             let fileName = emojis.split(":")[1].split(":")[0];
 
             let dir = "./assets/emoji/" + parse;
