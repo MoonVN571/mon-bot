@@ -34,8 +34,8 @@ client.on('ready', () => {
     var i = -1;
     setInterval(() => {
         let random = [
-            `${client.guilds.cache.size}/20 servers! | WATCHING`,
-            `${client.guilds.cache.reduce((a, g) => a + g.memberCount, 0)} users! | LISTENING`,
+            `${client.guilds.cache.size}/25 servers! | WATCHING`,
+            `${Intl.NumberFormat().format(client.guilds.cache.reduce((a, g) => a + g.memberCount, 0))} users! | LISTENING`,
             '@Mon Bot lấy prefix! | PLAYING',
         ];
 
