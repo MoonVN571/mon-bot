@@ -62,7 +62,7 @@ module.exports = {
                         
                         fields: [
                             {
-                                name: "General",
+                                name: "\u300B General",
                                 value: "**Tên server**: " + message.guild.name + "\n" +
                                     "**ID server**: " + message.guild.id + "\n" +
                                     "**Owner**: " + owner.tag + "\n" +
@@ -72,7 +72,7 @@ module.exports = {
                                     `**Roles [${roleCount}]**: ${role}`,
                                 inline: false
                             }, {
-                                name: "Chỉ số",
+                                name: "\u300B Chỉ số",
                                 value: "**Cấp độ booster**: " + tier[message.guild.premiumTier] + "\n"
                                     + "**Tổng số booster**: " + message.guild.premiumSubscriptionCount + "\n" +
                                     "**Số emojis**: " + message.guild.emojis.cache.map(e => e.id).length + "\n" +

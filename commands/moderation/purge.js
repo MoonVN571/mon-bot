@@ -51,7 +51,7 @@ module.exports = {
         });
 
         try {
-            message.channel.bulkDelete(deleteCount, true).then(() => {
+            message.channel.bulkDelete(deleteCount).then(() => {
                 message.channel.send({
                     embeds: [{
                         title: client.emoji.success + "Thành công",

@@ -29,7 +29,7 @@ client.on('guildCreate', async (guild) => {
 				},
 				{
 					name: "Ngày tạo nhóm",
-					value: getTimestamp(guild.createdAt) + ` (tạo ${getAge(guild.createdAt, true)} trước)`,
+					value: getTimestamp(guild.createdAt) + ` (tạo ${getAge(guild.createdAt)} trước)`,
 					inline: true
 				},
 				{
@@ -39,7 +39,7 @@ client.on('guildCreate', async (guild) => {
 				},
 				{
 					name: "Tổng thành viên",
-					value: (Intl.NumberFormat().format(guild.members.cache.filter(member => !member.user.bot))).toString() + ` (${guild.members.cache.filter(member => member.user.bot)} bots)`,
+					value: (Intl.NumberFormat().format(guild.members.cache.filter(member => !member.user.bot).size)).toString() + ` (${guild.members.cache.filter(member => member.user.bot).size} bots)`,
 					inline: true
 				},
 				{
