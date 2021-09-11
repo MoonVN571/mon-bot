@@ -1,9 +1,4 @@
 const client = require("../index");
-const wait = require('util').promisify(setTimeout);
-
-const { dev } = require('../config.json');
-
-if (!dev) return;
 
 client.on('interactionCreate', async (interaction) => {
     if (interaction.isCommand()) {

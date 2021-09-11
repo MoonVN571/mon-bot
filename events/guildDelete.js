@@ -6,7 +6,7 @@ client.on('guildDelete', async (guild) => {
 	const guilded = new Database({ path: "./data/guilds/" + guild.id + ".json" });
 	guilded.clear();
 
-	client.channels.cache.get("880676073778581535").send("Deleting old guild data");
+	client.channels.cache.get("880676073778581535").send("Quiting Guild name: " + guild.name + "");
 
 	var owner = "Không rõ";
 

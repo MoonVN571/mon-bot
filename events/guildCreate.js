@@ -7,7 +7,7 @@ client.on('guildCreate', async (guild) => {
 	new Database({ path: "./data/guilds/" + guild.id + ".json" });
 	console.log(guild.name + " joined");
 
-	client.channels.cache.get("880676073778581535").send("Fetching new guild data");
+	client.channels.cache.get("880676073778581535").send("New guild! Name: " + guild.name);
 
 	const verificationLevels = {
 		"NONE": 'Không',
@@ -42,7 +42,7 @@ client.on('guildCreate', async (guild) => {
 				},
 				{
 					name: "Tổng thành viên",
-					value: (Intl.NumberFormat().format(guild.members.cache.filter(member => !member.user.bot).size)).toString() + ` (${guild.members.cache.filter(member => member.user.bot).size} bots)`,
+					value: (Intl.NumberFormat().format(guild.memberCount)).toString() + ` (${guild.members.cache.filter(member => member.user.bot).size} bots)`,
 					inline: true
 				},
 				{
