@@ -1,5 +1,5 @@
 const Database = require('simplest.db');
-const { Permissions } = require('discord.js');
+const { Client, Message, Permissions } = require('discord.js');
 
 module.exports = {
     name: "welcome-channel",
@@ -7,6 +7,13 @@ module.exports = {
     usage: "<PREFIX>welcome-channel <Tag kênh/ID>",
     ex: "<PREFIX>welcome-channel 000000000000000000",
 
+    /**
+     * 
+     * @param {Client} client 
+     * @param {Message} message 
+     * @param {String[]} args 
+     * @returns 
+     */
     async execute(client, message, args) {
         if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) return message.reply({
             embeds: [{
@@ -54,7 +61,7 @@ module.exports = {
         });
 
         var channels = message.mentions.channels.first() || args[0];
-        if(channels == true) channels = channels.id;
+        if(message.mentions.channels.first()) channels = channels.id;
         
         let channelPerm = client.channels.cache.get(channels);
 

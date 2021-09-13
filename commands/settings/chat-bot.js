@@ -62,7 +62,7 @@ module.exports = {
         });
 
         var channels = message.mentions.channels.first() || args[0];
-        if(channels == true) channels = channels.id;
+        if(message.mentions.channels.first()) channels = channels.id;
 
         let channelPerm = client.channels.cache.get(channels);
 
