@@ -156,7 +156,7 @@ client.on('messageCreate', async (message) => {
 
     let cmdName = args.shift().toLowerCase();
 
-    var cmd = client.commands.get(cmdName)
+    let cmd = client.commands.get(cmdName)
         || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(cmdName));
     if (!cmd) return;
 
@@ -183,37 +183,29 @@ client.on('messageCreate', async (message) => {
 
     client.prefix = prefix;
 
-    // Delay command
-    const timeout = new Database({ path: "./data/delay.json" });
+    if(!cmd.delayAlia) {
+        // Delay command
+        const timeout = new Database({ path: "./data/delay.json" });
 
-    let cmdDelay = client.commands.get(cmdName);
-    if (!cmdDelay) cmdDelay = client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(cmdName));
+        let cmdDelay = client.commands.get(cmdName);
+        if (!cmdDelay) cmdDelay = client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(cmdName));
 
-    if (timeout.get(`${message.author.id}.${cmdDelay.name}`) - Date.now() < 0 
-    || !timeout.get(`${message.author.id}.${cmdDelay.name}`)) timeout.delete(`${message.author.id}.${cmdDelay.name}`);
+        if (timeout.get(`${message.author.id}.${cmdDelay.name}`) - Date.now() < 0 
+        || !timeout.get(`${message.author.id}.${cmdDelay.name}`)) timeout.delete(`${message.author.id}.${cmdDelay.name}`);
 
-    let calc = calculate(timeout.get(`${message.author.id}.${cmdDelay.name}`) - Date.now());
-    if (/*client.config.ADMINS.indexOf(message.author.id) < 0 &&*/ timeout.get(`${message.author.id}.${cmdDelay.name}`) && calc) return message.reply({
-        embeds: [{
-            title: "Rate limit",
-            description: `Bạn cần chờ \`\`${calc}\`\` để tiếp tục dùng lệnh này.`,
-            color: client.config.ERR_COLOR
-        }], allowedMentions: { repliedUser: false }
-    });
+        let calc = calculate(timeout.get(`${message.author.id}.${cmdDelay.name}`) - Date.now());
+        if (/*client.config.ADMINS.indexOf(message.author.id) < 0 &&*/ timeout.get(`${message.author.id}.${cmdDelay.name}`) && calc) return message.reply({
+            embeds: [{
+                title: "Rate limit",
+                description: `Bạn cần chờ \`\`${calc}\`\` để tiếp tục dùng lệnh này.`,
+                color: client.config.ERR_COLOR
+            }], allowedMentions: { repliedUser: false }
+        }).then(msg => {if(msg.deletable) setTimeout(() => msg.delete(), 2000); });
 
-    setTimeout(() => timeout.delete(`${message.author.id}.${cmdDelay.name}`), (cmdDelay.delay ? cmdDelay.delay : 3) * 1000);
-    timeout.set(`${message.author.id}.${cmdDelay.name}`, Date.now() + (cmdDelay.delay ? cmdDelay.delay : 3) * 1000);
-
-    /*
-
-    let serverData = await db.get(guildID);
-    if (!serverData) serverData = await db.set(message.guild.id, { prefix: TYPE_RUN == 'production' ? "_" : "*", logchannel: null, msgcount: true, defaulttts: null, botdangnoi: false, aiChannel: null, msgChannelOff: [], blacklist: false, aiLang: 'vi', noitu: null, noituStart: false, noituArray: [], maxWords: 1500, noituLastUser: null, rankChannel: 'default' });
-    const { msgChannelOff, aiChannel, aiLang, noitu, noituStart, noituArray, maxWords, noituLastUser, rankChannel } = serverData;
-    */
-
-    const serverData = {
-        prefix: prefix,
-        guildId: guildID
+        setTimeout(() => timeout.delete(`${message.author.id}.${cmdDelay.name}`), (cmdDelay.delay ? cmdDelay.delay : 3) * 1000);
+        timeout.set(`${message.author.id}.${cmdDelay.name}`, Date.now() + (cmdDelay.delay ? cmdDelay.delay : 3) * 1000);
+    } else {
+        
     }
 
     function commandError() {
@@ -230,7 +222,7 @@ client.on('messageCreate', async (message) => {
     message.botError = commandError;
 
     try {
-        cmd.execute(client, message, args, serverData);
+        cmd.execute(client, message, args);
     } catch (err) {
         console.log(err);
         message.reply({

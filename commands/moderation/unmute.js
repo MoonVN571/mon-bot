@@ -94,7 +94,7 @@ module.exports = {
 
             channel.send({
                 embeds: [{
-                    title: "Moderation - Unmute",
+                    title: "Moderation - Un muted",
                     fields: [
                         {
                             name: "Người thực hiện",

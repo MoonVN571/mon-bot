@@ -56,13 +56,13 @@ module.exports = {
 
         // Find and check role
         let findRole = message.guild.roles.cache.find(role => role.name == "Muted");
-        if (!findRole) message.guild.roles.create({
+        if (!findRole) await message.guild.roles.create({
             name: "Muted"
         });
 
         let getMuteRole = message.guild.roles.cache.find(role => role.name == "Muted");
 
-        var userToMute = message.mentions.members.first() || args[0];
+        let userToMute = message.mentions.members.first() || args[0];
         if (userToMute) userToMute = userToMute.id;
 
         const reason = args.join(" ").split(args[0] + " ")[1] || "Không có";

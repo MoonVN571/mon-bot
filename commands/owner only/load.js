@@ -16,8 +16,18 @@ module.exports = {
             }]
         });
 
-        let found = false;
+        var cmd = client.commands.get(args[0])
+        || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(args[0]));
 
+        if(cmd) return message.reply({
+            embeds: [{
+                title: client.emoji.failed + "Loaded!",
+                description: "Lệnh này đã được load, hãy thử " + client.prefix + "reload <tên lệnh>",
+                color: client.config.ERR_COLOR
+            }], allowedMentions: { repliedUser: false }
+        });
+        
+        let found = false;
         try {
             readdirSync('./commands').forEach(dir => {
                 readdir(`./commands/${dir}`, (err, files) => {
@@ -43,12 +53,14 @@ module.exports = {
             console.log(e);
         }
 
-        if (!found) return message.reply({
-            embeds: [{
-                title: client.emoji.failed + "Sai lệnh",
-                description: "Không tìm thấy lệnh này.",
-                color: client.config.ERR_COLOR
-            }], allowedMentions: { repliedUser: true }
-        });
+        setTimeout(() => {
+            if (!found) return message.reply({
+                embeds: [{
+                    title: client.emoji.failed + "Sai lệnh",
+                    description: "Không tìm thấy lệnh này.",
+                    color: client.config.ERR_COLOR
+                }], allowedMentions: { repliedUser: true }
+            });
+        }, 500)
     }
 }

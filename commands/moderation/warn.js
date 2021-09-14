@@ -19,7 +19,7 @@ module.exports = {
         if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_GUILD)
         ) return message.reply({
             embeds: [{
-                title: client.emoji.failed + " Thiếu quyền!",
+                title: client.emoji.failed + "Thiếu quyền!",
                 description: "Bạn không có quyền ``MANAGE_GUILD`` để dùng lệnh này.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
@@ -27,7 +27,7 @@ module.exports = {
 
         if (!args[0]) return message.reply({
             embeds: [{
-                title: client.emoji.failed + " Thiếu thông tin!",
+                title: client.emoji.failed + "Thiếu thông tin!",
                 description: "Bạn phải cung cấp người dùng cần cảnh cáo.\n\nVí dụ: " + client.prefix + "warn <tag/id> [lí do]",
                 footer: "Cú pháp <>: Bắt buộc; []: Không bắt buộc",
                 color: client.config.ERR_COLOR
@@ -40,7 +40,7 @@ module.exports = {
 
         if (!args[1] || !reason) return message.reply({
             embeds: [{
-                title: client.emoji.failed + " Thiếu thông tin!",
+                title: client.emoji.failed + "Thiếu thông tin!",
                 description: "Hãy cung cấp lí do cảnh cáo.*.\n\nVí dụ: " + client.prefix + "warn <tag/id> [lí do]",
                 footer: "Cú pháp <>: Bắt buộc; []: Không bắt buộc",
                 color: client.config.ERR_COLOR
@@ -54,7 +54,7 @@ module.exports = {
         const member = message.guild.members.cache.get(warnUser);
         if (member.user.bot) return message.reply({
             embeds: [{
-                title: client.emoji.failed + " Lỗi!",
+                title: client.emoji.failed + "Lỗi!",
                 description: "Bạn không thể cảnh cáo bot.",
                 color: client.config.DEF_COLOR
             }], allowedMentions: { repliedUser: false }
@@ -62,7 +62,7 @@ module.exports = {
 
         if (member.user == message.author) return message.reply({
             embeds: [{
-                title: client.emoji.failed + " Sai thông tin!",
+                title: client.emoji.failed + "Sai thông tin!",
                 description: "Bạn không thể cảnh cáo chính mình.",
                 color: client.config.DEF_COLOR
             }], allowedMentions: { repliedUser: false }
@@ -70,7 +70,7 @@ module.exports = {
 
         if (!member) return message.reply({
             embeds: [{
-                title: client.emoji.failed + " Sai thông tin!",
+                title: client.emoji.failed + "Sai thông tin!",
                 description: "Không tìm thấy ngườ này trong nhóm.",
                 color: client.config.DEF_COLOR
             }], allowedMentions: { repliedUser: false }

@@ -14,8 +14,8 @@ module.exports = {
     async execute(client, message, args) {
         let count_message = 0;
         await message.channel.messages.fetch({ limit: 50 }).then(async messages => {
-            let userMessage = messages.filter(msg => msg.content.startsWith(client.prefix)).map((msg) => msg);
-            let botMessage =  messages.filter(msg => msg.author.id === client.user.id).map(msg => msg);
+            let userMessage = messages.filter(msg => msg.content.startsWith(client.prefix)).map((msg) => msg.id);
+            let botMessage =  messages.filter(msg => msg.author.id === client.user.id).map(msg => msg.id);
 
             count_message = botMessage.length + userMessage.length;
 

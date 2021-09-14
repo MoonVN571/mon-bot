@@ -24,7 +24,12 @@ function calculate(time) {
     days = parseInt(temp / 86400);
     hours = parseInt(((temp - days * 86400) / 3600));
     minutes = parseInt(((temp - days * 86400 - hours * 3600)) / 60);
-    seconds = parseInt(temp % 60);
+    
+    if(hours < 0 || !hours) {
+        seconds = (temp % 60).toFixed(1);
+    } else {
+        seconds = parseInt(temp % 60);
+    }
 
     // console.log(days, hours, minutes, seconds)
 
@@ -162,7 +167,7 @@ async function download(dir, url) {
  */
 async function remove(dir) {
     Fs.unlink(dir, (err) => {
-        if (err) console.log(dir + "\n" + err);
+        // if (err) console.log(dir + "\n" + err);
     });
 }
 

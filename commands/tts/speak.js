@@ -4,6 +4,7 @@ const { createAudioResource, joinVoiceChannel, createAudioPlayer } = require('@d
 const { download, remove } = require('../../utils/utils');
 const ms = require('ms');
 const { Client, Message } = require('discord.js');
+const { readdirSync } = require('fs');
 
 const collector = new Collection();
 
@@ -48,10 +49,16 @@ module.exports = {
         if (speaking) return message.reply({ content: "Bot đang nói hãy thử lại sau.", allowedMentions: { repliedUser: false } });
 
         try {
-            const locate = './assets/tts/' + guildID + '.mp3';
+            let locate = './assets/tts/' + guildID + '.mp3';
 
-            await remove(locate);
-            await download(locate, audioURL, guildID);
+            let sounds = readdirSync('./assets/tts/soundboard/').map(sounds => sounds.split(".")[0]);
+
+            if(sounds.indexOf(args[0]) == -1) {
+                await remove(locate);
+                await download(locate, audioURL, guildID);
+            } else {
+                locate = './assets/tts/soundboard/' + args[0] + '.mp3';
+            }
 
             const player = createAudioPlayer();
             const resource = createAudioResource(locate);

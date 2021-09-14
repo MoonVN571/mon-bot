@@ -37,7 +37,7 @@ module.exports = {
         if (!member) return message.reply({
             embeds: [{
                 title: client.emoji.failed + " Sai thông tin!",
-                description: "Không tìm thấy ngườ này trong nhóm.",
+                description: "Không tìm thấy người này trong nhóm.",
                 color: client.config.DEF_COLOR
             }], allowedMentions: { repliedUser: false }
         });

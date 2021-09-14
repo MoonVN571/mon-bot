@@ -11,18 +11,18 @@ module.exports = {
      * @param {Message} message 
      * @param {String[]} args 
      */
-    async execute(client, message, args, serverData) {
-        // check bot current channel
-        const { guildId } = serverData;
-        
+    async execute(client, message, args) {
         let currentBotVoice = message.guild.me?.voice.channel;
         if(!currentBotVoice) return;
+        
+        if(message.member.voice.channel.id !== currentBotVoice.id || !message.member.voice.channel)
+            return message.reply({ content: 'Bạn phải vào phòng chung với bot.', allowedMentions: { repliedUser: false } });
 
-        message.react("<:5174ok:883662153490497586>")
+        message.react("<:5174ok:883662153490497586>");
 
         const connection = joinVoiceChannel({
             channelId: currentBotVoice,
-            guildId: guildId,
+            guildId: message.guildId,
             adapterCreator: message.guild.voiceAdapterCreator,
         });
 
