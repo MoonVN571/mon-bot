@@ -13,6 +13,11 @@ function random(min, max) {
     return Math.floor(Math.random() * (max - min) + min);
 }
 
+function sodep(num) {
+    const pattern = /\B(?=(\d{3})+(?!\d))/g;
+    return num.toString().replace(pattern, ' ');
+}
+
 /**
  * 
  * @param {*} time 
@@ -194,5 +199,6 @@ module.exports = {
     getAge,
     download,
     remove,
-    validImageUrl
+    validImageUrl,
+    sodep
 };

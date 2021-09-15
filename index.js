@@ -36,6 +36,7 @@ client.config = config;
 
 client.slashCommands = new Collection();
 client.commands = new Collection();
+client.tts = new Collection();
 
 // ghost ping system
 client.Pings = new Collection();

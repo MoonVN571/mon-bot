@@ -26,6 +26,9 @@ module.exports = {
             adapterCreator: message.guild.voiceAdapterCreator,
         });
 
+        client.tts.delete(`${guildID}.timeout`);
+        client.tts.delete(guildID + '.speaking', true);
+
         connection.destroy();
     }
 }

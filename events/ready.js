@@ -1,34 +1,42 @@
 const client = require("..");
-
+const Topgg = require('@top-gg/sdk');
+const { AutoPoster } = require('topgg-autoposter');
+const express = require('express');
+const Database = require('simplest.db');
+const { addMoney } = require('../utils/eco');
+const { random } = require('../utils/utils');
+require('dotenv').config();
 client.on('ready', () => {
     console.log(client.user.tag + " đã sẵn sàng!");
 
     if (client.DEV) return;
     client.user.setPresence({ activities: [{ name: 'RESTARTING', type: "PLAYING" }] });
 
-    /*
-    const app = express()
-            
-    const webhook = new Topgg.Webhook(client.config.TOPGG_AUTH)
+    const app = express();
+    const webhook = new Topgg.Webhook(process.env.AUTHENTICATION);
     
-    AutoPoster(client.config.TOPGG_TOKEN, client).on('posted', () => console.log('Posted stats to Top.gg!'));
+    AutoPoster(process.env.AUTH_TOPGG, client).on('posted', () => console.log('Posted stats to Top.gg!'));
 
     app.post('/dblwebhook', webhook.listener(vote => {
-        let data = new Scriptdb('./voted.json');
-        
-
-        if(!data.get(vote.user)) {
-            data.set(vote.user, Date.now())
-        }
-
-        client.channels.cache.get('862215076698128396').send({embeds: [{
-            description: "**<@" + vote.user + ">** đã vote bot!",
-            color: client.config.DEF_COLOR
-        }]});
+        client.users.fetch(vote.user).then(user => {
+            client.channels.cache.get('887347564905644082').send({embeds: [{
+                author:{
+                    name: user.username + ", cảm ơn bạn đã vote bot nha :3",
+                    icon_url: user.avatarURL()
+                },
+                title: "Vote ở đây!",
+                url: "https://monbot.tk/vote",
+                color: "BLUE",
+                timestamp: new Date()
+            }]});
+        }).then(() => {
+            let dailyMoney = random(10000, 20000);
+            addMoney("Vote", vote.user, dailyMoney);
+            client.users.cache.get(vote.user).send(client.emoji.success + "Bạn đã vote cho bot!\nBạn đã nhận được " + Intl.NumberFormat().format(dailyMoney) + client.emoji.dongxu + " trong lần vote này!")
+        });
     }));
-   
-    app.listen(3000);
-    */
+    
+    app.listen(5000);
 
 
     var i = -1;

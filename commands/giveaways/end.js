@@ -18,7 +18,7 @@ module.exports = {
         if (dataAuthor.get(args[0]) != message.author.id)
             return message.reply({
                 embeds: [{
-                    title: client.emojs.failed + "Thiếu quyền!",
+                    title: client.emoji.failed + "Thiếu quyền!",
                     description: "Bạn không sỡ hữu id giveaway này.",
                     color: client.config.ERR_COLOR
                 }], allowedMentions: { repliedUser: false }
@@ -27,7 +27,7 @@ module.exports = {
         if (!args[0])
             return message.reply({
                 embeds: [{
-                    title: client.emojs.failed + "Thiếu thông tin!",
+                    title: client.emoji.failed + "Thiếu thông tin!",
                     description: "Cung cấp Id tin nhắn của giveaway.",
                     color: client.config.ERR_COLOR
                 }], allowedMentions: { repliedUser: false }
@@ -36,7 +36,7 @@ module.exports = {
         if (isNaN(+args[0]) || args[0].length !== 18)
             return message.reply({
                 embeds: [{
-                    title: client.emojs.failed + "Sai ID!",
+                    title: client.emoji.failed + "Sai ID!",
                     description: "Nhập đúng id tin nhắn để end.",
                     color: client.config.ERR_COLOR
                 }], allowedMentions: { repliedUser: false }

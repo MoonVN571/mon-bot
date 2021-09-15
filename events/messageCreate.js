@@ -41,7 +41,7 @@ client.on('messageCreate', async (message) => {
             }
         }).then(callback => {
             if (!callback.data.success) return;
-            console.log(callback.data.success);
+            // console.log(callback.data.success);
             message.channel.send(callback.data.success).catch(err => {
                 client.sendError(err);
             })
@@ -148,8 +148,6 @@ client.on('messageCreate', async (message) => {
         if (!message.content.startsWith(prefix) || !message.content.startsWith(prefix)) return;
     }
 
-    client.sendLog(`[${new Date().toLocaleString()}] ${message.guild.name} | ${message.channel.name} | ${message.author.tag} - ${message.author.id} : ${message.content}`);
-
     var args = message.content.slice(prefix.length).split(/ +/);
     if (args[0] == "") args = args.slice(1);
     if (!args.length) return;
@@ -194,13 +192,17 @@ client.on('messageCreate', async (message) => {
         || !timeout.get(`${message.author.id}.${cmdDelay.name}`)) timeout.delete(`${message.author.id}.${cmdDelay.name}`);
 
         let calc = calculate(timeout.get(`${message.author.id}.${cmdDelay.name}`) - Date.now());
-        if (/*client.config.ADMINS.indexOf(message.author.id) < 0 &&*/ timeout.get(`${message.author.id}.${cmdDelay.name}`) && calc) return message.reply({
-            embeds: [{
-                title: "Rate limit",
-                description: `Bạn cần chờ \`\`${calc}\`\` để tiếp tục dùng lệnh này.`,
-                color: client.config.ERR_COLOR
-            }], allowedMentions: { repliedUser: false }
-        }).then(msg => {if(msg.deletable) setTimeout(() => msg.delete(), 2000); });
+        if (/*client.config.ADMINS.indexOf(message.author.id) < 0 &&*/ timeout.get(`${message.author.id}.${cmdDelay.name}`) && calc) {
+            let text = `Bạn cần chờ \`\`${calc}\`\` để tiếp tục dùng lệnh này.`;
+            if(cmd.name == "daily") text =  `Bạn đã upvote cho bot, sẵn sàng trong \`\`${calc}\`\` tiếp theo!`
+
+            return message.reply({
+                embeds: [{
+                    description: text,
+                    color: client.config.ERR_COLOR
+                }], allowedMentions: { repliedUser: false }
+            }).then(msg => {if(msg.deletable) setTimeout(() => msg.delete(), 2000); });
+        }
 
         setTimeout(() => timeout.delete(`${message.author.id}.${cmdDelay.name}`), (cmdDelay.delay ? cmdDelay.delay : 3) * 1000);
         timeout.set(`${message.author.id}.${cmdDelay.name}`, Date.now() + (cmdDelay.delay ? cmdDelay.delay : 3) * 1000);
@@ -221,16 +223,7 @@ client.on('messageCreate', async (message) => {
 
     message.botError = commandError;
 
-    try {
-        cmd.execute(client, message, args);
-    } catch (err) {
-        console.log(err);
-        message.reply({
-            embeds: [{
-                title: "ERROR",
-                description: "Không thể thực hiện lệnh này, thử lại sau!",
-                color: client.config.DEF_COLOR
-            }], allowedMentions: { repliedUser: false }
-        });
-    }
+    client.sendLog(`[${new Date().toLocaleString()}] ${message.guild.name} | ${message.channel.name} | ${message.author.tag} - ${message.author.id} : ${message.content}`);
+
+    cmd.execute(client, message, args);
 });

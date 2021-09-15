@@ -6,8 +6,6 @@ const ms = require('ms');
 const { Client, Message } = require('discord.js');
 const { readdirSync } = require('fs');
 
-const collector = new Collection();
-
 module.exports = {
     name: "speak",
     aliases: ['s'],
@@ -71,20 +69,20 @@ module.exports = {
 
             connection.subscribe(player);
 
-            collector.set(guildID + '.speaking', true);
-            collector.set(guildID + '.timeout', Date.now() + ms('5m'));
+            client.tts.set(guildID + '.speaking', true);
+            client.tts.set(guildID + '.timeout', Date.now() + ms('5m'));
 
-            player.play(resource);
-            collector.set(guildID + '.speaking', false);
+            await player.play(resource);
+            client.tts.set(guildID + '.speaking', false);
 
             setTimeout(() => {
-                let time = collector.get(guildID + '.timeout');
+                let time = client.tts.get(guildID + '.timeout');
                 if (!time) return;
                 if (Date.now() > time && message.guild.me?.voice.channel) connection.destroy();
 
                 remove(locate);
 
-                if (!message.guild.me.voice) collector.delete(`${guildID}.timeout`);
+                if (!message.guild.me.voice) client.tts.delete(`${guildID}.timeout`);
             }, ms('5m') + 1000);
         } catch (err) {
             console.log(err);
