@@ -1,5 +1,4 @@
 const { getAudioUrl } = require('google-tts-api')
-const { Collection } = require('discord.js');
 const { createAudioResource, joinVoiceChannel, createAudioPlayer } = require('@discordjs/voice');
 const { download, remove } = require('../../utils/utils');
 const ms = require('ms');
@@ -43,7 +42,7 @@ module.exports = {
 
         const guildID = message.guild.id;
 
-        let speaking = collector.get(guildID + '.speaking');
+        let speaking = client.tts.get(guildID + '.speaking');
         if (speaking) return message.reply({ content: "Bot đang nói hãy thử lại sau.", allowedMentions: { repliedUser: false } });
 
         try {
