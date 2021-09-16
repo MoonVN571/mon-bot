@@ -17,7 +17,6 @@ module.exports = {
     async execute(client, message, args) {
         if (!message.member.permissions.has(Permissions.FLAGS.KICK_MEMBERS)) return message.reply({
             embeds: [{
-                title: client.emoji.failed + " Thiếu quyền!",
                 decsription: "Bạn không có quyền để sử dụng lệnh này.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
@@ -25,7 +24,6 @@ module.exports = {
 
         if (!message.guild.me.permissions.has(Permissions.FLAGS.KICK_MEMBERS)) return message.reply([{
             embeds: [{
-                title: client.emoji.failed + " Thiếu quyền!",
                 description: "Bot không đủ quyền để cấm người dùng.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
@@ -33,8 +31,8 @@ module.exports = {
 
         if (!args[0]) return message.reply({
             embeds: [{
-                title: client.emoji.failed + " Thiếu thông tin!",
-                description: "Bạn phải cung cấp người dùng cần kick.\n\nVí dụ: " + client.prefix + "kick [username/tag/id] [lí do]",
+                description: "Bạn phải cung cấp người dùng cần kick.\nCách sử dụng: " + client.prefix + "kick <tag/id> [lí do]",
+                footer: {text:"Cú pháp <>: Bắt buộc - []: Không bắt buộc"},
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         });
@@ -42,21 +40,19 @@ module.exports = {
         const reason = args.join(" ").split(args[0] + " ")[1] || "Không có";
 
         var userToKick = message.mentions.members.first() || args[0];
-        if (userToKick) userToKick = userToBan.id;
+        if (userToKick) userToKick = userToKick.id;
 
         let member = await message.guild.members.cache.get(userToKick);
 
         if (userToKick == message.author.id) return message.reply({
             embeds: [{
-                title: client.emoji.failed + " Lỗi!",
-                description: "Bạn không thể đá chính mình.",
+                description: "Bạn không thể kick chính mình.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         });
 
         if (member.user == client.user) return message.reply({
             embeds: [{
-                title: client.emoji.failed + " Lỗi!",
                 description: "Mình không thể đá chính mính.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
@@ -64,7 +60,6 @@ module.exports = {
 
         if (!member) return message.reply({
             embeds: [{
-                title: client.emoji.failed + " Sai thông tin!",
                 description: "Bạn phải cung cấp người dùng trong server này.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
@@ -72,17 +67,22 @@ module.exports = {
 
         if (!member.kickable) return message.reply({
             embeds: [{
-                title: client.emoji.failed + " Không đủ quyền!",
-                description: "Bot không đủ quyền để đá người này.",
+                description: "Bot không đủ quyền để kick người này.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         });
 
         // punish
-        member.kick(reason).then(user_banned => {
+        await member.send({embeds: [{
+            title: "KICKED",
+            description: "Bạn đã bị kick khỏi server **" + message.guild.name + "**, lí do: *" + reason + "*.",
+            timestamp: new Date(),
+            color: client.config.DEF_COLOR
+        }]}).catch(()=> {});
+
+        await member.kick(reason).then(() => {
             message.reply({
                 embeds: [{
-                    title: client.emoji.success + "Thành công!",
                     description: "**" + member.user.tag + "** đã bị kick với lí do: *" + reason + "*.",
                     color: client.config.DEF_COLOR
                 }], allowedMentions: { repliedUser: false }
@@ -121,9 +121,12 @@ module.exports = {
                     color: client.config.DEF_COLOR,
                     footer: { text: member.user.id }
                 }]
+            }).catch(err => {
+                client.sendError(message.errorInfo + err);
             });
         }).catch(err => {
-            console.log(err);
-        })
+            message.botError();
+            client.sendError(message.errorInfo + err);
+        });
     }
 }

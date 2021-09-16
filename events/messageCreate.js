@@ -1,15 +1,13 @@
-const Database = require('simplest.db');
 const axios = require('axios');
-
-const { calculate } = require('../utils/utils');
-const { Admin, Whitelist, dev } = require('../config.json');
-
 const client = require('../index');
-const { Permissions } = require('discord.js');
-
+const Database = require('simplest.db');
+const { calculate } = require('../utils/utils');
+const { Admin, dev } = require('../config.json');
+const { Collection } = require('discord.js');
+const delay = new Collection();
 client.on('messageCreate', async (message) => {
     if (message.author.bot || message.author === client.user || !message.guild) return;
-    
+
     const guildID = message.guild.id;
     const authorID = message.author.id;
 
@@ -65,7 +63,7 @@ client.on('messageCreate', async (message) => {
                 description: "Bạn đã trở lại nhóm, đã tắt chế độ afk!",
                 color: client.config.DEF_COLOR
             }], allowedMentions: { repliedUser: false }
-        }).then(msg => setTimeout(() => msg.delete(), 20000));
+        }).then(msg => setTimeout(() => { msg.delete()}, 20000));
     }
 
     if (isTag) {
@@ -78,57 +76,9 @@ client.on('messageCreate', async (message) => {
                     description: isTag.toString() + " đang treo từ *" + calculate(afkData.get(guildID + "." + isTag.id + ".thoigian")) + "* nên sẽ không có phản hồi nào.\nLời nhắn: " + afkData.get(guildID + "." + isTag.id + ".loinhan"),
                     color: client.config.DEF_COLOR
                 }], allowedMentions: { repliedUser: false }
-            }).then(msg => setTimeout(() => msg.delete(), 20000));
+            }).then(msg => client.msgDelete(msg,20000));
         }
     }
-
-    // Anti raid
-    /**
-     * isTag : User mentioned
-     * 
-     * Check data spam mode than about 3s
-     */
-
-
-
-    //  if(authorID) console.log(client.mentions)
-
-    /*
-    const roleMentioned = message.mentions.roles.first();
-    if(isTag || roleMentioned) {
-        // map user
-        // message.mentions.members.map(m => m.user.username);
-        // console.log(message.mentions.roles.map(r => r.name));
-
-        // check timeout time next mention
-
-        // set time to next mention
-        console.log(message.mentions.members.array().length)
-        return;
-        let totalMention = message.mentions.members.each(m => m.user.id).length + message.mentions.roles.map(r => r.name).length;
-
-        // if(Admin !== authorID) return;
-        console.log(totalMention);
-
-        // check count user if > 3;
-        if(totalMention > 3) punish();
-
-        // add count mention for next
-        
-        // client.mentions.add(guildID + "." + authorID);
-        // if(client.mentions.has(guildID + "." + authorID)) client.mentions.add(guildID + "." + authorID + ".1");
-
-        // if(message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) return;
-
-        // console.log(client.mentions);
-        setTimeout(() => client.mentions.delete(guildID + "." + authorID), 3 * 1000);
-    } 
-
-    function punish() {
-        console.log("Should punished")
-        message.channel.send("Shold punish")
-    } */
-
 
     // Main
     let dataPrefix = new Database({ path: "./data/guilds/" + guildID + ".json" });
@@ -156,61 +106,43 @@ client.on('messageCreate', async (message) => {
 
     let cmd = client.commands.get(cmdName)
         || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(cmdName));
+
     if (!cmd) return;
-
-    if (prefix == ";;" && dev && !(Admin === authorID)) return;
-
-    if (cmd.discordDev && Whitelist !== guildID) return message.reply({
-        embeds: [{
-            title: "ERROR",
-            description: "Lệnh đã được tắt ở server này.",
-            color: client.config.ERR_COLOR
-        }], allowedMentions: { repliedUser: false }
-    });
-
     if (cmd.disabled) return;
-    if (cmd.dev && Admin !== authorID) return;
-
-    /*
-    if(cmd.admin && !message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) return message.reply({embeds: [{
-        title: "ERROR",
-        description: "Bạn không được phép sử dụng lệnh này.",
-        color: client.config.ERR_COLOR
-    }]});
-    */
+    if (cmd.dev && !(Admin == authorID)) return;
 
     client.prefix = prefix;
 
-    if(!cmd.delayAlia) {
+    // Delay global
+    if (delay.has(message.author.id))
+        return message.reply({ content: "Nghỉ tay tí nào, dùng lệnh hơi nhanh rồi đấy!", allowedMentions: { repliedUser: false } });
+
+    delay.set(message.author.id);
+    setTimeout(() => delay.delete(message.author.id), 1000);
+
+    if (!cmd.delayAlia) {
         // Delay command
         const timeout = new Database({ path: "./data/delay.json" });
 
         let cmdDelay = client.commands.get(cmdName);
         if (!cmdDelay) cmdDelay = client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(cmdName));
 
-        if (timeout.get(`${message.author.id}.${cmdDelay.name}`) - Date.now() < 0 
-        || !timeout.get(`${message.author.id}.${cmdDelay.name}`)) timeout.delete(`${message.author.id}.${cmdDelay.name}`);
+        if (timeout.get(`${message.author.id}.${cmdDelay.name}`) - Date.now() < 0
+            || !timeout.get(`${message.author.id}.${cmdDelay.name}`)) timeout.delete(`${message.author.id}.${cmdDelay.name}`);
 
         let calc = calculate(timeout.get(`${message.author.id}.${cmdDelay.name}`) - Date.now());
         if (/*client.config.ADMINS.indexOf(message.author.id) < 0 &&*/ timeout.get(`${message.author.id}.${cmdDelay.name}`) && calc) {
-            let text = `Bạn cần chờ \`\`${calc}\`\` để tiếp tục dùng lệnh này.`;
-            if(cmd.name == "daily") text =  `Bạn đã upvote cho bot, sẵn sàng trong \`\`${calc}\`\` tiếp theo!`
-
-            return message.reply({
-                embeds: [{
-                    description: text,
-                    color: client.config.ERR_COLOR
-                }], allowedMentions: { repliedUser: false }
-            }).then(msg => {if(msg.deletable) setTimeout(() => msg.delete(), 2000); });
+            return message.reply(`Dừng tay tí nào, hãy chờ \`\`${calc}\`\` để tiếp tục dùng lệnh này.`)
+                .then(msg =>client.msgDelete(msg, 2000));
         }
 
         setTimeout(() => timeout.delete(`${message.author.id}.${cmdDelay.name}`), (cmdDelay.delay ? cmdDelay.delay : 3) * 1000);
         timeout.set(`${message.author.id}.${cmdDelay.name}`, Date.now() + (cmdDelay.delay ? cmdDelay.delay : 3) * 1000);
     } else {
-        
+
     }
 
-    function commandError() {
+    function botError() {
         console.log(cmdName);
         message.reply({
             embeds: [{
@@ -218,12 +150,13 @@ client.on('messageCreate', async (message) => {
                 description: "Hệ thống gặp lỗi thử lại sau!",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg, 2000));
     }
+    message.botError = botError;
 
-    message.botError = commandError;
+    message.errorInfo = `\`\`\`Server ID: ${guildID} - Name: ${message.guild.name}\`\`\`\n`;
 
-    client.sendLog(`[${new Date().toLocaleString()}] ${message.guild.name} | ${message.channel.name} | ${message.author.tag} - ${message.author.id} : ${message.content}`);
+    client.sendLog(`[${new Date().toLocaleString()}] ${client.shard.ids} | ${message.guild.name} | ${message.channel.name} | ${message.author.tag} - ${message.author.id} : ${message.content}`);
 
     cmd.execute(client, message, args);
 });

@@ -12,59 +12,50 @@ module.exports = {
      * @param {String[]} args 
      */
     async execute(client, message, args) {
-        // start-giveaway 2d 1 Awesome prize!
-        // Will create a giveaway with a duration of two days, with one winner and the prize will be "Awesome prize!"
-
-        // delete author msessage after 1s
-        setTimeout(() => message.delete(), 500);
+        setTimeout(() => { if(message.deletable) message.delete() }, 500);
 
         if (!args[0])
             return message.reply({
                 embeds: [{
-                    title: client.emoji.failed + "Thiếu thông tin!",
-                    description: "Cung cấp đơn vị thời gian theo tiếng Anh.",
+                    description: "Cung cấp đơn vị thời gian theo tiếng Anh.\nCách sử dụng: " + client.prefix + "start <thời gian> <số người win> <giải thưởng>",
                     color: client.config.ERR_COLOR
                 }], allowedMentions: { repliedUser: false }
-            });
+            }).then(msg => client.msgDelete(msg));
 
         if (!args[1])
             return message.reply({
                 embeds: [{
-                    title: client.emoji.failed + "Thiếu thông tin!",
-                    description: "Cung cấp số người thắng.",
+                    description: "Cung cấp số người thắng.\nCách sử dụng: " + client.prefix + "start <thời gian> <số người win> <giải thưởng>",
                     color: client.config.ERR_COLOR
                 }], allowedMentions: { repliedUser: false }
-            });
+            }).then(msg => client.msgDelete(msg));
 
         const thoi_han = ms(args[0], { long: true });
         if (!thoi_han)
             return message.reply({
                 embeds: [{
-                    title: client.emoji.failed + "Sai thông tin!",
                     description: "Thời gian không hỗ trợ.",
                     color: client.config.ERR_COLOR
                 }], allowedMentions: { repliedUser: false }
-            });
+            }).then(msg => client.msgDelete(msg));
 
         if (isNaN(+args[1]))
             return message.reply({
                 embeds: [{
-                    title: client.emojs.failed + "Sai thông tin!",
-                    description: "Cung cấp số người có thể thắng.",
+                    description: "Cung cấp số người có thể thắng",
                     color: client.config.ERR_COLOR
                 }], allowedMentions: { repliedUser: false }
-            });
+            }).then(msg => client.msgDelete(msg));
 
         const qua_tang = args.join(" ").split(args[0] + " " + args[1] + " ")[1];
 
         if (!qua_tang)
             return message.reply({
                 embeds: [{
-                    title: client.emoji.failed + "Thiếu thông tin!",
                     description: "Cung cấp giải thưởng.",
                     color: client.config.ERR_COLOR
                 }], allowedMentions: { repliedUser: false }
-            });
+            }).then(msg => client.msgDelete(msg));
 
         client.giveawaysManager.start(message.channel, {
             duration: thoi_han,
@@ -75,22 +66,22 @@ module.exports = {
                 giveaway: "**GIVEAWAY** đã bắt đầu!",
                 giveawayEnded: "**GIVEAWAY** đã kết thúc!",
                 winMessage: {
-                    content: "Chúc mừng! {winners}, các bạn đã trúng: **{this.prize}**!",
+                    content: "Chúc mừng, \n{winners}\n\Các bạn đã trúng giải: **{this.prize}**! Được tổ chức bởi {this.hostedBy}",
                     embed: new MessageEmbed()
-                        .setDescription("[Chuyển đến tin nhắn]({this.messageURL})").setColor("2C2F33")
+                        .setDescription("[Chuyển đến tin nhắn]({this.messageURL})").setColor("303136")
                 },
-                dropMessage: "Bấm vào 🎉 để tham gia!",
-                inviteToParticipate: "Bấm vào 🎉 để tham gia!",
+                dropMessage: "Bấm vào 🎉 để tham gia",
+                inviteToParticipate: "Bấm vào 🎉 để tham gia",
                 embedFooter: "Sẽ có {this.winnerCount} người thắng.",
-                noWinner: "Không có ai tham gia cả, GA đã bị huỷ!",
-                winners: "Người: ",
-                endedAt: "Kết thúc vào",
-                drawing: "Kết thúc: {timestamp}",
-                hostedBy: "Tổ chức bởi: {this.hostedBy}"
+                noWinner: "**Người thắng:** Không có",
+                winners: "**Người thắng:**\n",
+                endedAt: "Đã quay thưởng {this.winnerCount} giải",
+                drawing: "Kết thúc vào {timestamp}",
+                hostedBy: "Được tổ chức bởi {this.hostedBy}"
             },
         }).then((gData) => {
             const data = new Database({ path: './data/giveaway/author.json' });
             data.set(gData.messageId, message.author.id);
-        })
+        });
     }
 }

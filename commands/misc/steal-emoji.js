@@ -19,20 +19,20 @@ module.exports = {
     async execute(client, message, args) {
         if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS)) return message.reply({
             embeds: [{
-                title: client.emoji.failed + "Thiêu quyền!",
                 description: "Bạn không có quyền ``MANAGE_EMOJIS_AND_STICKERS`` để dùng lệnh này.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg));
 
         if (!args.length) return message.reply({
             embeds: [{
-                title: client.emoji.failed + "Thiếu thông tin!",
-                description: "Bạn phải nhập emoji cần lấy.\n\nCâu lệnh: " + client.prefix + "semoji <emoji 1> <emoji 2>...",
+                description: "Bạn phải nhập emoji cần lấy.\n\nCách sử dụng: " + client.prefix + "semoji <emoji 1> <emoji 2>...",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
-        var countEmojis = 0;
+        }).then(msg => client.msgDelete(msg));
+
+        let countEmojis = 0;
+        let stealEmo = [];
 
         args.forEach(async emojis => {
             if (!emojis.endsWith(">") || !emojis.startsWith("<") || !emojis.includes(":")) return;
@@ -51,20 +51,25 @@ module.exports = {
             try {
                 require("fs").readFile(dir, async (err, data) => {
                     await message.guild.emojis.create(data, fileName.split(".")[0])
-                        .then(() => remove(dir))
-                        .catch(e => console.log(e));
+                        .then(emo => {
+                            remove(dir);
+                            stealEmo.push(emo.toString());
+                        })
+                        .catch(e => {
+                            client.sendError(`Steal Emoji: \`\`\`${e}\`\`\``);
+                        });
                     countEmojis++;
                 });
             } catch (e) {
-
+                client.sendError(message.errorInfo + e);
             }
         });
 
-        await message.reply({ embeds: [{
-            title: client.emoji.success + "Thành công!",
-            description: 'Đã thêm các emoji vào máy chủ của bạn!',
-            color: client.config.DEF_COLOR
-        }], allowedMentions: { repliedUser: false } });
-
+        setTimeout(async() => {
+            await message.reply({ embeds: [{
+                description: `Đã thêm **${countEmojis}** emoji mới: ${stealEmo.join(" ") ? stealEmo.join(" ") : "Không có"} .`,
+                color: client.config.DEF_COLOR
+            }], allowedMentions: { repliedUser: false } });            
+        }, 2000);
     }
 }

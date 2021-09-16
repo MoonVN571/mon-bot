@@ -1,6 +1,5 @@
 const Database = require('simplest.db');
-
-const { random } = require('../../utils/utils');
+const { random, sodep } = require('../../utils/utils');
 
 module.exports = {
     name: "work",
@@ -19,7 +18,7 @@ module.exports = {
         data.number.add("money", got);
 
         message.reply({embeds: [{
-            description: "Bạn đã " + content + " " + Intl.NumberFormat().format(got) + client.emoji.dongxu,
+            description: "Bạn vừa " + content + " " + sodep(got) + " " + client.emoji.dongxu,
             color: "0FF1CE",
         }], allowedMentions: { repliedUser: false }});
     }

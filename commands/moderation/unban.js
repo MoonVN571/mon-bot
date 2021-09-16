@@ -17,7 +17,6 @@ module.exports = {
     async execute(client, message, args) {
         if (!message.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return message.reply({
             embeds: [{
-                title: client.emoji.failed + " Thiếu quyền!",
                 decsription: "Bạn không có quyền để sử dụng lệnh này.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
@@ -25,17 +24,15 @@ module.exports = {
 
         if (!message.guild.me.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return message.reply([{
             embeds: [{
-                title: client.emoji.failed + " Thiếu quyền!",
-                description: "Bot không đủ quyền để bỏ cấm người dùng.",
+                description: "Bot không đủ quyền ``Cấm Member`` để bỏ cấm người dùng.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         }]);
 
         if (!args[0]) return message.reply({
             embeds: [{
-                title: client.emoji.failed + " Thiếu thông tin!",
-                description: "Bạn phải cung cấp người dùng cần cấm.\n\nVí dụ: " + client.prefix + "unban <tag/id> [lí do]",
-                footer: "Cú pháp <>: Bắt buộc; []: Không bắt buộc",
+                description: "Bạn phải cung cấp người dùng cần cấm.\nCách sử dụng: " + client.prefix + "unban <tag/id> [lí do]",
+                footer: {text:"Cú pháp <>: Bắt buộc - []: Không bắt buộc"},
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         });
@@ -50,7 +47,6 @@ module.exports = {
             er = true;
             if (error.toString().includes("Couldn't resolve the user id to unban.")) return message.reply({
                 embeds: [{
-                    title: client.emoji.failed + " Sai thông tin!",
                     description: "Bạn phải nhập ID người dùng hợp lệ",
                     color: client.config.ERR_COLOR
                 }], allowedMentions: { repliedUser: false }
@@ -70,7 +66,6 @@ module.exports = {
         client.users.fetch(userToUnban).then(user => {
             message.reply({
                 embeds: [{
-                    title: client.emoji.success + "Thành công!",
                     description: "**" + user.tag + "** đã được thu hồi lệnh cấm với lí do: *" + reason + "*.",
                     color: client.config.DEF_COLOR
                 }], allowedMentions: { repliedUser: false }

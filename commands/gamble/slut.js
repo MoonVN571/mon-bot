@@ -1,5 +1,5 @@
 const Database = require('simplest.db');
-const { random, layNgauNhien } = require('../../utils/utils');
+const { random, layNgauNhien, sodep } = require('../../utils/utils');
 
 module.exports = {
     name: "slut",
@@ -13,9 +13,9 @@ module.exports = {
         const user_money = data.get('money');
 
         if(user_money < random_money || user_money == 0) return message.reply({embeds:[{
-            description: "Bạn không có tiền để chơi",
+            description: "Bạn không có đủ tiền để chơi!",
             color: "f10f0f"
-        }], allowedMentions: { repliedUser: false }});
+        }], allowedMentions: { repliedUser: false }}).then(msg => client.msgDelete(msg));
 
         var set_message = [];
         var lay_so_tien_duong = 0;
@@ -49,7 +49,7 @@ module.exports = {
         let lay_1_tin = layNgauNhien(set_message);
 
         message.reply({embeds: [{
-            description: lay_1_tin + " " + Intl.NumberFormat().format(lay_so_tien_duong) + client.emoji.dongxu,
+            description: lay_1_tin + " " + sodep(lay_so_tien_duong) + " " + client.emoji.dongxu,
             color: "0FF1CE"
         }], allowedMentions: { repliedUser: false }});
     }

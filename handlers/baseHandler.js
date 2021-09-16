@@ -1,6 +1,3 @@
-const ascii = require('ascii-table');
-let table = new ascii("Commands");
-table.setHeading("Name", "Status");
 const { readdirSync } = require('fs');
 const { Client } = require('discord.js');
 /**
@@ -30,7 +27,7 @@ module.exports = (client) => {
     });
 
     client.on("ready", async () => {
-        await client.application.commands.set(arrayOfSlashCommands)
+        await client.application.commands.set(arrayOfSlashCommands);
     });
 
 
@@ -41,13 +38,7 @@ module.exports = (client) => {
         commands.forEach((file) => {
             const pull = require(`../commands/${dir}/${file}`);
 
-            if (pull.name) {
-                table.addRow(pull.name, "Successful");
-                client.commands.set(pull.name, pull);
-            } else {
-                table.addRow(file, "Failed -> cmd.name");
-            }
+            if (pull.name) client.commands.set(pull.name, pull);
         });
     });
-    console.log(table.toString());
 }

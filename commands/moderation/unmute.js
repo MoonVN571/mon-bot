@@ -19,8 +19,7 @@ module.exports = {
         if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)
         ) return message.reply({
             embeds: [{
-                title: client.emoji.failed + " Thiếu quyền!",
-                description: "Bạn không có quyền ``MANAGE_MESSAGES`` để dùng lệnh này.",
+                description: "Bạn không có quyền ``Quản lí Tin nhắn`` để dùng lệnh này.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         });
@@ -28,8 +27,7 @@ module.exports = {
         if (!message.guild.me.permissions.has(Permissions.FLAGS.MANAGE_ROLES)
         ) return message.reply({
             embeds: [{
-                title: client.emoji.failed + " Thiếu quyền!",
-                description: "Bot không có quyền ``MANAGE_ROLES`` để bỏ Mute người này.",
+                description: "Bot không có quyền ``Quản l1i Role`` để bỏ Mute người này.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         });
@@ -37,9 +35,8 @@ module.exports = {
 
         if (!args[0]) return message.reply({
             embeds: [{
-                title: client.emoji.failed + " Thiếu thông tin!",
-                description: "Bạn phải cung cấp người dùng cần mute*.\n\nVí dụ: " + client.prefix + "unmute <tag/id> [lí do]",
-                footer: "Cú pháp <>: Bắt buộc; []: Không bắt buộc",
+                description: "Bạn phải cung cấp người dùng cần mute*.\nCách sử dụng: " + client.prefix + "unmute <tag/id> [lí do]",
+                footer: {text:"Cú pháp <>: Bắt buộc - []: Không bắt buộc"},
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         });
@@ -54,7 +51,6 @@ module.exports = {
 
         if (!member.roles.cache.some(r => r.name == "Muted")) return message.reply({
             embeds: [{
-                title: client.emoji.failed + " Lỗi!",
                 description: "Bạn đã cung cấp người dùng chưa bị mute.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
@@ -63,7 +59,6 @@ module.exports = {
         // check position role
         if (message.guild.me.roles.highest.position < getMuteRole.position) return message.reply({
             embeds: [{
-                title: client.emoji.failed + " Không đủ quyền!",
                 description: "Role ``Muted`` phải ở dưới role cao nhất của bot.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
@@ -73,7 +68,6 @@ module.exports = {
         member.roles.remove(getMuteRole, "UN-MUTED, reason: " + reason).then(member => {
             message.reply({
                 embeds: [{
-                    title: client.emoji.success + "Thành công!",
                     description: "Bạn đã bỏ mute " + member.user.toString() + " với lí do: " + reason + ".",
                     color: client.config.DEF_COLOR
                 }], allowedMentions: { repliedUser: false }
@@ -94,7 +88,7 @@ module.exports = {
 
             channel.send({
                 embeds: [{
-                    title: "Moderation - Un muted",
+                    title: "Moderation - Bỏ Mute",
                     fields: [
                         {
                             name: "Người thực hiện",
@@ -105,7 +99,7 @@ module.exports = {
                             value: member.user.toString(),
                             inline: true
                         }, {
-                            name: "Lí do un-mute",
+                            name: "Lí do Bỏ Mute",
                             value: reason,
                             inline: false
                         },

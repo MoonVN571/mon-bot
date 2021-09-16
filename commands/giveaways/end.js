@@ -63,7 +63,6 @@ module.exports = {
             });
 
             if (err.toString().includes("Giveaway with message Id"))
-                 
             return message.reply({
                 embeds: [{
                     title: client.emoji.failed + "Sai ID!",
@@ -72,10 +71,8 @@ module.exports = {
                 }], allowedMentions: { repliedUser: false }
             });
 
-            // khong co loi tren se bao loi
-            console.log(err);
-            // not on reason
-            message.reply({ content: "Đã sảy ra lỗi! Vui lòng thử lại sau." })
+            client.sendError(message.errorInfo + err);
+            message.botError();
         });
     }
 }

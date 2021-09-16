@@ -1,5 +1,6 @@
 const { Client, Message, Permissions } = require("discord.js");
 const Database = require("simplest.db");
+const { sleep } = require("../../utils/utils");
 
 module.exports = {
     name: "ban",
@@ -17,7 +18,6 @@ module.exports = {
     async execute(client, message, args) {
         if (!message.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return message.reply({
             embeds: [{
-                title: client.emoji.failed + " Thiếu quyền!",
                 decsription: "Bạn không có quyền để sử dụng lệnh này.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
@@ -25,18 +25,15 @@ module.exports = {
 
         if (!message.guild.me.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return message.reply([{
             embeds: [{
-                title: client.emoji.failed + " Thiếu quyền!",
                 description: "Bot không đủ quyền để cấm người dùng.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         }]);
 
-
         if (!args[0]) return message.reply({
             embeds: [{
-                title: client.emoji.failed + " Thiếu thông tin!",
-                description: "Bạn phải cung cấp người dùng cần cấm.\n\n Ví dụ: " + client.prefix + "ban <user/id> [lí do]",
-                footer: "Cú pháp <>: Bắt buộc; []: Không bắt buộc",
+                description: "Bạn phải cung cấp người dùng cần cấm.\nCách sử dụng: " + client.prefix + "ban <tag/id> [lí do]",
+                footer: {text:"Cú pháp <>: Bắt buộc - []: Không bắt buộc"},
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         });
@@ -48,7 +45,6 @@ module.exports = {
 
         if (userToBan == message.author.id) return message.reply({
             embeds: [{
-                title: client.emoji.failed + " Tự huỷ!",
                 description: "Bạn không thể cấm chính mình.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
@@ -56,7 +52,6 @@ module.exports = {
 
         if (userToBan == client.user.id) return message.reply({
             embeds: [{
-                title: client.emoji.failed + " Tự huỷ?",
                 description: "Mình không thể ban chính mính.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
@@ -66,7 +61,6 @@ module.exports = {
 
         if (!member) return message.reply({
             embeds: [{
-                title: client.emoji.failed + " Sai thông tin!",
                 description: "Bạn phải cung cấp người dùng trong server này.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
@@ -74,67 +68,68 @@ module.exports = {
 
         if (!member.bannable) return message.reply({
             embeds: [{
-                title: client.emoji.failed + " Thiếu quyền!",
                 description: "Bot không đủ quyền để cấm người này.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         });
 
         // punish
-        try {
-            member.ban({ days: 7, reason: reason }).then(user_banned => {
-                message.reply({
-                    embeds: [{
-                        title: client.emoji.success + "Thành công!",
-                        description: "**" + member.user.tag + "** đã bị cấm với lí do: *" + reason + "*.",
-                        color: client.config.DEF_COLOR
-                    }], allowedMentions: { repliedUser: false }
-                });
-                
-                const dataLogger = new Database({ path: './data/guilds/' + message.guild.id + ".json" });
+        await member.send({embeds: [{
+            title: "BANNED",
+            description: "Bạn đã bị cấm khỏi server **" + message.guild.name + "**, lí do: *" + reason + "*.",
+            timestamp: new Date(),
+            color: client.config.DEF_COLOR
+        }]}).catch(()=> {});
 
-                // check data
-                let logChannel = dataLogger.get('moderation-channel');
-                if (!logChannel) return;
-
-                // check channel
-                let channel = client.channels.cache.get(logChannel);
-                if (!channel) return;
-
-                channel.send({
-                    embeds: [{
-                        title: "Moderation - Ban",
-                        fields: [
-                            {
-                                name: "Người thực hiện",
-                                value: message.author.toString(),
-                                inline: true
-                            }, {
-                                name: "Người áp dụng",
-                                value: member.user.toString(),
-                                inline: true
-                            }, {
-                                name: "Lí do cấm",
-                                value: reason,
-                                inline: false
-                            },
-                        ],
-                        thumbnail: { url: member.user.avatarURL() },
-                        timestamp: new Date(),
-                        color: client.config.DEF_COLOR,
-                        footer: { text: member.user.id }
-                    }]
-                });
-            });
-        } catch (e) {
-            console.log(e);
-            return message.reply({
+        await sleep(2000);
+        
+        await member.ban({ days: 7, reason: reason }).then(() => {
+            message.reply({
                 embeds: [{
-                    title: "ERROR",
-                    description: "Bot đã sảy ra lỗi!",
-                    color: client.config.ERR_COLOR
+                    description: "**" + member.user.tag + "** đã bị cấm với lí do: *" + reason + "*.",
+                    color: client.config.DEF_COLOR
                 }], allowedMentions: { repliedUser: false }
             });
-        }
+            
+            const dataLogger = new Database({ path: './data/guilds/' + message.guild.id + ".json" });
+
+            // check data
+            let logChannel = dataLogger.get('moderation-channel');
+            if (!logChannel) return;
+
+            // check channel
+            let channel = client.channels.cache.get(logChannel);
+            if (!channel) return;
+
+            channel.send({
+                embeds: [{
+                    title: "Moderation - Ban",
+                    fields: [
+                        {
+                            name: "Người thực hiện",
+                            value: message.author.toString(),
+                            inline: true
+                        }, {
+                            name: "Người áp dụng",
+                            value: member.user.toString(),
+                            inline: true
+                        }, {
+                            name: "Lí do cấm",
+                            value: reason,
+                            inline: false
+                        },
+                    ],
+                    thumbnail: { url: member.user.avatarURL() },
+                    timestamp: new Date(),
+                    color: client.config.DEF_COLOR,
+                    footer: { text: member.user.id }
+                }]
+            }).catch(err => {
+                client.sendError(message.errorInfo + err);
+            });
+        }).catch(err => {
+            client.sendError(message.errorInfo + err);
+            message.botError();
+        });
     }
 }

@@ -25,10 +25,9 @@ module.exports = {
 
         await message.channel.send({
             embeds: [{
-                title: client.emoji.success + "Thành công!",
                 description: "Đã dọn ``" + count_message + " tin nhắn`` trong kênh.",
                 color: client.config.DEF_COLOR
             }], allowedMentions: { repliedUser: false }
-        }).then(msg => setTimeout(() => { if(msg.deletable) msg.delete()}, 10 * 1000));
+        }).then(msg => client.msgDelete(msg, 10 * 1000));
     }
 }

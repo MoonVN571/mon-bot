@@ -29,12 +29,12 @@ module.exports = {
                 + "-   **Người dùng:** " + Intl.NumberFormat().format(client.guilds.cache.reduce((a, g) => a + g.memberCount, 0)) + "\n\u200B"
             )
             .addField("\u300B System",
-                `-   **Platform:** ${os.type()}` + "\n"
-                + `-   **Window Uptime:** ${getAge(new Date().getTime() - os.uptime() * 1000)}` + "\n"
-                + `-   **Ram used:** ${((process.memoryUsage().heapUsed / 1024) / 1024).toFixed(2)} MB\n`
-                + "-   **Process:** " + os.cpus()[0].model + "\n"
-                + "-   **Core:** " + os.cpus().length + "\n"
-                + "-   **Speed:** " + os.cpus()[0].speed + "MHz"
+                `-   **Hệ điều hành:** ${os.type()}` + "\n"
+                + `-   **Thời gian đã hoạt động:** ${getAge(new Date().getTime() - os.uptime() * 1000)}` + "\n"
+                + `-   **Ram đã dùng:** ${((process.memoryUsage().heapUsed / 1024) / 1024).toFixed(2)} MB\n`
+                // + "-   **Process:** " + os.cpus()[0].model + "\n"
+                // + "-   **Core:** " + os.cpus().length + "\n"
+                // + "-   **Speed:** " + os.cpus()[0].speed + "MHz"
             )
             .setColor(client.config.DEF_COLOR)
             .setTimestamp();

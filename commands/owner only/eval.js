@@ -16,7 +16,7 @@ module.exports = {
         if(!args.length) return message.channel.send("Nhập code");
 
         try {
-            await eval(args.join(' '));
+            await eval(args.join(' ').split("\n").join(""));
             message.channel.send(client.emoji.success + "Code chạy thành công!");
         } catch (err) {
             message.channel.send(`<:1024_TickNo_Night:883667478813736960> | Lỗi: ${err.toString()}`);

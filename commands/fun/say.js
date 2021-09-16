@@ -5,7 +5,7 @@ module.exports = {
     description: "Cho bot nói thay bạn :D.",
     delay: 3,
     usage: "<PREFIX>say <nội dung>",
-    ex: "<PREFIX>say Moon uwu",
+    ex: "<PREFIX>say Moon Cute",
 
     /**
      * 
@@ -16,12 +16,11 @@ module.exports = {
     execute(client, message, args) {
         if (!args.length) return message.channel.send({
             embeds: [{
-                title: client.emoji.failed + "Thiếu thông tin!",
-                description: "Hãy nhập gì đó để nói.",
+                description: "Hãy nhập gì đó để nói và xoá.",
                 color: client.config.ERR_COLOR
-            }]
-        });
+            }], allowedMentions: { repliedUser: false }
+        }).then(msg => client.msgDelete(msg));
 
-        message.channel.send({ content: `**${message.member.nickname ? message.member.user : message.author.username}** ${args.join(" ")}` });
+        message.channel.send({ content: `**${message.member.nickname ? message.member.nickname : message.author.username}** ${args.join(" ")}` });
     }
 }

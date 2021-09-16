@@ -3,7 +3,7 @@ const Database = require('simplest.db');
 const { validImageUrl, download } = require('../../utils/utils');
 
 module.exports = {
-    name: 'set-image',
+    name: 'setbackground',
     description: "Đặt đã có image",
     dev: true,
     discordDev: true,
@@ -27,8 +27,7 @@ module.exports = {
 
         if (!args[1] && !message.attachments) return message.reply({
             embeds: [{
-                title: client.emoji.failed + "Thiếu thông tin",
-                description: "Hãy cung cấp ảnh hoặc link ảnh.\n*" + client.prefix + 'set-image <Guild ID> <Image url/ image>*',
+                description: "Hãy cung cấp ảnh hoặc link ảnh.\nCách sử dụng: " + client.prefix + 'setbackground <Guild ID> <Image url/ image>*',
                 color: client.config.DEF_COLOR
             }]
         });
@@ -43,7 +42,6 @@ module.exports = {
 
         if (!validImage) return message.reply({
             embeds: [{
-                title: client.emoji.failed + "Sai thông tin",
                 description: "Ảnh cung cấp không hợp lệ hoặc sai định dạng.",
                 color: client.config.DEF_COLOR
             }]
@@ -55,11 +53,10 @@ module.exports = {
         imgData.set('has-image', true);
 
         await download('./assets/welcome/' + message.guild.id + ".png", image);
-        await delete ('./assets/welcome/process/' + message.guild.id + ".png", image);
+        await remove('./assets/welcome/process/' + message.guild.id + ".png", image);
 
         message.reply({
             embeds: [{
-                title: client.emoji.success + "Thao tác thành công",
                 description: "Đã đặt ảnh cho nhóm tên " + client.guilds.cache.get(args[0]).name + ".",
                 color: client.config.DEF_COLOR,
                 image: { url: image }

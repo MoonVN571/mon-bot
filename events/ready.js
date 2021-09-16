@@ -1,15 +1,16 @@
-const client = require("..");
+const client = require("../index");
 const Topgg = require('@top-gg/sdk');
 const { AutoPoster } = require('topgg-autoposter');
 const express = require('express');
 const Database = require('simplest.db');
 const { addMoney } = require('../utils/eco');
 const { random } = require('../utils/utils');
+const ms = require("ms");
 require('dotenv').config();
 client.on('ready', () => {
     console.log(client.user.tag + " đã sẵn sàng!");
 
-    if (client.DEV) return;
+    if (client.config.DEV) return;
     client.user.setPresence({ activities: [{ name: 'RESTARTING', type: "PLAYING" }] });
 
     const app = express();
@@ -32,12 +33,21 @@ client.on('ready', () => {
         }).then(() => {
             let dailyMoney = random(10000, 20000);
             addMoney("Vote", vote.user, dailyMoney);
+            const data = new Database({path:'./data/vote.json'});
+
+            // set thời gian vote, nếu vote < hơn 24h sẽ +1 streak
+            data.set(`${vote.user}.last-vote`, Date.now());
+
+            let lastVote = data.get(`${vote.user}.last-vote`);
+            if(lastVote < Date.now() + ms('2d', { long: true })) {
+                data.number.add(`${vote.user}.streak`, 1);
+            }
+
             client.users.cache.get(vote.user).send(client.emoji.success + "Bạn đã vote cho bot!\nBạn đã nhận được " + Intl.NumberFormat().format(dailyMoney) + client.emoji.dongxu + " trong lần vote này!")
         });
     }));
     
     app.listen(5000);
-
 
     var i = -1;
     setInterval(() => {

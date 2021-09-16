@@ -5,10 +5,9 @@ module.exports = {
 
     execute(client, message, args) {
         if (!message.guild.iconURL()) return message.reply({ embeds: [{
-            title: client.emoji.failed + "Không có ảnh!",
-            description: "Server này chưa cung cấp ảnh.",
+            description: "Server không có ảnh.",
             color: client.config.ERR_COLOR
-        }], allowedMentions: { repliedUser: false } });
+        }], allowedMentions: { repliedUser: false } }).then(msg => client.msgDelete(msg));
         message.reply({
             embeds: [{
                 title: "Ảnh của server " + message.guild.name + "'s",

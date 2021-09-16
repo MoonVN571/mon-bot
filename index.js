@@ -1,4 +1,4 @@
-const { Client, Collection, Intents } = require('discord.js');
+const { Client, Collection, Intents, WebhookClient } = require('discord.js');
 const client = new Client({
     intents: [
         Intents.FLAGS.GUILDS,
@@ -13,7 +13,7 @@ const client = new Client({
 module.exports = client;
 
 require('dotenv').config();
-
+const { sleep }  =require('./utils/utils');
 const configs = require('./config.json');
 const config = {
     TOKEN: process.env.TOKEN,
@@ -47,35 +47,48 @@ client.mentions = new Set();
 // Giveaway module
 const { GiveawaysManager } = require('discord-giveaways');
 const manager = new GiveawaysManager(client, {
-    storage: './data/giveaway/giveaway.json',
+    storage: './giveaways.json',
     default: {
         botsCanWin: false,
         embedColor: '#FF0000',
         embedColorEnd: 'AQUA',
         reaction: '🎉'
-    },
+    }
 });
 
 client.giveawaysManager = manager;
 
+
+function hook(url, content) {
+    new WebhookClient({
+        url: url
+    },{
+        shards: 0,
+    }).send(content);
+}
+
 // send logs
-function sendError(error) {
-    if(!error) return;
-    if(!error.message) return;
-    client.channels.cache.get("881016544396709898").send(error.message);
+async function sendError(error) {
+    // await client.channels.cache.get("881016544396709898").send(error).catch(console.error);
+    hook(process.env.WEBHOOK_ERROR,error);
 }
 
-function sendWarn(error) {
-    if(!error) return;
-    if(!error.message) return;
-    client.users.cache.get(config.ADMINS).send(error.message);
+async function sendWarn(error) {
+    await client.user.fetch(config.ADMINS).then(user => user.send(error)).catch(console.error);
 }
 
-function sendLog(content) {
+async function sendLog(content) {
     console.log(content);
     if(!content) return;
-    client.channels.cache.get("885542310165753986").send(content);
+    hook(process.env.WEBHOOK_LOGS, `\`\`\`${content}\`\`\``);
 }
+
+function msgDelete(msg,timeout) {
+    if(!timeout) timeout = 2000;
+    if(msg.deletable) setTimeout(() => msg.delete(), timeout);
+}
+
+client.msgDelete = msgDelete;
 
 client.sendError = sendError;
 client.sendWarn = sendWarn;
@@ -83,4 +96,63 @@ client.sendLog = sendLog;
 
 require("./handlers/baseHandler")(client);
 
+/*
+client.once('shardReady', async shard => {
+    console.log("Shard ID " + shard + " is ready!");
+
+    ready();
+}); */
+async function ready() {
+    await sleep(30000);
+
+    /*
+    // Giveaway module
+    const { GiveawaysManager } = require('discord-giveaways');
+    const GiveawayManagerWithShardSupport = class extends GiveawaysManager {
+        // Refresh storage method is called when the database is updated on one of the shards
+        async refreshStorage() {
+            // This should make all shard refreshing their cache with the updated database
+            return client.shard.broadcastEval(() => this.giveawaysManager.getAllGiveaways());
+        }
+    };
+
+    // Create a new instance of your new class
+    const manager = new GiveawayManagerWithShardSupport(client, {
+        storage: './data/giveaway/giveaway.json',
+        updateCountdownEvery: 10000,
+        default: {
+            botsCanWin: false,
+            embedColor: '#FF0000',
+            embedColorEnd: 'BLUE',
+            reaction: '🎉'
+        },
+    });
+
+    client.giveawaysManager = manager; 
+
+    setInterval(async () => {
+        const promises = [
+            client.shard.fetchClientValues('guilds.cache.size'),
+            client.shard.broadcastEval(c => c.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0)),
+        ];
+        
+        try {
+            const results = await Promise.all(promises);
+            const totalGuilds = results[0].reduce((acc_1, guildCount) => acc_1 + guildCount, 0);
+            const totalMembers = results[1].reduce((acc_2, memberCount) => acc_2 + memberCount, 0);
+
+            client.user.setPresence({
+                activities: [
+                    {
+                        name: Intl.NumberFormat().format(totalGuilds) + " servers and " + Intl.NumberFormat().format(totalMembers) + " users | @Mon Bot | s help",
+                        type: "WATCHING"
+                    }
+                ], status: "idle"
+            });
+        } catch (message) {
+            return console.error(message);
+        }
+    }, 60 * 1000);
+    // }); */
+}
 client.login(process.env.TOKEN, (err) => console.log(err));

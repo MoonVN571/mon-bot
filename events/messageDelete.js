@@ -1,5 +1,5 @@
 const Database = require('simplest.db');
-const client = require('..');
+const client = require('../index');
 
 client.on('messageDelete', async (message) => {
     if (message.author.bot) return;

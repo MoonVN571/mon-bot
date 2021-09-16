@@ -39,7 +39,7 @@ module.exports = {
 
                 if (data.endsWith(message.author.id)) rankMe = stats;
 
-                formated.push(stats + ") " + users.tag + " ▶ " + Intl.NumberFormat().format(data.split(" ")[0]) + "Đ");
+                formated.push(stats + ") " + users.tag + " ▶ " + Intl.NumberFormat().format(data.split(" ")[0]) + "$");
             });
         });
 
@@ -48,7 +48,7 @@ module.exports = {
 
             await message.reply({
                 embeds: [{
-                    title: "Top 10 | Bản xếp hạng (Đ)",
+                    title: "Top 10 | Bản xếp hạng " + client.emoji.dongxu,
                     description: "```" + formated.join("\n") + "```",
                     timestamp: new Date(),
                     footer: { text: "Bạn đứng vị trí thứ " + rankMe + "." },

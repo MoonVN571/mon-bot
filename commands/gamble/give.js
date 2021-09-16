@@ -3,6 +3,7 @@ const { Client, Message } = require('discord.js');
 
 module.exports = {
     name: "give",
+    description: "Chuyển tiền của bạn cho người khác",
     aliases: ['pay'],
     delay: 3,
 
@@ -17,11 +18,10 @@ module.exports = {
 
         if (!user) return message.reply({
             embeds: [{
-                title: client.emoji.failed + "Thiếu người nhận",
                 description: "Bạn cần đề cập người nhận để chuyển tiến",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg));
 
         // check number at 0 or 1
         let toCheck = +args[0];
@@ -31,14 +31,13 @@ module.exports = {
         const userMoney = new Database({ path: './data/eco/' + message.author.id + '.json' });
         let pays = userMoney.get("money");
 
-        if (!user || !args[1] || !args[0] || !user || isNaN(toCheck) || toCheck > pays)
+        if (!user || !args[1] || !args[0] || !user || isNaN(toCheck) || toCheck > pays || user.user.bot)
             return message.reply({
                 embeds: [{
-                    title: client.emoji.failed + "Thiếu thông tin!",
-                    description: "Bạn phải nhập người nhận và số tiền cần give.",
+                    description: "Bạn phải đề cập người nhận hợp lệ và số tiền cần give.",
                     color: "f10f0f"
                 }], allowedMentions: false
-            });
+            }).then(msg => client.msgDelete(msg));
 
 
         // add tien cho user nhan tien
@@ -50,8 +49,7 @@ module.exports = {
 
         message.reply({
             emnbeds: [{
-                title: client.emoji.success + "Chuyển tiền thành công!",
-                description: "Bạn đã chuyển cho " + user.user.toString() + " số tiền là " + toCheck + client.emoji.dongxu + ".",
+                description: "Bạn đã chuyển cho " + user.user.toString() + " số tiền là " + toCheck + " " + client.emoji.dongxu + ".",
                 color: "0FF1CE"
             }], allowedMentions: { repliedUser: false }
         });

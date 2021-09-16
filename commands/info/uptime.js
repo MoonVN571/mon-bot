@@ -15,7 +15,7 @@ module.exports = {
         var temp = parseInt(process.uptime());
         message.reply({
             embeds: [{
-                description: "Bot đã hoạt động được **" + calculate(temp * 1000) + "**.",
+                description: "Đã hoạt động **" + calculate(temp * 1000) + "**.",
                 color: client.config.DEF_COLOR
             }], allowedMentions: { repliedUser: false }
         });

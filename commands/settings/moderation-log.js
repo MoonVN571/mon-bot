@@ -2,10 +2,10 @@ const { Permissions, Client, Message } = require('discord.js');
 const Database = require('simplest.db');
 
 module.exports = {
-    name: "log-moderation",
+    name: "moderation-log",
     description: "Xuất dữ liệu từ người dùng",
-    usage: "<PREFIX>log-moderation [Tag kênh/ID]",
-    ex: "<PREFIX>log-moderation 000000000000000000",
+    usage: "<PREFIX>moderation-log <Tag kênh/ID>",
+    ex: "<PREFIX>moderation-log 000000000000000000",
 
     /**
      * 
@@ -27,8 +27,8 @@ module.exports = {
 
         if (!args[0]) return message.reply({
             embeds: [{
-                title: client.emoji.failed + "Thiếu thông tin",
-                description: "Bạn phải nhập kênh để đặt kênh welcome.\n\nVí dụ: " + client.prefix + "log-moderation <tag/id kênh>",
+                description: "Bạn phải nhập kênh để đặt kênh moderation.\n\nVí dụ: " + client.prefix + "moderation-log <tag/id kênh>",
+                footer: {text:"Cú pháp <>: Bắt buộc - []: Không bắt buộc"},
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         });
@@ -36,8 +36,7 @@ module.exports = {
         if (!data.get('moderation-channel') && args[0] == "off") {
             return message.reply({
                 embeds: [{
-                    title: client.emoji.failed + "Lỗi",
-                    description: "Bạn chưa đặt kênh log moderation nào cả.",
+                    description: "Bạn chưa đặt kênh moderation log nào cả.",
                     color: client.config.ERR_COLOR
                 }], allowedMentions: { repliedUser: false }
             });
@@ -45,8 +44,7 @@ module.exports = {
             data.delete('moderation-channel');
             return message.reply({
                 embeds: [{
-                    title: client.emoji.success + "Thành công",
-                    description: "Bạn đã tắt log-moderation.",
+                    description: "Bạn đã tắt moderation log thành công!",
                     color: client.config.DEF_COLOR
                 }], allowedMentions: { repliedUser: false }
             });
@@ -54,8 +52,7 @@ module.exports = {
 
         if (data.get("moderation-channel")) return message.reply({
             embeds: [{
-                title: client.emoji.failed + "Đã đặt kênh",
-                description: "Bạn đã đặt kênh xuất hệ thống rồi.\n\n*Gõ " + client.prefix + "log-moderation off để tắt tính năng*",
+                description: "Bạn đã đặt kênh moderation log thnàh công!\nGõ " + client.prefix + "moderation-log off - Nếu bạn muốn tắt moderation log",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         });
@@ -75,16 +72,14 @@ module.exports = {
 
         if (!message.guild.me.permissionsIn(channelPerm).has(Permissions.FLAGS.SEND_MESSAGES)) return message.reply({
             embeds: [{
-                title: client.emoji.failed + "Thiếu quyền",
-                description: "Bot không có quyền chat trong kênh bạn đã cung cấp!",
+                description: "Bạn phải cấp quyền cho bot chat ở kênh này để đặt kênh!",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         });
 
         if (!message.guild.me.permissionsIn(channelPerm).has(Permissions.FLAGS.VIEW_CHANNEL)) return message.reply({
             embeds: [{
-                title: client.emoji.failed + "Thiếu quyền",
-                description: "Bot không có quyền xem kênh này!",
+                description: "Bạn phải cấp quyền cho bot xem kênh này!",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         });
@@ -93,8 +88,7 @@ module.exports = {
 
         message.reply({
             embeds: [{
-                title: client.emoji.success + "Thành công!",
-                description: "Bạn đã đặt kênh moderation-log tại <#" + channels + "> thành công.",
+                description: "Bạn đã đặt kênh moderation-log tại <#" + channels + "> thành công!",
                 color: client.config.DEF_COLOR
             }], allowedMentions: { repliedUser: false }
         });

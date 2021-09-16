@@ -4,6 +4,7 @@ const Database = require('simplest.db');
 
 const { dev } = require('../config.json');
 const client = require('../index');
+const { addMoney } = require('../utils/eco');
 
 client.on('guildMemberAdd', async (member) => {
     if (member.guild.id == "874862992238473286") {
@@ -12,8 +13,8 @@ client.on('guildMemberAdd', async (member) => {
 
             let data = new Database({ path: "./data/eco/" + member.id + ".json" });
             if (!joined.get("first-join").indexOf(member.user.id) < 0) {
-                data.number.add("money", 50000);
-                member.send("Bạn đã được cộng 50,000$ vào tài khoản. Gõ ;bal để check!");
+                addMoney("Join dev server", member.user.id, 50000);
+                member.send("Bạn đã được cộng 50,000$ vào tài khoản. Gõ ;bal tại kênh server để check!");
 
                 joined.array.push("first-join", member.user.id);
             }

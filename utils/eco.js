@@ -24,7 +24,7 @@ function addMoney(author, user_id, moneyAdd) {
     const userData = new Database({path: "./data/eco/" + user_id + ".json"});
     userData.number.add('money', parseInt(moneyAdd));
 
-    log("economy/add", "Added money of " + user_id + " with " + moneyAdd + " by " + author);
+    log("economy/add", author + " added to " + user_id + " with " + moneyAdd);
 }
 
 /**
@@ -36,14 +36,31 @@ function addMoney(author, user_id, moneyAdd) {
 function apartMoney(author, user_id, moneyRemove) {    
     if(isNaN(moneyRemove)) throw new Error("Tiền phải là một con số");
 
-    const userData = new Database({path: "./databases/eco/" + user_id + ".json"});
+    const userData = new Database({path: "./data/eco/" + user_id + ".json"});
     userData.number.subtract('money', parseInt(moneyRemove));
 
-    log("economy/remove", "Apart money of " + user_id + " with " + moneyRemove + " by " + author);
+    log("economy/remove", author + " remove money of " + user_id + " with " + moneyRemove);
 }
+
+/**
+ * 
+ * @param {*} author Tên Người thêm tiền
+ * @param {*} user_id ID người thêm tiền
+ * @param {*} moneySet Số tiền cần thêm
+ */
+function setMoney(author, user_id, moneySet) {    
+    if(isNaN(moneySet)) throw new Error("Tiền phải là một con số");
+
+    const userData = new Database({path: "./data/eco/" + user_id + ".json"});
+    userData.set('money', parseInt(moneySet));
+
+    log("economy/add", author + " set " + user_id + " balance to  " + moneySet);
+}
+
 
 module.exports = {
     getMoney,
     addMoney,
-    apartMoney
+    apartMoney,
+    setMoney
 }

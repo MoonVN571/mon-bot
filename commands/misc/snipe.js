@@ -12,11 +12,10 @@ module.exports = {
 
         if (!sniper) return message.reply({
             embeds: [{
-                title: client.emoji.failed + "Không có tin nhắn!",
                 description: "Không tìm thấy tin nhắn đã xoá nào.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg));
 
         try {
             message.reply({
@@ -28,14 +27,8 @@ module.exports = {
                 }], allowedMentions: { repliedUser: false }
             });
         } catch (e) {
-            console.log(e);
-            message.reply({
-                embeds: [{
-                    title: client.emoji.success + "Bot lỗi!",
-                    description: "Không thể đọc được tin nhắn.",
-                    color: client.config.ERR_COLOR
-                }], allowedMentions: { repliedUser: false }
-            });
+            client.sendError(e);
+            message.botError();
         }
     }
 }

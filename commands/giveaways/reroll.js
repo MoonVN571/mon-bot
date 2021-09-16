@@ -1,6 +1,5 @@
 const { Client, Message, MessageEmbed } = require('discord.js');
 const Database = require('simplest.db');
-const config = require('../../config.json');
 module.exports = {
     name: "reroll",
     aliases: ['rr'],
@@ -18,29 +17,26 @@ module.exports = {
         if (dataAuthor.get(args[0]) != message.author.id)
             return message.reply({
                 embeds: [{
-                    title: client.emojs.failed + "Thiếu quyền!",
                     description: "Bạn không sỡ hữu giveaway này.",
                     color: client.config.ERR_COLOR
                 }], allowedMentions: { repliedUser: false }
-            });
+            }).then(msg => client.msgDelete(msg));
 
         if (!args[0])
             return message.reply({
                 embeds: [{
-                    title: client.emojs.failed + "Thiếu ID!",
-                    description: "Cung cấp ID tin nhắn giveaway.",
+                    description: "Cung cấp ID tin nhắn giveaway.\nCách sử dụng: " + client.prefix + "rr <ID>",
                     color: client.config.ERR_COLOR
                 }], allowedMentions: { repliedUser: false }
-            });
+            }).then(msg => client.msgDelete(msg));
 
-        if (isNaN(+args[0]) || args[0].length !== 18)
+        if (isNaN(+args[0]))
             return message.reply({
                 embeds: [{
-                    title: client.emojs.failed + "Sai ID!",
                     description: "Bạn phải cung cấp ID hợp lệ.",
                     color: client.config.ERR_COLOR
                 }], allowedMentions: { repliedUser: false }
-            });
+            }).then(msg => client.msgDelete(msg));
 
         client.giveawaysManager.reroll(args[0], {
             messages: {

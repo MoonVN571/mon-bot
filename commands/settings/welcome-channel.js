@@ -17,8 +17,7 @@ module.exports = {
     async execute(client, message, args) {
         if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) return message.reply({
             embeds: [{
-                title: client.emoji.failed + "Thiếu quyền",
-                description: "Bạn không có quyền ``MANAGE_GUILD`` để dùng lệnh này.",
+                description: "Bạn không có quyền ``Quản lí Server`` để dùng lệnh này.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         });
@@ -27,8 +26,8 @@ module.exports = {
 
         if (!args[0]) return message.reply({
             embeds: [{
-                title: client.emoji.failed + "Thiếu thông tin",
-                description: "Bạn phải nhập kênh để đặt kênh chào mừng.\n\nVí dụ: " + client.prefix + "welcome-channel <tag/id kênh>",
+                description: "Bạn phải nhập kênh để đặt welcome channel.\nCách sử dụng: " + client.prefix + "welcome-channel <tag/id kênh>",
+                footer: {text:"Cú pháp <>: Bắt buộc - []: Không bắt buộc"},
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         });
@@ -36,7 +35,6 @@ module.exports = {
         if (!data.get('welcome-channel') && args[0] == "off") {
             return message.reply({
                 embeds: [{
-                    title: client.emoji.failed + "Chưa đặt kênh",
                     description: "Bạn chưa đặt kênh welcome nào cả.",
                     color: client.config.ERR_COLOR
                 }], allowedMentions: { repliedUser: false }
@@ -45,7 +43,6 @@ module.exports = {
             data.delete('welcome-channel');
             return message.reply({
                 embeds: [{
-                    title: client.emoji.success + "Thành công",
                     description: "Bạn đã tắt welcome.",
                     color: client.config.DEF_COLOR
                 }], allowedMentions: { repliedUser: false }
@@ -55,7 +52,7 @@ module.exports = {
         if (data.get("welcome-channel")) return message.reply({
             embeds: [{
                 title: client.emoji.success + "Đã đặt kênh!",
-                description: "Bạn đã setup kênh chat rồi.\n\n*Gõ " + client.prefix + "welcome-channel off để tắt tính năng*",
+                description: "Bạn đã đặt welcome channel. Gõ " + client.prefix + "welcome-channel off - Để tắt tính năng nếu muốn",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         });
@@ -67,7 +64,6 @@ module.exports = {
 
         if (!channelPerm || !channels) return message.reply({
             embeds: [{
-                title: client.emoji.failed + "Không có kênh",
                 description: "Bạn phải cung cấp kênh hợp lệ!",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
@@ -75,8 +71,7 @@ module.exports = {
 
         if (!message.guild.me.permissionsIn(channelPerm).has(Permissions.FLAGS.SEND_MESSAGES)) return message.reply({
             embeds: [{
-                title: client.emoji.failed + "Thiếu quyền",
-                description: "Bot không có quyền chat trong kênh bạn đã cung cấp!",
+                description: "Bot không có quyền chat trong kênh này!",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         });
@@ -85,8 +80,7 @@ module.exports = {
 
         message.reply({
             embeds: [{
-                title: client.emoji.success + "Thành công!",
-                description: "Bạn đã đặt kênh chào mừng tại <#" + channels + "> thành công.",
+                description: "Bạn đã đặt welcome channel <#" + channels + "> thành công. Bạn có thể liện hệ admin để lấy custom image.",
                 color: client.config.DEF_COLOR
             }], allowedMentions: { repliedUser: false }
         });
