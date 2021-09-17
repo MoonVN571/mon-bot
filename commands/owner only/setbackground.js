@@ -28,7 +28,7 @@ module.exports = {
         if (!args[1] && !message.attachments) return message.reply({
             embeds: [{
                 description: "Hãy cung cấp ảnh hoặc link ảnh.\nCách sử dụng: " + client.prefix + 'setbackground <Guild ID> <Image url/ image>*',
-                color: client.config.DEF_COLOR
+                color: client.config.ERR_COLOR
             }]
         });
 
@@ -43,10 +43,9 @@ module.exports = {
         if (!validImage) return message.reply({
             embeds: [{
                 description: "Ảnh cung cấp không hợp lệ hoặc sai định dạng.",
-                color: client.config.DEF_COLOR
+                color: client.config.ERR_COLOR
             }]
         });
-
 
         const imgData = new Database({ path: './data/guilds/' + message.guild.id + ".json" });
 

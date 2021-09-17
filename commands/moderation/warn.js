@@ -26,8 +26,8 @@ module.exports = {
 
         if (!args[0]) return message.reply({
             embeds: [{
-                description: "Bạn phải cung cấp người dùng cần cảnh cáo.\n\nVí dụ: " + client.prefix + "warn <tag/id> [lí do]",
-                footer: "Cú pháp <>: Bắt buộc; []: Không bắt buộc",
+                description: "Bạn phải cung cấp người dùng cần cảnh cáo.\nCách sử dụng: " + client.prefix + "warn <tag/id> <lí do>",
+                footer: {text:"Cú pháp <>: Bắt buộc - []: Không bắt buộc"},
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         });
@@ -38,8 +38,8 @@ module.exports = {
 
         if (!args[1] || !reason) return message.reply({
             embeds: [{
-                description: "Hãy cung cấp lí do cảnh cáo.\nCách sử dụng: " + client.prefix + "warn <tag/id> [lí do]",
-                footer: "Cú pháp <>: Bắt buộc; []: Không bắt buộc",
+                description: "Hãy cung cấp lí do cảnh cáo.\nCách sử dụng: " + client.prefix + "warn <tag/id> <lí do>",
+                footer: {text:"Cú pháp <>: Bắt buộc - []: Không bắt buộc"},
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         });

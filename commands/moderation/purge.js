@@ -57,7 +57,7 @@ module.exports = {
                     }]
                 }).then(msg => client.msgDelete(msg, 5000));
                 console.log(error);
-                client.sendError(`Can not bulk delete: \`\`\`${error}\`\`\``);
+                client.sendError(`${message.errorInfo} Can not bulk delete: \`\`\`${error}\`\`\``);
             });
 
             if(message.deletable) message.delete();

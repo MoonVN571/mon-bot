@@ -17,8 +17,7 @@ module.exports = {
     async execute(client, message, args) {
         if (!args[0]) return message.reply({
             embeds: [{
-                title: client.emoji.failed + "Thiếu thông tin!",
-                description: "Bạn phải nhập tên lệnh cần tải.\n\n Ví dụ: " + client.prefix + "rl reload",
+                description: "Bạn phải nhập tên lệnh cần reload.\nCách sử dụng: " + client.prefix + "rl reload",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         });
@@ -42,21 +41,12 @@ module.exports = {
                 });
             })
         } catch (err) {
-            console.error(err);
-
-            return message.reply({
-                embeds: [{
-                    title: client.emoji.failed + "Lỗi",
-                    description: "Không thể tải lại lệnh này.",
-                    color: client.config.ERR_COLOR
-                }], allowedMentions: { repliedUser: false }
-            });
+            client.sendError(err);
         }
 
         setTimeout(() => {
             if (!reloaded.join(" ")) return message.reply({
                 embeds: [{
-                    title: client.emoji.failed + "Thiếu thông tin",
                     description: "Bạn phải nhập command bot có.",
                     color: client.config.ERR_COLOR
                 }], allowedMentions: { repliedUser: false }
@@ -64,7 +54,6 @@ module.exports = {
     
             message.reply({
                 embeds: [{
-                    title: client.emoji.success + "Reloaded",
                     description: "Đã tải lại lệnh ``" + reloaded.join(", ") + "`` thành công!",
                     color: client.config.DEF_COLOR
                 }], allowedMentions: { repliedUser: false }

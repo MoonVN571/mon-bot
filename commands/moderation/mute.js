@@ -23,14 +23,6 @@ module.exports = {
             }], allowedMentions: { repliedUser: false }
         });
 
-        if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_ROLES)
-        ) return message.reply({
-            embeds: [{
-                description: "Bot không có quyền ``Quản lí Vai trò`` để mute người này.",
-                color: client.config.ERR_COLOR
-            }], allowedMentions: { repliedUser: false }
-        });
-
         if (!message.guild.me.permissions.has(Permissions.FLAGS.MANAGE_CHANNELS)
         ) return message.reply({
             embeds: [{
@@ -71,15 +63,20 @@ module.exports = {
             }], allowedMentions: { repliedUser: false }
         }).then(msg => client.msgDelete(msg, 5000));
 
-        // add mute cho cac channel
-        message.guild.channels.cache.forEach(channel => {
-            // client.channels.cache.get(channel.id).pe
-            channel.permissionOverwrites.create(getMuteRole, {
-                SEND_MESSAGES: false,
-            }).catch(err => {
-                client.sendError(errorInfo + "Set role can not send message while muted: ```" + err + "```");
+        // first time
+        const dataSet =  new Database({path: './data/guilds/' + message.guildId + ".json"});
+        if(!dataSet.get('firstMute')) {
+            dataSet.set('firstMute', true);
+            // add mute cho cac channel
+            message.guild.channels.cache.forEach(channel => {
+                // client.channels.cache.get(channel.id).pe
+                channel.permissionOverwrites.create(getMuteRole, {
+                    SEND_MESSAGES: false,
+                }).catch(err => {
+                    client.sendError(errorInfo + "Set role can not send message while muted: ```" + err + "```");
+                });
             });
-        });
+        }
 
         if (member.roles.cache.some(r => r.name == "Muted")) return message.reply({
             embeds: [{
@@ -140,6 +137,8 @@ module.exports = {
                     color: client.config.DEF_COLOR,
                     footer: { text: member.user.id }
                 }]
+            }).catch(err => {
+                client.sendError(message.errorInfo + err);
             });
         }).catch(err => {
             client.sendError("Mute, add roles: ```"+ err + "```");

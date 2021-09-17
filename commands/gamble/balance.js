@@ -20,7 +20,7 @@ module.exports = {
         message.reply({embeds: [{
             author: {
                 name: message.author.username,
-                icon_url: user.avatarURL({ format: 'png', dynamic: true, size: 1024 })
+                icon_url: message.author.avatarURL({ format: 'png', dynamic: true, size: 1024 })
             },
             description: "Bạn đang có tổng " + sodep(money) + " " + client.emoji.dongxu ,
             color: "0FF1CE"
