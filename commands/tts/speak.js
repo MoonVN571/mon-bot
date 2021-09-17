@@ -22,6 +22,7 @@ module.exports = {
     async execute(client, message, args) {
         if (!message.member.voice.channel) return message.reply({ content: 'Bạn phải vào phòng trước.', allowedMentions: { repliedUser: false } });
         if (!args.length) return message.reply({ content: 'Hãy nhập gì đó để nói.', allowedMentions: { repliedUser: false } });
+        if(args.length > 7 || args.join(" ").length > 50) return message.reply({content: "Giới hạn nói mỗi lần là 7 từ! Vote bot tại https://monbot.tk/vote để được nói trên 50 từ.", allowedMentions: { repliedUser: false }})
 
         const voiceChannel = message.member?.voice.channel;
         if (!voiceChannel) return message.reply({ content: 'Bạn phải vào voice channel để có thể sử dụng lệnh này.', allowedMentions: { repliedUser: false } });
@@ -34,7 +35,7 @@ module.exports = {
         // const channelId = message.member.voiceChannel;
 
         const audioURL = getAudioUrl(args.join(' '), {
-            lang: 'vi',
+            lang: 'qa',
             slow: false,
             host: 'https://translate.google.com',
             timeout: 10000
@@ -71,7 +72,7 @@ module.exports = {
             client.tts.set(guildID + '.speaking', true);
             client.tts.set(guildID + '.timeout', Date.now() + ms('5m'));
 
-            await player.play(resource);
+            player.play(resource);
             client.tts.set(guildID + '.speaking', false);
 
             setTimeout(() => {
@@ -84,8 +85,8 @@ module.exports = {
                 if (!message.guild.me.voice) client.tts.delete(`${guildID}.timeout`);
             }, ms('5m') + 1000);
         } catch (err) {
-            console.log(err);
-            message.reply({ content: "Bot gặp vấn đề. \n\nError: ``" + err.toString() + "``", allowedMentions: { repliedUser: false } });
+            client.sendError(err.message);
+            message.reply({ content: "Bot xảy ra lỗi thử lại sau!", allowedMentions: { repliedUser: false } });
         }
     }
 }

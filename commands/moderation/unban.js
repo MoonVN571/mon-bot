@@ -20,14 +20,14 @@ module.exports = {
                 decsription: "Bạn không có quyền để sử dụng lệnh này.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg));
 
         if (!message.guild.me.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return message.reply([{
             embeds: [{
                 description: "Bot không đủ quyền ``Cấm Member`` để bỏ cấm người dùng.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        }]);
+        }]).then(msg => client.msgDelete(msg));
 
         if (!args[0]) return message.reply({
             embeds: [{
@@ -35,10 +35,9 @@ module.exports = {
                 footer: {text:"Cú pháp <>: Bắt buộc - []: Không bắt buộc"},
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg));
 
         const reason = args.join(" ").split(args[0] + " ")[1] || "Không có";
-
         var userToUnban = args[0];
 
         var er = false;
@@ -50,14 +49,14 @@ module.exports = {
                     description: "Bạn phải nhập ID người dùng hợp lệ",
                     color: client.config.ERR_COLOR
                 }], allowedMentions: { repliedUser: false }
-            });
+            }).then(msg => client.msgDelete(msg));
             if (error.toString().includes("Unknown Ban")) return message.reply({
                 embeds: [{
                     title: client.emoji.failed + " Chưa bị cấm!",
                     description: "Không tìm thấy danh sách cấm của người này.",
                     color: client.config.ERR_COLOR
                 }], allowedMentions: { repliedUser: false }
-            });
+            }).then(msg => client.msgDelete(msg));
             console.log(error);
         });
 

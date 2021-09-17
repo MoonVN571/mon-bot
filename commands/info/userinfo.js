@@ -18,54 +18,65 @@ module.exports = {
      * @param {String[]} args 
      */
     async execute(client, message, args) {
-        let userId = getUserId(client,message,args,true);
+        var user = args[0] || message.author.id;
+        var tag = message.mentions.members.first();
 
-        trys(userId);
-        function trys(userId) {
-            client.users.fetch(userId).then(async users => {
-                if (!users) return message.reply({
-                    embeds: [{
-                        title: client.emoji.failed + "Sai thông tin!",
-                        description: "Bạn đã cung cấp người dùng không hợp lệ.",
-                        color: client.config.ERR_COLOR
-                    }], allowedMentions: { repliedUser: false }
-                });
+        if (isNaN(user) && !tag) user = message.author.id;
+        if (tag) user = tag.id;
 
-                const member = message.guild.members.cache.get(users.id);
+        let check_name = client.users.cache.find(user => user.username.toLowerCase() == args.join(" ").toLowerCase());
+        if (check_name) user = check_name.id;
 
-                let role = member ? member.roles.cache.map(roles => `${roles}`).join(', ').replace(", @everyone", "").replace("@everyone", "None") : "Không có";
-                let nickname = member ? (member.user.nickname ? `${member.user.nickname}` : 'Không có') : "Không có";
-                let joinServer = member ? `${getTimestamp(member.joinedAt)} \n(${getAge(member.joinedAt)} trước)` : "Không rõ";
+        if (!check_name && !tag && isNaN(user) || !tag && isNaN(user)) return message.reply({
+            embeds: [{
+                description: "Bạn phải cung cấp ID hoặc tag người dùng.",
+                color: client.config.ERR_COLOR
+            }], allowedMentions: { repliedUser: false }
+        }).then(msg => client.msgDelete(msg));
 
-                let huyHieu = "Không có";
+        client.users.fetch(user).then(async user => {
+            if (!users) return message.reply({
+                embeds: [{
+                    title: client.emoji.failed + "Sai thông tin!",
+                    description: "Bạn đã cung cấp người dùng không hợp lệ.",
+                    color: client.config.ERR_COLOR
+                }], allowedMentions: { repliedUser: false }
+            });
 
-                const flags = {
-                    HOUSE_BRAVERY: "Gan dạ",
-                    HOUSE_BRILLIANCE: "Lõi lạc",
-                    HOUSE_BALANCE: "Cân bằng"   
-                };
+            const member = message.guild.members.cache.get(users.id);
 
-                await users.fetchFlags().then(flag => huyHieu = flags[flag.toArray()[0]]);
+            let role = member ? member.roles.cache.map(roles => `${roles}`).join(', ').replace(", @everyone", "").replace("@everyone", "None") : "Không có";
+            let nickname = member ? (member.user.nickname ? `${member.user.nickname}` : 'Không có') : "Không có";
+            let joinServer = member ? `${getTimestamp(member.joinedAt)} \n(${getAge(member.joinedAt)} trước)` : "Không rõ";
 
-                const embed = new MessageEmbed()
-                    .setColor(client.config.DEF_COLOR)
-                    .setAuthor(users.tag, users.avatarURL({ format: 'png', dynamic: true, size: 1024 }))
-                    .setFooter("Yêu cầu bởi: " + message.author.tag)
-                    .setThumbnail(users.avatarURL({ format: 'png', dynamic: true, size: 1024 }))
-                    .addField("Username:", `${users.tag}`, true)
-                    .addField("ID:", `${users.id}`, true)
-                    .addField("Huy hiệu:", huyHieu, true)
-                    .addField("Biệt danh:", `${nickname}`, true)
-                    .addField("Ngày vào server:", `${joinServer}`, true)
-                    .addField("Ngày tạo tài khoản:", `${getTimestamp(users.createdAt)} \n(${getAge(users.createdAt)} trước)`, true)
-                    .addField("Roles:", role, true)
+            let huyHieu = "Không có";
 
-                message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
-            }).catch(err => {
-                if(err.message == "Unknown User") return trys(message.author.id);
-                message.botError();
-                client.send(err);
-            })
-        }
+            const flags = {
+                HOUSE_BRAVERY: "Gan dạ",
+                HOUSE_BRILLIANCE: "Lõi lạc",
+                HOUSE_BALANCE: "Cân bằng"   
+            };
+
+            await users.fetchFlags().then(flag => huyHieu = flags[flag.toArray()[0]]);
+
+            const embed = new MessageEmbed()
+                .setColor(client.config.DEF_COLOR)
+                .setAuthor(users.tag, users.avatarURL({ format: 'png', dynamic: true, size: 1024 }))
+                .setFooter("Yêu cầu bởi: " + message.author.tag)
+                .setThumbnail(users.avatarURL({ format: 'png', dynamic: true, size: 1024 }))
+                .addField("Username:", `${users.tag}`, true)
+                .addField("ID:", `${users.id}`, true)
+                .addField("Huy hiệu:", huyHieu, true)
+                .addField("Biệt danh:", `${nickname}`, true)
+                .addField("Ngày vào server:", `${joinServer}`, true)
+                .addField("Ngày tạo tài khoản:", `${getTimestamp(users.createdAt)} \n(${getAge(users.createdAt)} trước)`, true)
+                .addField("Roles:", role, true)
+
+            message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
+        }).catch(err => {
+            if(err.message == "Unknown User") return trys(message.author.id);
+            message.botError();
+            client.sendError(err.message);
+        });
     },
 };

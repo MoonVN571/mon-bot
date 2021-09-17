@@ -28,11 +28,12 @@ client.on('messageCreate', async (message) => {
     // AI Chhannel
     const dataAi = new Database({ path: './data/guilds/' + guildID + '.json' });
     const isAiChannel = dataAi.get("ai-channel");
+    const aiLang = dataAi.get("ai-lang");
 
     if (message.channel.id == isAiChannel) {
         axios({
             method: "get",
-            url: "https://api.simsimi.net/v1/?text=" + encodeURIComponent(message.content) + "&lang=vi_VN",
+            url: "https://api.simsimi.net/v2/?text=" + encodeURIComponent(message.content) + "&lc=" + aiLang ? aiLang : "vn",
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "x-www-form-urlencoded"
@@ -42,7 +43,7 @@ client.on('messageCreate', async (message) => {
             // console.log(callback.data.success);
             message.channel.send(callback.data.success).catch(err => {
                 client.sendError(err);
-            })
+            });
         }).catch(e => {
             // console.log(e.toString());
             client.sendError(e);
@@ -98,9 +99,7 @@ client.on('messageCreate', async (message) => {
         if (!message.content.startsWith(prefix) || !message.content.startsWith(prefix)) return;
     }
 
-    var args = message.content.slice(prefix.length).split(/ +/);
-    if (args[0] == "") args = args.slice(1);
-    if (!args.length) return;
+    var args = message.content.slice(prefix.length).trim().split(/ +/);
 
     let cmdName = args.shift().toLowerCase();
 
@@ -109,7 +108,8 @@ client.on('messageCreate', async (message) => {
 
     if (!cmd) return;
     if (cmd.disabled) return;
-    if (cmd.dev && !(Admin == authorID)) return;
+    if (cmd.dev && Admin !== authorID) return;
+    if(dev && message.author.id !== Admin) return;
 
     client.prefix = prefix;
 
@@ -132,7 +132,7 @@ client.on('messageCreate', async (message) => {
 
         let calc = calculate(timeout.get(`${message.author.id}.${cmdDelay.name}`) - Date.now());
         if (/*client.config.ADMINS.indexOf(message.author.id) < 0 &&*/ timeout.get(`${message.author.id}.${cmdDelay.name}`) && calc) {
-            return message.reply(`Dừng tay tí nào, hãy chờ \`\`${calc}\`\` để tiếp tục dùng lệnh này.`)
+            return message.reply({content: `Dừng tay tí nào, hãy chờ \`\`${calc}\`\` để tiếp tục dùng lệnh này.`, allowedMentions: { repliedUser: false }})
                 .then(msg =>client.msgDelete(msg, 2000));
         }
 
@@ -156,7 +156,7 @@ client.on('messageCreate', async (message) => {
 
     message.errorInfo = `\`\`\`Server ID: ${guildID} - Name: ${message.guild.name}\`\`\`\n`;
 
-    client.sendLog(`[${new Date().toLocaleString()}] ${client.shard.ids} | ${message.guild.name} | ${message.channel.name} | ${message.author.tag} - ${message.author.id} : ${message.content}`);
+    client.sendLog(`[${new Date().toLocaleString()}] ${message.guild.name} | ${message.channel.name} | ${message.author.tag} - ${message.author.id} : ${message.content}`);
 
     cmd.execute(client, message, args);
 });

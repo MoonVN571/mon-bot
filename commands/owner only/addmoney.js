@@ -18,27 +18,26 @@ module.exports = {
      * @returns 
      */
     async execute(client, message, args) {
-        var user = args[0] || message.author.id;
+        var user = args[0];
         var tag = message.mentions.members.first();
 
-        if (isNaN(user) && !tag) user = message.author.id;
-        if (tag) user = tag.id;
+        if (tag) user = tag.user.id;
 
         let check_name = client.users.cache.find(user => user.username.toLowerCase() == args.join(" ").toLowerCase());
         if (check_name) user = check_name.id;
 
         if (!check_name && !tag && isNaN(user) || !tag && isNaN(user)) return message.reply({
-            content: "Nhập cấp người nhận", allowedMentions: { repliedUser: false }
+            content: "Nhập người nhận hợp lệ", allowedMentions: { repliedUser: false }
         }).then(msg => client.msgDelete(msg));
 
-        client.users.fetch(user).then(async user => {
+        client.users.fetch(user, { cache: false }).then(async user => {
             if(!args[1] || isNaN(args[1])) return message.reply({ content: "Nhập số hợp lệ", allowedMentions: { repliedUser: false } })
                 .then(msg => client.deleteMsg(msg));
             
-            addMoney(message.author.tag, user.user.id, toCheck);
+            addMoney(message.author.tag, user.id, +args[1]);
 
             message.reply({ embeds:[{
-                description:"**" + user.tag + "** đã được cộng thêm " + sodep(toCheck) + " " + client.emoji.dongxu,
+                description:"**" + user.tag + "** đã được cộng thêm " + sodep(+args[1]) + " " + client.emoji.dongxu,
                 color: client.config.DEF_COLOR
             }], allowedMentions: { repliedUser: false } });
         }).catch(err => {

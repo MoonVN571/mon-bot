@@ -6,6 +6,22 @@ require("dotenv").config();
 
 /**
  * 
+ * @param {*} arr Array
+ * @param {*} maxLen length to trimp
+ * @param {String} Out out with {COUNT}
+ * @returns 
+ */       
+function trimText(arr, maxLen, text) {
+    if (arr.length > maxLen) {
+        const len = arr.length - maxLen;
+        arr = arr.slice(0, maxLen);
+        arr.push(text.replace("{COUNT}", len));
+    }
+    return arr;
+}
+
+/**
+ * 
  * @param {*} min Min number
  * @param {*} max Max number
  * @returns random in min max
@@ -62,7 +78,7 @@ async function download(dir, url) {
         responseType: 'stream',
         headers: { 'Authorization': 'Basic ' + key }
     });
-    response.data.pipe(Fs.createWriteStream(dir))
+    response.data.pipe(Fs.createWriteStream(dir).catch(console.error))
     return new Promise((resolve, reject) => {
         response.data.on('end', () => {
             resolve();
@@ -213,5 +229,6 @@ module.exports = {
     remove,
     validImageUrl,
     sodep,
-    sleep
+    sleep,
+    trimText
 };

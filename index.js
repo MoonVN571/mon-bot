@@ -47,7 +47,7 @@ client.mentions = new Set();
 // Giveaway module
 const { GiveawaysManager } = require('discord-giveaways');
 const manager = new GiveawaysManager(client, {
-    storage: './giveaways.json',
+    storage: './data/giveaway/giveaways.json',
     default: {
         botsCanWin: false,
         embedColor: '#FF0000',
@@ -59,18 +59,18 @@ const manager = new GiveawaysManager(client, {
 client.giveawaysManager = manager;
 
 
-function hook(url, content) {
+function hook(type, url, content) {
     new WebhookClient({
         url: url
     },{
         shards: 0,
-    }).send(content);
+    }).send(content).catch(err => console.log(type + " " + err));
 }
 
 // send logs
 async function sendError(error) {
     // await client.channels.cache.get("881016544396709898").send(error).catch(console.error);
-    hook(process.env.WEBHOOK_ERROR,error);
+    hook("Error Logs", process.env.WEBHOOK_ERROR,error);
 }
 
 async function sendWarn(error) {
@@ -80,11 +80,11 @@ async function sendWarn(error) {
 async function sendLog(content) {
     console.log(content);
     if(!content) return;
-    hook(process.env.WEBHOOK_LOGS, `\`\`\`${content}\`\`\``);
+    hook("Send Logs", process.env.WEBHOOK_LOGS, `\`\`\`${content}\`\`\``);
 }
 
 function msgDelete(msg,timeout) {
-    if(!timeout) timeout = 2000;
+    if(!timeout) timeout = 5000;
     if(msg.deletable) setTimeout(() => msg.delete(), timeout);
 }
 

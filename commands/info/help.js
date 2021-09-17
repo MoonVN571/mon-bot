@@ -25,24 +25,22 @@ module.exports = {
 
             if (!cmd) return message.channel.send({
                 embeds: [{
-                    title: client.emoji.failed + "Sai lệnh!",
                     description: "Không tìm thấy hướng dẫn lệnh này.",
                     color: client.config.ERR_COLOR
                 }], allowedMentions: { repliedUser: true }
-            });
+            }).then(msg => client.msgDelete(msg));
 
             if ((cmd.disabled || cmd.dev) && Admin !== message.author.id) return message.channel.send({
                 embeds: [{
-                    title: client.emoji.failed + "Thiếu quyền!",
                     description: "Bạn không thể xem thông tin lệnh này.",
                     color: client.config.ERR_COLOR
                 }], allowedMentions: { repliedUser: true }
-            });
+            }).then(msg => client.msgDelete(msg));
 
             const cmdEmbed = new MessageEmbed()
                 .setAuthor("Thông tin lệnh", client.user.avatarURL())
                 .setColor(client.config.DEF_COLOR)
-                .setFooter("Cú pháp <>: Bắt buộc; []: Không bắt buộc")
+                .setFooter("Cú pháp <>: Bắt buộc - []: Không bắt buộc")
                 .setTimestamp();
 
             if (cmd.name) cmdEmbed.addField("Tên lệnh", cmd.name, true);
@@ -88,6 +86,8 @@ module.exports = {
         });
 
         await message.reply({ embeds: [defaultEmbed], allowedMentions: { repliedUser: false } }).then(() => {
+            if(message.guildId == "874862992238473286") return;
+            
             let data = new Database({ path: "./data/footer.json" });
             if (!data.get("text")) return;
 

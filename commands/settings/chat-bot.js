@@ -21,7 +21,7 @@ module.exports = {
                 description: "Bạn không có quyền ``Quản lí Server`` để dùng lệnh này.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg));
 
         let data = new Database({ path: "./data/guilds/" + message.guild.id + ".json" });
 
@@ -31,15 +31,15 @@ module.exports = {
                 footer: {text:"Cú pháp <>: Bắt buộc - []: Không bắt buộc"},
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg));
 
         if (!data.get('ai-channel') && args[0] == "off") {
             return message.reply({
                 embeds: [{
-                    description: "Bạn chưa đặt kênh chat bot nào cả.",
+                    description: "Bạn chưa đặt kênh chat bot nào cả!",
                     color: client.config.ERR_COLOR
                 }], allowedMentions: { repliedUser: false }
-            });
+            }).then(msg => client.msgDelete(msg));
         } else if (data.get('ai-channel') && args[0] == "off") {
             data.delete('ai-channel');
             return message.reply({
@@ -55,7 +55,7 @@ module.exports = {
                 description: "Bạn đã đặt kênh chat bot.\nGõ " + client.prefix + "chat-bot off - Nếu bạn muốn tắt chat bot",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg));
 
         var channels = message.mentions.channels.first() || args[0];
         if(message.mentions.channels.first()) channels = channels.id;
@@ -74,7 +74,7 @@ module.exports = {
                 description: "Bot không có quyền chat trong kênh bạn đã cung cấp!",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg));
 
         data.set("ai-channel", channels);
 

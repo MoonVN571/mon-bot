@@ -8,7 +8,7 @@ client.on('messageDelete', async (message) => {
 
     db.set(message.channel.id, {
         content: message.content,
-        author: message.author.tag,
+        author: message.author,
         member: message.member,
         image: message.attachments.first() ? message.attachments.first().proxyURL : ""
     });

@@ -20,7 +20,7 @@ module.exports = {
                 description: "Bạn không có quyền ``Quản lí Server`` để dùng lệnh này.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg));
 
         let data = new Database({ path: "./data/guilds/" + message.guild.id + ".json" });
 
@@ -30,12 +30,12 @@ module.exports = {
                 footer: {text:"Cú pháp <>: Bắt buộc - []: Không bắt buộc"},
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg));
 
         if (!data.get('welcome-channel') && args[0] == "off") {
             return message.reply({
                 embeds: [{
-                    description: "Bạn chưa đặt kênh welcome nào cả.",
+                    description: "Bạn chưa đặt kênh welcome nào cả!",
                     color: client.config.ERR_COLOR
                 }], allowedMentions: { repliedUser: false }
             });
@@ -43,7 +43,7 @@ module.exports = {
             data.delete('welcome-channel');
             return message.reply({
                 embeds: [{
-                    description: "Bạn đã tắt welcome.",
+                    description: "Bạn đã tắt welcome thành công!",
                     color: client.config.DEF_COLOR
                 }], allowedMentions: { repliedUser: false }
             });
@@ -55,7 +55,7 @@ module.exports = {
                 description: "Bạn đã đặt welcome channel. Gõ " + client.prefix + "welcome-channel off - Để tắt tính năng nếu muốn",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg));
 
         var channels = message.mentions.channels.first() || args[0];
         if(message.mentions.channels.first()) channels = channels.id;
@@ -67,14 +67,14 @@ module.exports = {
                 description: "Bạn phải cung cấp kênh hợp lệ!",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg));
 
         if (!message.guild.me.permissionsIn(channelPerm).has(Permissions.FLAGS.SEND_MESSAGES)) return message.reply({
             embeds: [{
                 description: "Bot không có quyền chat trong kênh này!",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg));
 
         data.set("welcome-channel", channels);
 

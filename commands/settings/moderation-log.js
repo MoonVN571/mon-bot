@@ -16,7 +16,6 @@ module.exports = {
     async execute(client, message, args) {
         if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) return message.reply({
             embeds: [{
-                title: client.emoji.failed + "Không đủ quyền",
                 description: "Bạn không đủ quyền để đặt kênh xuất.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
@@ -52,7 +51,7 @@ module.exports = {
 
         if (data.get("moderation-channel")) return message.reply({
             embeds: [{
-                description: "Bạn đã đặt kênh moderation log thnàh công!\nGõ " + client.prefix + "moderation-log off - Nếu bạn muốn tắt moderation log",
+                description: "Bạn đã đặt kênh moderation log than2h công!\nGõ " + client.prefix + "moderation-log off - Nếu bạn muốn tắt moderation log",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         });
@@ -64,7 +63,6 @@ module.exports = {
 
         if (!channelPerm || !channels) return message.reply({
             embeds: [{
-                title: client.emoji.failed + "Sai kênh!",
                 description: "Kênh bạn cung cấp không hợp lệ!",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }

@@ -1,4 +1,4 @@
-const { Client, Message, User } = require('discord.js');
+const { Client, Message } = require('discord.js');
 
 /**
  * 

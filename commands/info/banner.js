@@ -36,7 +36,7 @@ module.exports = {
                     description: "Người này chưa để ảnh nền.",
                     color: client.config.ERR_COLOR
                 }]
-            });
+            }).then(msg => client.msgDelete(msg));
 
             await message.reply({
                 embeds: [{

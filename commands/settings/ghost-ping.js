@@ -5,7 +5,7 @@ module.exports = {
     name: "ghost-ping",
     description: "Chặn ghost ping người khác",
     delay: 5,
-    usage: "<PREFIX>ghost-ping [on/off]",
+    usage: "<PREFIX>ghost-ping <on/off>",
     ex: "<PREFIX>ghost-ping on",
 
     execute(client, message, args) {
@@ -14,7 +14,7 @@ module.exports = {
                 description: "Bạn không có quyền ``Quản lí Server`` để dùng lệnh này.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg));
 
         let data = new Database({ path: "./data/guilds/" + message.guild.id + ".json" });
 
@@ -24,7 +24,7 @@ module.exports = {
                 footer: {text:"Cú pháp <>: Bắt buộc - []: Không bắt buộc"},
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg));
 
         let check = data.get("GhostPingDetector.enable");
 
@@ -41,7 +41,7 @@ module.exports = {
                 description: "Tính năng này chưa được bật.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg));
 
         if (args[0] == "on") {
             message.reply({

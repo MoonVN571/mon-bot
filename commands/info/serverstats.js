@@ -82,7 +82,7 @@ module.exports = {
                                         message.guild.channels.cache.filter(channel => channel.type === "GUILD_VOICE").size + " kênh voice)"
                             }
                         ],
-                        footer: { text: "Shard ID: " + client.shard.ids + " - Server ID: " + message.guild.id},
+                        footer: { text: "Server ID: " + message.guild.id},
                         timestamp: new Date(),
                         color: client.config.DEF_COLOR
                     }], allowedMentions: { repliedUser: false }

@@ -11,28 +11,25 @@ module.exports = {
     execute(client, message, args) {
         if (!args[0]) return message.reply({
             embeds: [{
-                title: client.emoji.failed + " Thiếu thông tin!",
                 description: "Bạn phải nhập thời gian, theo tiếng anh (d, h, m, s).\n\n"
                     + "Cách sử dụng: " + client.prefix + "reminder <Thời gian> <Lời nhắc>",
                 color: client.config.DEF_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg));
 
         let checkTime = ['h', 'm', 's'];
 
         if (!args[0].split("").indexOf(checkTime) || !ms(args[0])) return message.reply({
             embeds: [{
-                title: client.emoji.failed + " Sai thời gian!",
                 description: "Bạn phải nhập định dạng giờ hỗ trợ. (1h, 30m, 15s)",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg));
 
         let content = message.content.split(args[0] + " ")[1] || "hãy làm gì đó vào " + args[0] + " sau";
 
         message.reply({
             embeds: [{
-                title: client.emoji.success + "Thành công!",
                 description: "Đã nhập lời nhắc của bạn vào " + args[0] + " sau là *" + content + "*.",
                 color: client.config.DEF_COLOR
             }], allowedMentions: { repliedUser: false }

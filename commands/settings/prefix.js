@@ -5,7 +5,7 @@ module.exports = {
     name: "prefix",
     description: "Thay đôi prefix bot",
     delay: 5,
-    usage: "<PREFIX>prefix [prefix mới]",
+    usage: "<PREFIX>prefix <prefix mới>",
     ex: "<PREFIX>prefix ;",
 
     execute(client, message, args) {
@@ -26,19 +26,9 @@ module.exports = {
             }], allowedMentions: { repliedUser: false }
         });
 
-        let check = data.get("Prefix");
-
-        if (check && args[0] == check) return message.reply({
-            embeds: [{
-                title: client.emoji.failed + "Đã đặt prefix",
-                description: "Bạn đã đặt prefix này cho server rồi.",
-                color: client.config.ERR_COLOR
-            }], allowedMentions: { repliedUser: false }
-        });
-
         if (args.length > 1) return message.reply({
             embeds: [{
-                description: "Bạn đã nhập dạng prefix bot không hỗ trợ.",
+                description: "Bot không hỗ trợ prefix này.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         });

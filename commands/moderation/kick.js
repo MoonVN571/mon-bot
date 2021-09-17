@@ -20,14 +20,14 @@ module.exports = {
                 decsription: "Bạn không có quyền để sử dụng lệnh này.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg));
 
         if (!message.guild.me.permissions.has(Permissions.FLAGS.KICK_MEMBERS)) return message.reply([{
             embeds: [{
                 description: "Bot không đủ quyền để cấm người dùng.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        }]);
+        }]).then(msg => client.msgDelete(msg));
 
         if (!args[0]) return message.reply({
             embeds: [{
@@ -35,7 +35,7 @@ module.exports = {
                 footer: {text:"Cú pháp <>: Bắt buộc - []: Không bắt buộc"},
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg));
 
         const reason = args.join(" ").split(args[0] + " ")[1] || "Không có";
 
@@ -49,28 +49,28 @@ module.exports = {
                 description: "Bạn không thể kick chính mình.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg));
 
         if (member.user == client.user) return message.reply({
             embeds: [{
                 description: "Mình không thể đá chính mính.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg));
 
         if (!member) return message.reply({
             embeds: [{
                 description: "Bạn phải cung cấp người dùng trong server này.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg));
 
         if (!member.kickable) return message.reply({
             embeds: [{
                 description: "Bot không đủ quyền để kick người này.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg));
 
         // punish
         await member.send({embeds: [{

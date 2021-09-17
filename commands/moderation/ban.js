@@ -21,14 +21,14 @@ module.exports = {
                 decsription: "Bạn không có quyền để sử dụng lệnh này.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg));
 
         if (!message.guild.me.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return message.reply([{
             embeds: [{
                 description: "Bot không đủ quyền để cấm người dùng.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        }]);
+        }]).then(msg => client.msgDelete(msg));
 
         if (!args[0]) return message.reply({
             embeds: [{
@@ -36,7 +36,7 @@ module.exports = {
                 footer: {text:"Cú pháp <>: Bắt buộc - []: Không bắt buộc"},
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg));
 
         const reason = args.join(" ").split(args[0] + " ")[1] || "Không có";
 
@@ -48,14 +48,14 @@ module.exports = {
                 description: "Bạn không thể cấm chính mình.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg));
 
         if (userToBan == client.user.id) return message.reply({
             embeds: [{
                 description: "Mình không thể ban chính mính.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg));
         
         let member = await message.guild.members.cache.get(userToBan);
 
@@ -71,7 +71,7 @@ module.exports = {
                 description: "Bot không đủ quyền để cấm người này.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg));
 
         // punish
         await member.send({embeds: [{

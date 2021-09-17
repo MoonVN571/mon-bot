@@ -28,7 +28,7 @@ module.exports = {
         client.users.fetch(user).then(async user => {
             if (!user) return message.reply({
                 embeds: [{
-                    description: `Bạn cung cấp người dùng không hợp lệ.`,
+                    description: 'Hãy cung cấp người dụng hợp lệ!',
                     color: client.config.ERR_COLOR,
                 }], allowedMentions: { repliedUser: false }
             }).then(msg => client.msgDelete(msg));
