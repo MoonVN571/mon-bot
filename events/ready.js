@@ -39,11 +39,17 @@ client.on('ready', () => {
             data.set(`${vote.user}.last-vote`, Date.now());
 
             let lastVote = data.get(`${vote.user}.last-vote`);
-            if(lastVote < Date.now() + ms('2d', { long: true })) {
+            // hien tai + 2 ngay sau - lastVote, neu < 2 ngay
+            // neu lan truoc be hon 1 ngay se + 1 vote
+            if(Date.now() - lastVote < ms('1d', { long: true })) {
                 data.number.add(`${vote.user}.streak`, 1);
+            } else {
+                data.set(`${vote.user}.streak`, 0);
             }
 
-            client.users.cache.get(vote.user).send(client.emoji.success + "Bạn đã vote cho bot!\nBạn đã nhận được " + Intl.NumberFormat().format(dailyMoney) + client.emoji.dongxu + " trong lần vote này!")
+            client.users.cache.get(vote.user)
+            .send(client.emoji.success + "Bạn đã vote cho bot!\nBạn đã nhận được " + Intl.NumberFormat().format(dailyMoney) + " " + client.emoji.dongxu + " trong lần vote này!")
+            .catch(err => client.sendError("Vote " + err.message));
         });
     }));
     

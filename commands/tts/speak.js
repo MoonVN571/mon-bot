@@ -4,7 +4,8 @@ const { download, remove } = require('../../utils/utils');
 const ms = require('ms');
 const { Client, Message } = require('discord.js');
 const { readdirSync } = require('fs');
-
+const Database = require('simplest.db');
+const config = require('../../config.json');
 module.exports = {
     name: "speak",
     aliases: ['s'],
@@ -20,10 +21,13 @@ module.exports = {
      * @returns 
      */
     async execute(client, message, args) {
+        const data = new Database({path:'./data/vote.json'});
+        let lastvote = data.get(`${vote.user}.last-vote`) || 0;
+        if(message.author.id !== config.Admin && Date.now() - lastvote > ms('2d', {long:true}) && (args.length > 7 || args.join(" ").length > 50)) return message.reply({content: "Giới hạn nói mỗi lần là 7 từ! Vote bot tại https://monbot.tk/vote để được nói trên 50 từ.", allowedMentions: { repliedUser: false }})
+
         if (!message.member.voice.channel) return message.reply({ content: 'Bạn phải vào phòng trước.', allowedMentions: { repliedUser: false } });
         if (!args.length) return message.reply({ content: 'Hãy nhập gì đó để nói.', allowedMentions: { repliedUser: false } });
-        if(args.length > 7 || args.join(" ").length > 50) return message.reply({content: "Giới hạn nói mỗi lần là 7 từ! Vote bot tại https://monbot.tk/vote để được nói trên 50 từ.", allowedMentions: { repliedUser: false }})
-
+        
         const voiceChannel = message.member?.voice.channel;
         if (!voiceChannel) return message.reply({ content: 'Bạn phải vào voice channel để có thể sử dụng lệnh này.', allowedMentions: { repliedUser: false } });
 
