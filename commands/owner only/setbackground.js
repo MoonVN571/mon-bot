@@ -10,26 +10,18 @@ module.exports = {
 
     async execute(client, message, args) {
         if (!args[0]) return message.reply({
-            embeds: [{
-                title: client.emoji.failed + "Thiếu thông tin",
-                description: "Bạn phải cung cấp ID nhóm cần thêm ảnh welcome.",
-                color: client.config.ERR_COLOR
-            }]
+            content: "Cung cấp ID server",
+            allowedMentions: { repliedUser: false }
         });
 
         if (!client.guilds.cache.get(args[0])) return message.reply({
-            embeds: [{
-                title: client.emoji.failed + "Sai thông tin",
-                description: "Nhóm ID này không hợp lệ hoặc không có bot.",
-                color: client.config.ERR_COLOR
-            }]
+            content: "Không tìm thấy server này",
+            allowedMentions: { repliedUser: false }
         });
 
         if (!args[1] && !message.attachments) return message.reply({
-            embeds: [{
-                description: "Hãy cung cấp ảnh hoặc link ảnh.\nCách sử dụng: " + client.prefix + 'setbackground <Guild ID> <Image url/ image>*',
-                color: client.config.ERR_COLOR
-            }]
+            content: "Cung cấp ảnh hoặc link cần set",
+            allowedMentions: { repliedUser: false }
         });
 
         // check attachmemnt

@@ -12,36 +12,47 @@ module.exports = {
     delay: 3,
 
     async execute(client, message, args) {
-        let userId = await getUserId(client,message,args,true);
+        var user = args[0] || message.author.id;
+        var tag = message.mentions.members.first();
 
-        trys(userId);
-        function trys(userId) {
-            client.users.fetch(userId).then(async user => {
-                let banner = await getUserBannerUrl2(user.id);
+        if (isNaN(user) && !tag) user = message.author.id;
+        if (tag) user = tag.id;
 
-                if (!banner) return message.reply({
-                    embeds: [{
-                        description: "Người này chưa để ảnh nền.",
-                        color: client.config.ERR_COLOR
-                    }]
-                });
+        let check_name = client.users.cache.find(user => user.username.toLowerCase() == args.join(" ").toLowerCase());
+        if (check_name) user = check_name.id;
 
-                await message.reply({
-                    embeds: [{
-                        title: "Banner của " + user.username + "'s",
-                        image: { url: banner },
-                        footer: {
-                            text: "Yêu cầu bởi " + message.author.tag,
-                        },
-                        color: client.config.DEF_COLOR
-                    }], allowedMentions: { repliedUser: false }
-                });
-            }).catch(err => {
-                if(err.message == "Unknown User") return trys(mesasge.author.id);
-                message.botError();
-                client.sendError(message.errorInfo + err);
-            })
-        }
+        if (!check_name && !tag && isNaN(user) || !tag && isNaN(user)) return message.reply({
+            embeds: [{
+                description: "Bạn phải cung cấp ID hoặc tag người dùng.",
+                color: client.config.ERR_COLOR
+            }], allowedMentions: { repliedUser: false }
+        }).then(msg => client.msgDelete(msg));
+
+        client.users.fetch(user).then(async user => {
+            let banner = await getUserBannerUrl2(user.id);
+
+            if (!banner) return message.reply({
+                embeds: [{
+                    description: "Người này chưa để ảnh nền.",
+                    color: client.config.ERR_COLOR
+                }]
+            });
+
+            await message.reply({
+                embeds: [{
+                    title: "Banner của " + user.username + "'s",
+                    image: { url: banner },
+                    footer: {
+                        text: "Yêu cầu bởi " + message.author.tag,
+                    },
+                    color: client.config.DEF_COLOR
+                }], allowedMentions: { repliedUser: false }
+            });
+        }).catch(err => {
+            if(err.message == "Unknown User") return trys(mesasge.author.id);
+            message.botError();
+            client.sendError(message.errorInfo + err);
+        });
 
         async function getUserBannerUrl2(userId, { dynamicFormat = true, defaultFormat = "png", size = 4096 } = {}) {
 
