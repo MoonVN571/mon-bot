@@ -66,18 +66,20 @@ module.exports = {
                 giveaway: "**GIVEAWAY** đã bắt đầu!",
                 giveawayEnded: "**GIVEAWAY** đã kết thúc!",
                 winMessage: {
-                    content: "Chúc mừng, \n{winners}\n\nGiải thưởng: **{this.prize}**!\nĐược tổ chức bởi {this.hostedBy}",
-                    embed: new MessageEmbed()
-                        .setDescription("[Chuyển đến tin nhắn]({this.messageURL})").setColor("303136")
+                    content: "Chúc mừng, \n{winners}\n\nGiải thưởng: **{this.prize}**! Được tổ chức bởi: **{this.hostedBy}**\n*Đi đến giveaway: {this.messageURL}*",
+                    // embed: new MessageEmbed()
+                    //     .setDescription("[Chuyển đến tin nhắn]({this.messageURL})").setColor("303136")
                 },
-                dropMessage: "Bấm vào 🎉 để tham gia",
-                inviteToParticipate: "Bấm vào 🎉 để tham gia",
-                embedFooter: "Sẽ có {this.winnerCount} người thắng.",
-                noWinner: "**Người thắng:** Không có",
-                winners: "**Người thắng:**\n",
+                inviteToParticipate: "<a:click:888798426593116160> React " + client.emoji.hopqua + " để tham gia",
+                embedFooter: {
+                    text: "Sẽ có {this.winnerCount} người thắng.",
+                    iconURL: client.emoji.gaLinkFooter
+                },
+                noWinner: "<:winner:888798424143642634> **Không** có ai tham gia",
+                winners: "<:winner:888798424143642634> **Người thắng:**\n",
                 endedAt: "Đã quay thưởng {this.winnerCount} giải",
-                drawing: "Kết thúc vào {timestamp}",
-                hostedBy: "Được tổ chức bởi {this.hostedBy}"
+                drawing: "**Kết thúc trong:** {timestamp}",
+                hostedBy: "Được tổ chức bởi {this.hostedBy}"    
             },
         }).then((gData) => {
             const data = new Database({ path: './data/giveaway/author.json' });

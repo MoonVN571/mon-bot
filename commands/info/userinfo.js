@@ -37,7 +37,6 @@ module.exports = {
         client.users.fetch(user).then(async users => {
             if (!users) return message.reply({
                 embeds: [{
-                    title: client.emoji.failed + "Sai thông tin!",
                     description: "Bạn đã cung cấp người dùng không hợp lệ.",
                     color: client.config.ERR_COLOR
                 }], allowedMentions: { repliedUser: false }
@@ -66,7 +65,7 @@ module.exports = {
                 .setThumbnail(users.avatarURL({ format: 'png', dynamic: true, size: 1024 }))
                 .addField("Username:", `${users.tag}`, true)
                 .addField("ID:", `${users.id}`, true)
-                .addField("Huy hiệu:", huyHieu, true)
+                .addField("Huy hiệu:", `${huyHieu}`, true)
                 .addField("Biệt danh:", `${nickname}`, true)
                 .addField("Ngày vào server:", `${joinServer}`, true)
                 .addField("Ngày tạo tài khoản:", `${getTimestamp(users.createdAt)} \n(${getAge(users.createdAt)} trước)`, true)

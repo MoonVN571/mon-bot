@@ -1,5 +1,6 @@
 const { readdirSync } = require('fs');
 const { Client } = require('discord.js');
+const { dev }  =require('../config.json');
 /**
  * 
  * @param {Client} client 
@@ -27,7 +28,8 @@ module.exports = (client) => {
     });
 
     client.on("ready", async () => {
-        await client.application.commands.set(arrayOfSlashCommands);
+        if(!dev) return await client.application.commands.set(arrayOfSlashCommands);
+        await client.guilds.cache.get("869076561075261460").commands.set(arrayOfSlashCommands);
     });
 
 

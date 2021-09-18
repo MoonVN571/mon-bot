@@ -82,5 +82,42 @@ module.exports = {
                 color: client.config.DEF_COLOR
             }], allowedMentions: { repliedUser: false }
         });
+
+        const dataLogger = new Database({ path: './data/guilds/' + message.guild.id + ".json" });
+        
+        // check data
+        let logChannel = dataLogger.get('moderation-channel');
+        if (!logChannel) return;
+
+        // check channel
+        let channel = client.channels.cache.get(logChannel);
+        if (!channel) return;
+
+        channel.send({
+            embeds: [{
+                title: "Moderation - Warn",
+                fields: [
+                    {
+                        name: "Người thực hiện",
+                        value: message.author.toString(),
+                        inline: true
+                    }, {
+                        name: "Người áp dụng",
+                        value: member.user.toString(),
+                        inline: true
+                    }, {
+                        name: "Lí do cảnh cáo",
+                        value: reason + " (" + userWarns + "warns)",
+                        inline: false
+                    },
+                ],
+                thumbnail: { url: member.user.avatarURL() },
+                timestamp: new Date(),
+                color: client.config.DEF_COLOR,
+                footer: { text: member.user.id }
+            }]
+        }).catch(err => {
+            client.sendError(message.errorInfo, err);
+        });
     }
 }

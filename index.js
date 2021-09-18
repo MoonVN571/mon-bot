@@ -27,7 +27,9 @@ const config = {
 const emoji = {
     failed: "<:1024_TickNo_Night:883667478813736960> | ",
     success: "<:1300_TickYes_Night:883667478830518312> | ",
-    dongxu: "<:1824_coin:883648611592855553>"
+    dongxu: "<:1824_coin:883648611592855553>",
+    hopqua: "<:giveaway:888776734625894452>",
+    gaLinkFooter: "https://cdn.discordapp.com/emojis/888798422084223036.gif?v=1"
 }
 
 client.emoji = emoji;
@@ -48,11 +50,12 @@ client.mentions = new Set();
 const { GiveawaysManager } = require('discord-giveaways');
 const manager = new GiveawaysManager(client, {
     storage: './data/giveaway/giveaways.json',
+    forceUpdateEvery: 10000,
     default: {
         botsCanWin: false,
-        embedColor: '#FF0000',
+        embedColor: 'BLUE',
         embedColorEnd: 'AQUA',
-        reaction: '🎉'
+        reaction: '<:giveaway:888776734625894452>'
     }
 });
 

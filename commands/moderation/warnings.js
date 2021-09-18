@@ -7,7 +7,6 @@ module.exports = {
 
     async execute(client, message, args, serverData) {
         const userData = new Database({ path: './data/warnings/' + message.guild.id + ".json" });
-
         let count = userData.get(message.author.id) || 0;
 
         message.reply({

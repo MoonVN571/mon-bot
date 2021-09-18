@@ -88,7 +88,7 @@ module.exports = {
 
             channel.send({
                 embeds: [{
-                    title: "Moderation - Bỏ Mute",
+                    title: "Moderation - Unmute",
                     fields: [
                         {
                             name: "Người thực hiện",
@@ -99,7 +99,7 @@ module.exports = {
                             value: member.user.toString(),
                             inline: true
                         }, {
-                            name: "Lí do Bỏ Mute",
+                            name: "Lí do Unmute",
                             value: reason,
                             inline: false
                         },

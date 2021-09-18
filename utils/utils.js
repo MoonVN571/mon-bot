@@ -116,7 +116,7 @@ async function validImageUrl(url, guildID) {
  * @param {*} time 
  * @returns better string ignore zero
  */
-function calculate(time) {
+function calculate(time, ga) {
     var temp = time / 1000;
     var days = 0, hours = 0, minutes = 0, seconds = 0;
     days = parseInt(temp / 86400);
@@ -129,19 +129,13 @@ function calculate(time) {
         seconds = parseInt(temp % 60);
     }
 
-    // console.log(days, hours, minutes, seconds)
+    if(ga) seconds = parseInt(temp %60);
 
     var string = "1 giây";
-    if (hours == 0 && minutes == 0 && seconds > 0) string = seconds + " giây";
-    if (hours == 0 && minutes > 0 && seconds == 0) string = minutes + " phút";
-    if (hours == 0 && minutes > 0 && seconds > 0) string = minutes + " phút " + seconds + " giây";
-
-    if (hours > 0 && minutes > 0 && seconds == 0) string = hours + " giờ " + minutes + " phút";
-    if (hours > 0 && minutes == 0 && seconds > 0) string = hours + " giờ " + seconds + " giây";
-    if (hours > 0 && minutes > 0 && seconds > 0) string = hours + " giờ " + minutes + " phút " + seconds + " giây";
-
-    if (days > 0) string = days + " ngày " + string;
-
+    if(seconds > 0) string = seconds + " giây";
+    if(minutes > 0) string = minutes + " phút " + string;
+    if(hours > 0)   string = hours   + " phút " + string;
+    if(days > 0)    string = days    + " ngày " + string;
     return string;
 }
 
@@ -164,15 +158,11 @@ function getAge(time, debug) {
     if(debug) console.log(years, months, days, hours, minutes);
 
     var string = "vài giây";
-    if (hours == 0 && minutes > 0) string = minutes + " phút";
-    if (hours > 0 && minutes == 0) string = hours + " giờ";
-
-    if (hours > 0 && minutes > 0) string = hours + " giờ " + minutes + " phút";
-    if (hours > 0 && minutes == 0) string = hours + " giờ";
-
-    if (days > 0 && months > 0) string = months + " tháng " + days + " ngày ";
-    if (days > 0 && months == 0) string = days + " ngày " + string;
-    if (days == 0 && months > 0) string = months + " tháng";
+    if(minutes > 0) string = minutes + " phút " + string;
+    if(hours > 0)   string = hours   + " giờ " + string;
+    if(days > 0)    string = days    + " ngày " + string;
+    if(months > 0)  string = months  + " tháng " + string;
+    if(years > 0)   string = years    + " năm " + string;
 
     if (years > 0) string = years + " năm " + string;
 
