@@ -51,7 +51,7 @@ module.exports = {
         }).catch(err => {
             if(err.message == "Unknown User") return trys(mesasge.author.id);
             message.botError();
-            client.sendError(message.errorInfo + err);
+            client.sendError(message.errorInfo, err);
         });
 
         async function getUserBannerUrl2(userId, { dynamicFormat = true, defaultFormat = "png", size = 4096 } = {}) {
@@ -81,7 +81,5 @@ module.exports = {
 
             return baseUrl + `.${defaultFormat}` + query;
         }
-        
-
     }
 }

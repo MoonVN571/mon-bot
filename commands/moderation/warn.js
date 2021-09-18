@@ -78,7 +78,6 @@ module.exports = {
 
         message.reply({
             embeds: [{
-                title: client.emoji.success + "Thành công!",
                 description: "Bạn đã cảnh cáo **" + member.user.tag + "** lần " + userWarns + " với lí do: " + reason,
                 color: client.config.DEF_COLOR
             }], allowedMentions: { repliedUser: false }

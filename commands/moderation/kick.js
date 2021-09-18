@@ -122,11 +122,11 @@ module.exports = {
                     footer: { text: member.user.id }
                 }]
             }).catch(err => {
-                client.sendError(message.errorInfo + err);
+                client.sendError(message.errorInfo, err);
             });
         }).catch(err => {
             message.botError();
-            client.sendError(message.errorInfo + err);
+            client.sendError(message.errorInfo, err);
         });
     }
 }

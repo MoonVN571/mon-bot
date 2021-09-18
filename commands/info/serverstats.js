@@ -88,6 +88,9 @@ module.exports = {
                     }], allowedMentions: { repliedUser: false }
                 });
             });
-        } catch (e) { console.log(e) }
+        } catch (e) {
+            client.sendError(message.errorInfo, e);
+            message.botError();
+        }
     }
 }

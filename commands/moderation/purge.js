@@ -24,7 +24,7 @@ module.exports = {
 
         if (!message.guild.me.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) return message.reply({
             embeds: [{
-                description: "Bạn không có quyền ``Quản lí Tin nhắn`` để dùng lệnh này.",
+                description: "Bot không có quyền ``Quản lí Tin nhắn`` để dùng lệnh này.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         }).then(msg => client.msgDelete(msg, 5000));
@@ -61,8 +61,8 @@ module.exports = {
             });
 
             if(message.deletable) message.delete();
-        } catch (e) { 
-            client.sendError(`Purge catch error: \`\`\`${e}\`\`\``);
+        } catch (e) {
+            client.sendError(message.errorInfo, e);
             message.botError();
         }
     }

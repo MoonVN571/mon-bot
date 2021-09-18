@@ -55,8 +55,8 @@ module.exports = {
             });
         }).catch(err => {
             if(err.message == "Unknown User") return trys(message.author.id);
-            client.sendError(err);
-            message.commandError();
+            client.sendError(message.errorInfo, err);
+            message.botError();
         });
     }
 }

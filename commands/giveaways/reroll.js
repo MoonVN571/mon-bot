@@ -52,7 +52,7 @@ module.exports = {
                 }], allowedMentions: { repliedUser: false }
             });
         }).catch((err) => {
-            console.log(err);
+            client.sendError(message.errorInfo, err);
             message.botError();
         });
     }

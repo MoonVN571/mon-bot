@@ -3,7 +3,7 @@ const client = require('../index');
 const Database = require('simplest.db');
 const { calculate } = require('../utils/utils');
 const { Admin, dev } = require('../config.json');
-const { Collection } = require('discord.js');
+const { Collection, Permissions } = require('discord.js');
 const delay = new Collection();
 client.on('messageCreate', async (message) => {
     if (message.author.bot || message.author === client.user || !message.guild) return;
@@ -17,6 +17,8 @@ client.on('messageCreate', async (message) => {
     let ghostPing = new Database({ path: "./data/guilds/" + guildID + ".json" });
 
     if (!dev && ghostPing.get("GhostPingDetector.enable") && isTag) {
+        if(!message.guild.me.permissions.has(Permissions.FLAGS.SEND_MESSAGES)) return client.sendError(`GUILD: ${message.guild.name} - ID: ${message.guild.id}\nText: No Perm to chat`);
+
         const time = ghostPing.get("GhostPingDetector.time") || 15000;
 
         client.Pings.set(`pinger:${guildID}${isTag.id}`, Date.now() + time);
@@ -31,6 +33,7 @@ client.on('messageCreate', async (message) => {
     const aiLang = dataAi.get("ai-lang");
 
     if (message.channel.id == isAiChannel) {
+        if(!message.guild.me.permissions.has(Permissions.FLAGS.SEND_MESSAGES)) return client.sendError(`GUILD: ${message.guild.name} - ID: ${message.guild.id}\nText: No Perm to chat`);
         axios({
             method: "get",
             url: "https://api.simsimi.net/v2/?text=" + encodeURIComponent(message.content) + "&lc=" + aiLang ? aiLang : "vn",
@@ -56,11 +59,11 @@ client.on('messageCreate', async (message) => {
     const checkAfk = afkData.get(guildID + "." + authorID + ".loinhan");
 
     if (checkAfk) {
+        if(!message.guild.me.permissions.has(Permissions.FLAGS.SEND_MESSAGES)) return client.sendError(`GUILD: ${message.guild.name} - ID: ${message.guild.id}\nText: No Perm to chat`);
         afkData.delete(guildID + "." + authorID + ".afking");
         afkData.delete(guildID + "." + authorID + ".loinhan");
         return message.reply({
             embeds: [{
-                title: "AFK",
                 description: "Bạn đã trở lại nhóm, đã tắt chế độ afk!",
                 color: client.config.DEF_COLOR
             }], allowedMentions: { repliedUser: false }
@@ -73,7 +76,6 @@ client.on('messageCreate', async (message) => {
         if (checkIsAfk) {
             message.reply({
                 embeds: [{
-                    title: "AFK",
                     description: isTag.toString() + " đang treo từ *" + calculate(afkData.get(guildID + "." + isTag.id + ".thoigian")) + "* nên sẽ không có phản hồi nào.\nLời nhắn: " + afkData.get(guildID + "." + isTag.id + ".loinhan"),
                     color: client.config.DEF_COLOR
                 }], allowedMentions: { repliedUser: false }
@@ -113,6 +115,8 @@ client.on('messageCreate', async (message) => {
 
     client.prefix = prefix;
 
+    if(!message.guild.me.permissions.has(Permissions.FLAGS.SEND_MESSAGES)) return client.sendError(`GUILD: ${message.guild.name} - ID: ${message.guild.id}\nText: No Perm to chat`);
+
     // Delay global
     if (delay.has(message.author.id))
         return message.reply({ content: "Nghỉ tay tí nào, dùng lệnh hơi nhanh rồi đấy!", allowedMentions: { repliedUser: false } });
@@ -146,7 +150,6 @@ client.on('messageCreate', async (message) => {
         console.log(cmdName);
         message.reply({
             embeds: [{
-                title: client.emoji.failed + "Lỗi",
                 description: "Hệ thống gặp lỗi thử lại sau!",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
@@ -154,7 +157,7 @@ client.on('messageCreate', async (message) => {
     }
     message.botError = botError;
 
-    message.errorInfo = `\`\`\`Server ID: ${guildID} - Name: ${message.guild.name}\`\`\`\n`;
+    message.errorInfo = `\`\`\`Server ID: ${guildID} - Name: ${message.guild.name} - Command: ${cmd.name}\`\`\`\n`;
 
     client.sendLog(`[${new Date().toLocaleString()}] ${message.guild.name} | ${message.channel.name} | ${message.author.tag} - ${message.author.id} : ${message.content}`);
 

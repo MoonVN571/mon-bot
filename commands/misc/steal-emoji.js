@@ -61,7 +61,7 @@ module.exports = {
                     countEmojis++;
                 });
             } catch (e) {
-                client.sendError(message.errorInfo + e);
+                client.sendError(message.errorInfo, e);
             }
         });
 

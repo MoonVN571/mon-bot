@@ -63,7 +63,7 @@ module.exports = {
                 }], allowedMentions: { repliedUser: false }
             }).then(msg => client.msgDelete(msg));
             message.botError();
-            client.sendError(err);
+            client.sendError(message.errorInfo, err);
         });
     }
 }

@@ -72,7 +72,7 @@ module.exports = {
                     message.reply({ embeds: [exampleEmbed], allowedMentions: { repliedUser: false } });
                 })
         }).catch(function (error) {
-            client.sendErrror(message.errorInfo + error);
+            client.sendError(message.errorInfo, error);
             message.reply("Không thể lấy thông tin từ website.");
         });
     }

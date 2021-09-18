@@ -32,7 +32,7 @@ module.exports = {
                 timestamp: new Date()
             }], allowedMentions: { repliedUser: false }
         }).catch((e) => {
-            client.sendError(e);
+            client.sendError(message.errorInfo, e);
             message.botError();
         });
     }

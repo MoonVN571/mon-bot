@@ -41,7 +41,7 @@ module.exports = {
                 });
             })
         } catch (err) {
-            client.sendError(err);
+            client.sendError(message.errorInfo, err);
         }
 
         setTimeout(() => {

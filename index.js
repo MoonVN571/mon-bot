@@ -68,9 +68,12 @@ function hook(type, url, content) {
 }
 
 // send logs
-async function sendError(error) {
+async function sendError(type, error) {
     // await client.channels.cache.get("881016544396709898").send(error).catch(console.error);
-    hook("Error Logs", process.env.WEBHOOK_ERROR,error);
+    console.log(error);
+    if(!error.message && type) return hook("Error Logs", process.env.WEBHOOK_ERROR, type + " " + error.message);
+    if(!error.message) return;
+    hook("Error Logs", process.env.WEBHOOK_ERROR, type + " " + error.message);
 }
 
 async function sendWarn(error) {

@@ -75,7 +75,7 @@ module.exports = {
             });
         }).catch(e => {
             // console.log(e.toString());
-            client.sendError(e);
+            client.sendError(message.errorInfo, e);
         });
     }
 }

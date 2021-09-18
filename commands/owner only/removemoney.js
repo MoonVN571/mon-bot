@@ -42,7 +42,7 @@ module.exports = {
         }).catch(err => {
             if(err.message == "Unknown User") return message.reply({contnet: "Người nhận không hợp lệ", allowedMentions: { repliedUser: false} });
             message.botError();
-            client.sendError(err.toString());
+            client.sendError(message.errorInfo, err);
         });
     }
 }

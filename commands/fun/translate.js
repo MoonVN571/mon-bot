@@ -44,7 +44,7 @@ module.exports = {
                 }], allowedMentions: { repliedUser: false }
             }).then(msg => client.msgDelete(msg));
             message.botError();
-            console.log(message.errorInfo + e);
+            client.sendError(message.errorInfo, e);
         });
 
     }

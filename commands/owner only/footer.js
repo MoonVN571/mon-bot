@@ -21,7 +21,6 @@ module.exports = {
 
         message.reply({
             embeds: [{
-                title: client.emoji.success + "Thành công!",
                 description: "Bạn đã đặt thông tin của lệnh thành: \n\n" + args.join(" "),
                 color: client.config.DEF_COLOR
             }], allowedMentions: { repliedUser: false }

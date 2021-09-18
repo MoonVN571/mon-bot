@@ -52,7 +52,6 @@ module.exports = {
             }).then(msg => client.msgDelete(msg));
             if (error.toString().includes("Unknown Ban")) return message.reply({
                 embeds: [{
-                    title: client.emoji.failed + " Chưa bị cấm!",
                     description: "Không tìm thấy danh sách cấm của người này.",
                     color: client.config.ERR_COLOR
                 }], allowedMentions: { repliedUser: false }

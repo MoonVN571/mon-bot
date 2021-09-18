@@ -21,7 +21,6 @@ module.exports = {
 
         if(cmd) return message.reply({
             embeds: [{
-                title: client.emoji.failed + "Loaded!",
                 description: "Lệnh này đã được load, hãy thử " + client.prefix + "reload <tên lệnh>",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
@@ -50,13 +49,12 @@ module.exports = {
                 });
             });
         } catch (e) {
-            console.log(e);
+            client.sendError(message.errorInfo, e);
         }
 
         setTimeout(() => {
             if (!found) return message.reply({
                 embeds: [{
-                    title: client.emoji.failed + "Sai lệnh",
                     description: "Không tìm thấy lệnh này.",
                     color: client.config.ERR_COLOR
                 }], allowedMentions: { repliedUser: true }

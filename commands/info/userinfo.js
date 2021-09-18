@@ -76,7 +76,7 @@ module.exports = {
         }).catch(err => {
             if(err.message == "Unknown User") return trys(message.author.id);
             message.botError();
-            client.sendError(err.message);
+            client.sendError(message.errorInfo, e);
         });
     },
 };

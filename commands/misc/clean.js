@@ -12,6 +12,13 @@ module.exports = {
      * @param {String[]} args 
      */
     async execute(client, message, args) {
+        if (!message.guild.me.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) return message.reply({
+            embeds: [{
+                description: "Bot không có quyền ``Quản lí Tin nhắn`` để dùng lệnh này.",
+                color: client.config.ERR_COLOR
+            }], allowedMentions: { repliedUser: false }
+        }).then(msg => client.msgDelete(msg, 5000));
+
         let count_message = 0;
         await message.channel.messages.fetch({ limit: 50 }).then(async messages => {
             let userMessage = messages.filter(msg => msg.content.startsWith(client.prefix)).map((msg) => msg.id);
@@ -25,7 +32,7 @@ module.exports = {
 
         await message.channel.send({
             embeds: [{
-                description: "Đã dọn ``" + count_message + " tin nhắn`` trong kênh.",
+                description: "Đã dọn ``" + count_message + " tin nhắn``.",
                 color: client.config.DEF_COLOR
             }], allowedMentions: { repliedUser: false }
         }).then(msg => client.msgDelete(msg, 10 * 1000));

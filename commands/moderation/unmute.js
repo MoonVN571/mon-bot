@@ -109,15 +109,11 @@ module.exports = {
                     color: client.config.DEF_COLOR,
                     footer: { text: member.user.id }
                 }]
+            }).catch(err => {
+                client.sendError(message.errorInfo, err);
             });
         }).catch(err => {
-            console.log(err);
-            message.reply({
-                embeds: [{
-                    description: "Bot đã xảy ra lỗi thử lại sau!",
-                    color: client.config.ERR_COLOR
-                }], allowedMentions: { repliedUser: false }
-            });
+            client.sendError(message.errorInfo, err);
         });
     }
 }

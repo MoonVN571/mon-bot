@@ -138,10 +138,10 @@ module.exports = {
                     footer: { text: member.user.id }
                 }]
             }).catch(err => {
-                client.sendError(message.errorInfo + err);
+                client.sendError(message.errorInfo, err);
             });
         }).catch(err => {
-            client.sendError("Mute, add roles: ```"+ err + "```");
+            client.sendError(message.errorInfo, err);
             message.botError();
         });
 
