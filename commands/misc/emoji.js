@@ -17,7 +17,7 @@ module.exports = {
     async execute(client, message, args) {
         if (!args[0]) return message.reply({
             embeds: [{
-                description: "Bạn phải nhập emoji cần phóng to.\n\nCách sử dụng: " + client.prefix + "emoji <emoji>",
+                description: "Bạn phải nhập emoji cần phóng to.\nCách sử dụng: " + client.prefix + "emoji <emoji>",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         }).then(msg => client.msgDelete(msg));
@@ -27,7 +27,9 @@ module.exports = {
         if (emoji.id) {
             message.reply({
                 embeds: [{
-                    title: "Emoji ID: " + emoji.id,
+                    author: {
+                        name: "Bản phóng to | ID: " + emoji.id
+                    },
                     image: { url: `https://cdn.discordapp.com/emojis/${emoji.id}.${emoji.animated ? "gif" : "png"}` },
                     color: client.config.DEF_COLOR
                 }], allowedMentions: { repliedUser: false }
@@ -35,7 +37,7 @@ module.exports = {
         } else {
             const parsed = parse(emoji, { assetType: "png" });
             if (!parsed[0]) {
-                client.sendError("Emoji can not parse: " + parsed);
+                client.sendError("Emo","Emoji can not parse: " + parsed);
                 return message.reply({
                     embeds: [{
                         description: "Emoji cung cấp không hợp lệ thử lại sau!",
@@ -45,7 +47,7 @@ module.exports = {
             } else {
                 message.reply({
                     embeds: [{
-                        title: "Emoji mặc định",
+                        title: "Emoji default",
                         image: { url: parsed[0].url },
                         color: client.config.DEF_COLOR
                     }], allowedMentions: { repliedUser: false }

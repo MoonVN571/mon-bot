@@ -34,7 +34,7 @@ module.exports = {
             }], allowedMentions: { repliedUser: false }
         }).then(msg => client.msgDelete(msg));
 
-        client.users.fetch(user).then(async user => {
+        client.users.fetch(user).then(async users => {
             if (!users) return message.reply({
                 embeds: [{
                     title: client.emoji.failed + "Sai thông tin!",
@@ -76,7 +76,7 @@ module.exports = {
         }).catch(err => {
             if(err.message == "Unknown User") return trys(message.author.id);
             message.botError();
-            client.sendError(message.errorInfo, e);
+            client.sendError(message.errorInfo, err);
         });
     },
 };

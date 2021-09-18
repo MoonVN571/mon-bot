@@ -38,14 +38,17 @@ module.exports = {
 
         // const channelId = message.member.voiceChannel;
 
-        const audioURL = getAudioUrl(args.join(' '), {
-            lang: 'qa',
+        const guildID = message.guild.id;
+        const dataAi = new Database({ path: './data/guilds/' + guildID + '.json' });
+        const aiLang = dataAi.get("tts-lang") || "vi";
+
+        const audioURL = await getAudioUrl(args.join(' '), {
+            lang: aiLang,
             slow: false,
             host: 'https://translate.google.com',
             timeout: 10000
         });
 
-        const guildID = message.guild.id;
 
         let speaking = client.tts.get(guildID + '.speaking');
         if (speaking) return message.reply({ content: "Bot đang nói hãy thử lại sau.", allowedMentions: { repliedUser: false } });
@@ -63,7 +66,7 @@ module.exports = {
             }
 
             const player = createAudioPlayer();
-            const resource = createAudioResource(locate);
+            const resource = await createAudioResource(locate);
 
             const connection = joinVoiceChannel({
                 channelId: voiceChannel.id,
@@ -76,7 +79,7 @@ module.exports = {
             client.tts.set(guildID + '.speaking', true);
             client.tts.set(guildID + '.timeout', Date.now() + ms('5m'));
 
-            player.play(resource);
+            await player.play(resource);
             client.tts.set(guildID + '.speaking', false);
 
             setTimeout(() => {
@@ -89,7 +92,8 @@ module.exports = {
                 if (!message.guild.me.voice) client.tts.delete(`${guildID}.timeout`);
             }, ms('5m') + 1000);
         } catch (err) {
-            client.sendError(err.message);
+            console.log(err);
+            client.sendError(message.errorInfo, err);
             message.reply({ content: "Bot xảy ra lỗi thử lại sau!", allowedMentions: { repliedUser: false } });
         }
     }

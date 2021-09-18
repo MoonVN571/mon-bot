@@ -1,6 +1,5 @@
 const Database = require('simplest.db');
 const { Client, Message } = require('discord.js');
-
 module.exports = {
     name: "give",
     description: "Chuyển tiền của bạn cho người khác",
@@ -34,9 +33,9 @@ module.exports = {
         if (!user || !args[1] || !args[0] || !user || isNaN(toCheck) || toCheck > pays || user.user.bot)
             return message.reply({
                 embeds: [{
-                    description: "Bạn phải đề cập người nhận hợp lệ và số tiền cần give.",
+                    description: "Bạn phải đề cập người nhận và số tiền give hợp lệ.",
                     color: "f10f0f"
-                }], allowedMentions: false
+                }], allowedMentions: { repliedUser: false }
             }).then(msg => client.msgDelete(msg));
 
 
@@ -48,8 +47,8 @@ module.exports = {
         userMoney.number.subtract('money', toCheck);
 
         message.reply({
-            emnbeds: [{
-                description: "Bạn đã chuyển cho " + user.user.toString() + " số tiền là " + toCheck + " " + client.emoji.dongxu + ".",
+            embeds: [{
+                description: "Bạn đã chuyển cho " + user.user.toString() + " số tiền " + Intl.NumberFormat().format(toCheck) + " " + client.emoji.dongxu + ".",
                 color: "0FF1CE"
             }], allowedMentions: { repliedUser: false }
         });

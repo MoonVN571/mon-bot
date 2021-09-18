@@ -16,7 +16,6 @@ module.exports = {
             data.delete(message.guild.id + "." + message.author.id);
             message.reply({
                 embeds: [{
-                    title: client.emoji.success + "Tắt AFK!",
                     description: "Bạn đã tắt chế độ afk thành công.",
                     color: client.config.DEF_COLOR
                 }], allowedMentions: { repliedUser: false }
@@ -32,8 +31,7 @@ module.exports = {
 
         message.reply({
             embeds: [{
-                title: client.emoji.success + "AFK Thành công!",
-                description: "Bạn đã đặt trạng thái là AFK. Gõ lại lệnh hoặc chat để tắt.\nCó ai đó gọi bạn mình sẽ bảo là bạn đang AFK!\n\nLời nhắn của bạn: " + msg,
+                description: "Bạn đã đặt trạng thái là AFK.\nLời nhắn của bạn: " + msg,
                 color: client.config.DEF_COLOR
             }], allowedMentions: { repliedUser: false }
         });

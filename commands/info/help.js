@@ -2,7 +2,7 @@ const { readdirSync } = require('fs');
 const Database = require('simplest.db');
 const { Client, Message, MessageEmbed } = require('discord.js');
 const { Admin } = require('../../config.json');
-
+const { pagination } = require('reconlx');
 module.exports = {
     name: "help",
     description: "Xem các lệnh có sẵn",
@@ -70,9 +70,18 @@ module.exports = {
             .setColor(client.config.DEF_COLOR)
             .setThumbnail(client.user.avatarURL());
 
-        readdirSync('./commands/').forEach(async dir => {
-            const commands = readdirSync(`./commands/${dir}/`).filter(file => file.endsWith('.js'));
+        
+        const defaultEmbed2 = new MessageEmbed()
+            .setAuthor("Help Command", message.guild.iconURL())
+            .setDescription(`\u300B Hãy gõ **${client.prefix}help <tên lệnh>** để biết thêm thông tin chi tiết!\n\u300B Bot hiện có **${totalCommands}** lệnh có sẵn.\u200b\n\u200b`)
+            .setTimestamp()
+            .setColor(client.config.DEF_COLOR)
+            .setThumbnail(client.user.avatarURL());
 
+        let countcategory = 0;
+        readdirSync('./commands/').forEach(async dir => {
+            countcategory++;
+            const commands = readdirSync(`./commands/${dir}/`).filter(file => file.endsWith('.js'));
             let cmds = [];
 
             commands.forEach((file) => {
@@ -82,16 +91,23 @@ module.exports = {
                 if (pull.name) cmds.push(pull.name);
             });
 
-            defaultEmbed.addField(dir.toUpperCase() + ` [${cmds.length}]:`, "``" + cmds.join("``, ``") + "``");
+            if(countcategory < 6) defaultEmbed.addField(dir.toUpperCase() + ` [${cmds.length}]:`, "``" + cmds.join("``, ``") + "``");
+            else defaultEmbed2.addField(dir.toUpperCase() + ` [${cmds.length}]:`, "``" + cmds.join("``, ``") + "``"); 
         });
 
-        await message.reply({ embeds: [defaultEmbed], allowedMentions: { repliedUser: false } }).then(() => {
-            if(message.guildId == "874862992238473286") return;
-            
-            let data = new Database({ path: "./data/footer.json" });
-            if (!data.get("text")) return;
-
-            message.channel.send(data.get("text"));
+        pagination({
+            channel: message.channel,
+            author: message.author,
+            time: 60000,
+            embeds: [defaultEmbed,defaultEmbed2]
         });
+
+        message.channel.send("Các nút chuyển trang sẽ hết hạn sau 60 giây.")
+        .then(msg => client.msgDelete(msg, 10000));
+
+        let data = new Database({ path: "./data/footer.json" });
+        if (!data.get("text")) return;
+
+        message.channel.send(data.get("text"));
     }
 }

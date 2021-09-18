@@ -66,7 +66,7 @@ module.exports = {
                 giveaway: "**GIVEAWAY** đã bắt đầu!",
                 giveawayEnded: "**GIVEAWAY** đã kết thúc!",
                 winMessage: {
-                    content: "Chúc mừng, \n{winners}\n\Các bạn đã trúng giải: **{this.prize}**! Được tổ chức bởi {this.hostedBy}",
+                    content: "Chúc mừng, \n{winners}\n\nGiải thưởng: **{this.prize}**!\nĐược tổ chức bởi {this.hostedBy}",
                     embed: new MessageEmbed()
                         .setDescription("[Chuyển đến tin nhắn]({this.messageURL})").setColor("303136")
                 },

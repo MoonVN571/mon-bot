@@ -8,10 +8,10 @@ module.exports = {
     execute(client, message, args) {
         const data = new Database({path: './data/vote.json'});
         let lastVote = data.get(`${message.author.id}.last-vote`);
-        if(lastVote || lastVote < Date.now() + ms('12h')) {
+        if(lastVote || (Date.now() - (lastVote + ms('12h')))) {
             message.reply({
                 embeds: [{ // now - hien tai  = time | 
-                    description: "Bạn đã vote cho bot rồi! Hãy đợi ``" + calculate((lastVote + ms('12h')) - Date.now()) + "`` để vote lại...",
+                    description: "Bạn đã vote cho bot rồi! Hãy đợi ``" + calculate((Date.now() - (lastVote + ms('12h')))) + "`` để vote tiếp tục vote...",
                     color: "0FF1CE"
                 }], allowedMentions: { repliedUser: false }
             });

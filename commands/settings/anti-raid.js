@@ -29,7 +29,6 @@ module.exports = {
 
         if (!args[0] || !(args[0] == "on" || args[0] == "off")) return message.reply({
             embeds: [{
-                title: client.emoji.failed + "Thiếu thông tin!",
                 description: "Bạn phải nhập on hoặc off để bật hoặc tắt tính năng.\n\nVí dụ: " + client.prefix + "anti-raid <on/off>",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }

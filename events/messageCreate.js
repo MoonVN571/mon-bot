@@ -8,8 +8,11 @@ const delay = new Collection();
 client.on('messageCreate', async (message) => {
     if (message.author.bot || message.author === client.user || !message.guild) return;
 
+
     const guildID = message.guild.id;
     const authorID = message.author.id;
+
+    const errorInfo = `\`\`Server ID: ${guildID} - Name: ${message.guild.name}\`\``; 
 
     const isTag = message.mentions.members.first();
 
@@ -33,23 +36,24 @@ client.on('messageCreate', async (message) => {
     const aiLang = dataAi.get("ai-lang");
 
     if (message.channel.id == isAiChannel) {
-        if(!message.guild.me.permissions.has(Permissions.FLAGS.SEND_MESSAGES)) return client.sendError(`GUILD: ${message.guild.name} - ID: ${message.guild.id}\nText: No Perm to chat`);
-        axios({
+        // if(!message.guild.me.permissions.has(Permissions.FLAGS.SEND_MESSAGES)) return client.sendError(`GUILD: ${message.guild.name} - ID: ${message.guild.id}\nText: No Perm to chat`);
+
+        await axios({
             method: "get",
             url: "https://api.simsimi.net/v2/?text=" + encodeURIComponent(message.content) + "&lc=" + aiLang ? aiLang : "vn",
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "x-www-form-urlencoded"
             }
-        }).then(callback => {
+        }).then(async callback => {
+            console.log(callback.data.success);
             if (!callback.data.success) return;
-            // console.log(callback.data.success);
-            message.channel.send(callback.data.success).catch(err => {
-                client.sendError(err);
+            await message.channel.send(callback.data.success).catch(err => {
+                client.sendError("Chat err", err);
             });
         }).catch(e => {
             // console.log(e.toString());
-            client.sendError(e);
+            // if(e.split("").length != 0) client.sendError("Simsimi", e);
         });
     }
 
@@ -156,8 +160,7 @@ client.on('messageCreate', async (message) => {
         }).then(msg => client.msgDelete(msg, 2000));
     }
     message.botError = botError;
-
-    message.errorInfo = `\`\`\`Server ID: ${guildID} - Name: ${message.guild.name} - Command: ${cmd.name}\`\`\`\n`;
+    message.errorInfo = cmd.name + " | " + errorInfo;
 
     client.sendLog(`[${new Date().toLocaleString()}] ${message.guild.name} | ${message.channel.name} | ${message.author.tag} - ${message.author.id} : ${message.content}`);
 

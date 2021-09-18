@@ -1,6 +1,6 @@
 const Database = require('simplest.db');
 const { Permissions } = require('discord.js');
-
+const axios = require('axios');
 module.exports = {
     name: "ai-language",
     description: "Thay đôi ngôn ngữ AI chat",
@@ -45,7 +45,7 @@ module.exports = {
         
         axios({
             method: "get",
-            url: "https://api.simsimi.net/v2/?text=checkailang&lc=" + args[0],
+            url: "https://api.simsimi.net/v2/?text=hi&lc=" + args[0],
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "x-www-form-urlencoded"
@@ -74,8 +74,13 @@ module.exports = {
                 }], allowedMentions: { repliedUser: false }
             });
         }).catch(e => {
-            // console.log(e.toString());
-            client.sendError(message.errorInfo, e);
+            // client.sendError(message.errorInfo, e);
+            return message.reply({
+                embeds: [{
+                    description: "Ngôn ngữ không hợp lệ!",
+                    color: client.config.ERR_COLOR
+                }], allowedMentions: { repliedUser: false }
+            }).then(msg => client.msgDelete(msg));
         });
     }
 }

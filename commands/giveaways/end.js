@@ -47,17 +47,15 @@ module.exports = {
              
             return message.reply({
                 embeds: [{
-                    title: client.emoji.success + "Thành công!",
-                    description: "Bạn đã kết thúc giveaway.",
-                    color: client.config.ERR_COLOR
+                    description: "Bạn đã kết thúc giveaway này thành công!",
+                    color: client.config.DEF_COLOR
                 }], allowedMentions: { repliedUser: false }
             });
         }).catch((err) => {
             if (err.toString().startsWith("No giveaway found with message Id"))
             return message.reply({
                 embeds: [{
-                    title: client.emoji.failed + "Sai ID!",
-                    description: "Không tìm thấy id giveaway này.",
+                    description: "Không tìm thấy id tin nhắn giveaway này.",
                     color: client.config.ERR_COLOR
                 }], allowedMentions: { repliedUser: false }
             });
@@ -65,8 +63,7 @@ module.exports = {
             if (err.toString().includes("Giveaway with message Id"))
             return message.reply({
                 embeds: [{
-                    title: client.emoji.failed + "Sai ID!",
-                    description: "Giveaway này đã kết thúc.",
+                    description: "Giveaway này đã kết thúc!",
                     color: client.config.ERR_COLOR
                 }], allowedMentions: { repliedUser: false }
             });

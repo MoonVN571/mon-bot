@@ -46,7 +46,6 @@ module.exports = {
         }).then(() => {
             message.reply({
                 embeds: [{
-                    title: client.emojis.success + "Rerolled!",
                     description: "Bạn đã reroll giveaway này thành công!",
                     COLOR: client.config.DEF_COLOR
                 }], allowedMentions: { repliedUser: false }

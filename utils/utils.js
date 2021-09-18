@@ -78,7 +78,7 @@ async function download(dir, url) {
         responseType: 'stream',
         headers: { 'Authorization': 'Basic ' + key }
     });
-    response.data.pipe(Fs.createWriteStream(dir).catch(console.error))
+    response.data.pipe(Fs.createWriteStream(dir))
     return new Promise((resolve, reject) => {
         response.data.on('end', () => {
             resolve();
@@ -123,7 +123,7 @@ function calculate(time) {
     hours = parseInt(((temp - days * 86400) / 3600));
     minutes = parseInt(((temp - days * 86400 - hours * 3600)) / 60);
     
-    if(hours < 0 || !hours) {
+    if(hours == 0 || !hours) {
         seconds = (temp % 60).toFixed(1);
     } else {
         seconds = parseInt(temp % 60);

@@ -1,6 +1,6 @@
 const Database = require('simplest.db');
 const { Permissions } = require('discord.js');
-
+const axios = require('axios');
 module.exports = {
     name: "tts-language",
     description: "Thay đôi ngôn ngữ TTS",
@@ -16,7 +16,7 @@ module.exports = {
             }], allowedMentions: { repliedUser: false }
         }).then(msg => client.msgDelete(msg));
 
-        let data = new Database({ path: "./data/guilds/" + message.guild.id + ".json" });
+        const data = new Database({ path: "./data/guilds/" + message.guild.id + ".json" });
 
         if (!args[0]) return message.reply({
             embeds: [{

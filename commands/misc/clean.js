@@ -1,5 +1,4 @@
-const { Client, Message } = require('discord.js');
-
+const { Client, Message, Permissions } = require('discord.js');
 module.exports = {
     name: 'clean',
     description: 'Xoá các tin nhắn đã gửi của bot trong kênh này',
