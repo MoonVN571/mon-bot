@@ -163,9 +163,6 @@ function getAge(time, debug) {
     if(days > 0)    string = days    + " ngày " + string;
     if(months > 0)  string = months  + " tháng " + string;
     if(years > 0)   string = years    + " năm " + string;
-
-    if (years > 0) string = years + " năm " + string;
-
     return string;
 }
 
