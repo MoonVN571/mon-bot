@@ -18,7 +18,7 @@ module.exports = {
     async execute(client, message, args) {
         if (!message.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return message.reply({
             embeds: [{
-                decsription: "Bạn không có quyền để sử dụng lệnh này.",
+                description: "Bạn không có quyền để sử dụng lệnh này.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         }).then(msg => client.msgDelete(msg));

@@ -17,7 +17,7 @@ module.exports = {
 
         let content = message.content.split(args[0])[1];
 
-        if (content.length > 50) return message.reply({
+        if (content && content.split("").length > 100) return message.reply({
             embeds: [{
                 description: "Bạn cung cấp quá nhiều từ thử lại sau!",
                 color: client.config.ERR_COLOR

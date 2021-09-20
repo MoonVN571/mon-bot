@@ -12,7 +12,7 @@ module.exports = {
 
         let checkAfk = data.get(message.guild.id + "." + message.author.id);
 
-        if (checkAfk) {
+        if (checkAfk && (args.length || !args.join(" "))) {
             data.delete(message.guild.id + "." + message.author.id);
             message.reply({
                 embeds: [{

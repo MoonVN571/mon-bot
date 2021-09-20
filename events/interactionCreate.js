@@ -1,31 +1,25 @@
-const client = require("../index");
+const client = require('../index');
 
 client.on('interactionCreate', async (interaction) => {
-    if (interaction.isCommand()) {
-        await interaction.deferReply({ ephemeral: false }).catch(() => {});
+    if(!interaction.isCommand()) return;
 
-        const cmd = client.slashCommands.get(interaction.commandName);
-        if (!cmd)
-            return interaction.followUp({ content: "An error has occured " });
+    const errorInfo = `\`\`Server ID: ${guildID} - Name: ${message.guild.name}\`\``; 
 
-        const args = [];
+    await interaction.deferReply();
 
-        for (let option of interaction.options.data) {
-            if (option.type === "SUB_COMMAND") {
-                if (option.name) args.push(option.name);
-                option.options?.forEach((x) => {
-                    if (x.value) args.push(x.value);
-                });
-            } else if (option.value) args.push(option.value);
-        }
+    const cmd = client.slashCommands.get(interaction.commandName);
+    if(!cmd) return;
 
-        cmd.run(client, interaction, args);
+    const args = [];
+
+    for (let option of interaction.options.data) {
+        if (option.type === "SUB_COMMAND") {
+            if (option.name) args.push(option.name);
+            option.options?.forEach((x) => {
+                if (x.value) args.push(x.value);
+            });
+        } else if (option.value) args.push(option.value);
     }
-
-    // Context Menu Handling
-    if (interaction.isContextMenu()) {
-        await interaction.deferReply({ ephemeral: false });
-        const command = client.slashCommands.get(interaction.commandName);
-        if (command) command.run(client, interaction);
-    }
-});
+    
+    await cmd.execute(client, interaction, args);
+})

@@ -36,19 +36,14 @@ client.on('messageCreate', async (message) => {
     const aiLang = dataAi.get("ai-lang");
 
     if (message.channel.id == isAiChannel) {
-        // if(!message.guild.me.permissions.has(Permissions.FLAGS.SEND_MESSAGES)) return client.sendError(`GUILD: ${message.guild.name} - ID: ${message.guild.id}\nText: No Perm to chat`);
+        if(!message.guild.me.permissions.has(Permissions.FLAGS.SEND_MESSAGES)) return client.sendError(`GUILD: ${message.guild.name} - ID: ${message.guild.id}\nText: No Perm to chat`);
 
-        await axios({
-            method: "get",
-            url: "https://api.simsimi.net/v2/?text=" + encodeURIComponent(message.content) + "&lc=" + aiLang ? aiLang : "vn",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "x-www-form-urlencoded"
-            }
+        axios({
+            method: "GET",
+            url: "https://api.simsimi.net/v2/?text=" + encodeURIComponent(message.content) + "&lc=" + (aiLang ? aiLang : "vn")+ "&cf=true",
         }).then(async callback => {
-            console.log(callback.data.success);
-            if (!callback.data.success) return;
-            await message.channel.send(callback.data.success).catch(err => {
+            if (!callback.data || !callback.data.messages[0]) return;
+            await message.channel.send(callback.data.messages[0].text).catch(err => {
                 client.sendError("Chat err", err);
             });
         }).catch(e => {

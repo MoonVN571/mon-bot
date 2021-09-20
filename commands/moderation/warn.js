@@ -74,6 +74,8 @@ module.exports = {
         const dataWarn = new Database({ path: "./data/warnings/" + message.guild.id + ".json" });
         let userWarns = dataWarn.get(member.user.id) || "đầu";
 
+        if(!dataWarn.get(member.user.id)) dataWarn.number.add(member.user.id, 1);
+
         dataWarn.number.add(member.user.id, 1);
 
         message.reply({

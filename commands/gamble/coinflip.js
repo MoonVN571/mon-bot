@@ -14,7 +14,6 @@ module.exports = {
 
         if (money <= 0 || (money < +args[1])) return message.reply({
             embeds: [{
-                title: client.emoji.dongxu + "Tung đồng xu",
                 description: "Bạn không có đủ tiền để chơi",
                 color: "f10f0f"
             }], allowedMentions: { repliedUser: false }
