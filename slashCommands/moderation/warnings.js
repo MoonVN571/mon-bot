@@ -9,7 +9,7 @@ module.exports = {
         const userData = new Database({ path: './data/warnings/' + interaction.guild.id + ".json" });
         let count = userData.get(interaction.member.user.id) || 0;
 
-        interaction.followUp({
+        await interaction.reply({
             embeds: [{
                 description: "Bạn có " + count + " cảnh cáo!",
                 color: client.config.DEF_COLOR

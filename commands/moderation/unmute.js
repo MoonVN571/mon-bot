@@ -17,7 +17,7 @@ module.exports = {
      */
     async execute(client, message, args) {
         if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)
-        ) return interaction.followUp({
+        ) return message.reply({
             embeds: [{
                 description: "Bạn không có quyền ``Quản lí Tin nhắn`` để dùng lệnh này.",
                 color: client.config.ERR_COLOR
@@ -25,7 +25,7 @@ module.exports = {
         }).then(msg => client.msgDelete(msg));
 
         if (!message.guild.me.permissions.has(Permissions.FLAGS.MANAGE_ROLES)
-        ) return interaction.followUp({
+        ) return message.reply({
             embeds: [{
                 description: "Bot không có quyền ``Quản l1i Role`` để bỏ Mute người này.",
                 color: client.config.ERR_COLOR
@@ -33,7 +33,7 @@ module.exports = {
         }).then(msg => client.msgDelete(msg));
 
 
-        if (!args[0]) return interaction.followUp({
+        if (!args[0]) return message.reply({
             embeds: [{
                 description: "Bạn phải cung cấp người dùng cần mute.\nCách sử dụng: " + client.prefix + "unmute <tag/id> [lí do]",
                 footer: {text:"Cú pháp <>: Bắt buộc - []: Không bắt buộc"},
@@ -49,7 +49,7 @@ module.exports = {
         const reason = args.join(" ").split(args[0] + " ")[1] || "Không có";
         const member = message.guild.members.cache.get(userToMute);
 
-        if (!member.roles.cache.some(r => r.name == "Muted")) return interaction.followUp({
+        if (!member.roles.cache.some(r => r.name == "Muted")) return message.reply({
             embeds: [{
                 description: "Bạn đã cung cấp người dùng chưa bị mute.",
                 color: client.config.ERR_COLOR
@@ -57,7 +57,7 @@ module.exports = {
         }).then(msg => client.msgDelete(msg));
 
         // check position role
-        if (message.guild.me.roles.highest.position < getMuteRole.position) return interaction.followUp({
+        if (message.guild.me.roles.highest.position < getMuteRole.position) return message.reply({
             embeds: [{
                 description: "Role ``Muted`` phải ở dưới role cao nhất của bot.",
                 color: client.config.ERR_COLOR
@@ -66,7 +66,7 @@ module.exports = {
 
         // remove role member to user
         member.roles.remove(getMuteRole, "UN-MUTED, reason: " + reason).then(member => {
-            interaction.followUp({
+            message.reply({
                 embeds: [{
                     description: "Bạn đã bỏ mute " + member.user.toString() + " với lí do: " + reason + ".",
                     color: client.config.DEF_COLOR

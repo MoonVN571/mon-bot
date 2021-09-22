@@ -23,39 +23,43 @@ module.exports = {
         let userToMute = interaction.options.getMember("user");
 
         if (!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)
-        ) return interaction.followUp({
+        ) return await interaction.reply({
             embeds: [{
                 description: "Bạn không có quyền ``Quản lí Tin nhắn`` để dùng lệnh này.",
                 color: client.config.ERR_COLOR
-            }], allowedMentions: { repliedUser: false }
-        }).then(msg => client.msgDelete(msg));
+            }], allowedMentions: { repliedUser: false },
+            ephemeral: true
+        });
 
         if (!interaction.guild.me.permissions.has(Permissions.FLAGS.MANAGE_ROLES)
-        ) return interaction.followUp({
+        ) return await interaction.reply({
             embeds: [{
                 description: "Bot không có quyền ``Quản lí Role`` để bỏ Mute người này.",
                 color: client.config.ERR_COLOR
-            }], allowedMentions: { repliedUser: false }
-        }).then(msg => client.msgDelete(msg));
+            }], allowedMentions: { repliedUser: false },
+            ephemeral: true
+        });
 
         let getMuteRole = interaction.guild.roles.cache.find(role => role.name == "Muted");
 
         const member = await interaction.guild.members.fetch(userToMute);
 
-        if (!member.roles.cache.some(r => r.name == "Muted")) return interaction.followUp({
+        if (!member.roles.cache.some(r => r.name == "Muted")) return await interaction.reply({
             embeds: [{
                 description: "Bạn đã cung cấp người dùng chưa bị mute.",
                 color: client.config.ERR_COLOR
-            }], allowedMentions: { repliedUser: false }
-        }).then(msg => client.msgDelete(msg));
+            }], allowedMentions: { repliedUser: false },
+            ephemeral: true
+        });
 
         // check position role
-        if (interaction.guild.me.roles.highest.position < getMuteRole.position) return interaction.followUp({
+        if (interaction.guild.me.roles.highest.position < getMuteRole.position) return await interaction.reply({
             embeds: [{
                 description: "Role ``Muted`` phải ở dưới role cao nhất của bot.",
                 color: client.config.ERR_COLOR
-            }], allowedMentions: { repliedUser: false }
-        }).then(msg => client.msgDelete(msg));
+            }], allowedMentions: { repliedUser: false },
+            ephemeral: true
+        });
 
         // remove role member to user
         member.roles.remove(getMuteRole, "UN-MUTED, Un muted by " + interaction.member.user.tag).then(async member => {
@@ -66,7 +70,7 @@ module.exports = {
                 color: client.config.DEF_COLOR
             }]}).catch(()=> {});
 
-            interaction.followUp({
+            await interaction.reply({
                 embeds: [{
                     description: "Bạn đã bỏ mute " + member.user.toString() + ".",
                     color: client.config.DEF_COLOR

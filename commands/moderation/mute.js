@@ -18,7 +18,7 @@ module.exports = {
             // || message.member.permissions.has(Permissions.FLAGS.MANAGE_ROLES)
         ) return message.reply({
             embeds: [{
-                description: "Bạn không có quyền `Quản lí Tin nhắn` để dùng lệnh này.",
+                description: "Bạn không có quyền ``Quản lí Tin nhắn`` để dùng lệnh này.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         });

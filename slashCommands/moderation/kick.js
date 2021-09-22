@@ -30,49 +30,55 @@ module.exports = {
         let user = interaction.options.getMember("user");
         let reason = interaction.options.getString("reason") || "Không có";
 
-        if (!interaction.member.permissions.has(Permissions.FLAGS.KICK_MEMBERS)) return interaction.followUp({
+        if (!interaction.member.permissions.has(Permissions.FLAGS.KICK_MEMBERS)) return await interaction.reply({
             embeds: [{
-                decsription: "Bạn không có quyền để sử dụng lệnh này.",
+                description: "Bạn không có quyền để sử dụng lệnh này.",
                 color: client.config.ERR_COLOR
-            }], allowedMentions: { repliedUser: false }
-        }).then(msg => client.msgDelete(msg));
+            }], allowedMentions: { repliedUser: false },
+            ephemeral: true
+        });
         
-        if (!interaction.guild.me.permissions.has(Permissions.FLAGS.KICK_MEMBERS)) return interaction.followUp([{
+        if (!interaction.guild.me.permissions.has(Permissions.FLAGS.KICK_MEMBERS)) return await interaction.reply([{
             embeds: [{
                 description: "Bot không đủ quyền để cấm người dùng.",
                 color: client.config.ERR_COLOR
-            }], allowedMentions: { repliedUser: false }
-        }]).then(msg => client.msgDelete(msg));
+            }], allowedMentions: { repliedUser: false },
+            ephemeral: true
+        }]);
 
         const member = await interaction.guild.members.fetch(user);
 
-        if (userToKick == interaction.member.user.id) returninteraction.followUp({
+        if (userToKick == interaction.member.user.id) return await interaction.reply({
             embeds: [{
                 description: "Bạn không thể kick chính mình.",
                 color: client.config.ERR_COLOR
-            }], allowedMentions: { repliedUser: false }
-        }).then(msg => client.msgDelete(msg));
+            }], allowedMentions: { repliedUser: false },
+            ephemeral: true
+        });
 
-        if (member.user == client.user) returninteraction.followUp({
+        if (member.user == client.user) return await interaction.reply({
             embeds: [{
                 description: "Mình không thể đá chính mính.",
                 color: client.config.ERR_COLOR
-            }], allowedMentions: { repliedUser: false }
-        }).then(msg => client.msgDelete(msg));
+            }], allowedMentions: { repliedUser: false },
+            ephemeral: true
+        });
 
-        if (!member) returninteraction.followUp({
+        if (!member) return await interaction.reply({
             embeds: [{
                 description: "Bạn phải cung cấp người dùng trong server này.",
                 color: client.config.ERR_COLOR
-            }], allowedMentions: { repliedUser: false }
-        }).then(msg => client.msgDelete(msg));
+            }], allowedMentions: { repliedUser: false },
+            ephemeral: true
+        });
 
-        if (!member.kickable) returninteraction.followUp({
+        if (!member.kickable) return await interaction.reply({
             embeds: [{
                 description: "Bot không đủ quyền để kick người này.",
                 color: client.config.ERR_COLOR
-            }], allowedMentions: { repliedUser: false }
-        }).then(msg => client.msgDelete(msg));
+            }], allowedMentions: { repliedUser: false },
+            ephemeral: true
+        });
 
         // punish
         await member.send({embeds: [{
@@ -84,12 +90,12 @@ module.exports = {
 
         await sleep(2000);
 
-        await member.kick(reason).then(() => {
-            interaction.followUp({
+        await member.kick(reason).then(async() => {
+            await interaction.reply({
                 embeds: [{
                     description: "**" + member.user.tag + "** đã bị kick với lí do: *" + reason + "*.",
                     color: client.config.DEF_COLOR
-                }], allowedMentions: { repliedUser: false }
+                }], allowedMentions: { repliedUser: false },
             });
 
             const dataLogger = new Database({ path: './data/guilds/' + interaction.guild.id + ".json" });

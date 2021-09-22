@@ -24,19 +24,21 @@ module.exports = {
         let warnUser = interaction.options.getMember("user");
         
         if (!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_GUILD)
-        ) return interaction.followUp({
+        ) return interaction.reply({
             embeds: [{
                 description: "Bạn không có quyền ``Quản lí Server`` để dùng lệnh này.",
                 color: client.config.ERR_COLOR
-            }], allowedMentions: { repliedUser: false }
+            }], allowedMentions: { repliedUser: false },
+            ephemeral: true
         }).then(msg => client.msgDelete(msg));
 
         const member = await interaction.guild.members.fetch(userToMute);
-        if (!member) return interaction.followUp({
+        if (!member) return interaction.reply({
             embeds: [{
                 description: "Không tìm thấy người này trong server",
                 color: client.config.DEF_COLOR
-            }], allowedMentions: { repliedUser: false }
+            }], allowedMentions: { repliedUser: false },
+            ephemeral: true
         }).then(msg => client.msgDelete(msg));
 
         // lay guild id

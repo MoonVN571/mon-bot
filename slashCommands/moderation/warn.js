@@ -30,35 +30,38 @@ module.exports = {
         let reason = interaction.options.getString("reason") || "Không có";
 
         if (!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_GUILD)
-        ) return interaction.followUp({
+        ) return await interaction.reply({
             embeds: [{
                 description: "Bạn không có quyền ``Quản lí Server`` để dùng lệnh này.",
                 color: client.config.ERR_COLOR
-            }], allowedMentions: { repliedUser: false }
-        }).then(msg => client.msgDelete(msg));
+            }], allowedMentions: { repliedUser: false },
+            ephemeral: true
+        });
 
         const member = await interaction.guild.members.fetch(user);
 
-        if (member.user.bot) return interaction.followUp({
+        if (member.user.bot) return await interaction.reply({
             embeds: [{
                 description: "Bạn không thể cảnh cáo bot.",
                 color: client.config.DEF_COLOR
-            }], allowedMentions: { repliedUser: false }
-        }).then(msg => client.msgDelete(msg));
+            }], allowedMentions: { repliedUser: false },
+            ephemeral: true
+        });
 
-        if (member.user == interaction.member.user) return interaction.followUp({
+        if (member.user == interaction.member.user) return await interaction.reply({
             embeds: [{
                 description: "Bạn không thể cảnh cáo chính mình.",
                 color: client.config.DEF_COLOR
             }], allowedMentions: { repliedUser: false }
-        }).then(msg => client.msgDelete(msg));
+        });
 
-        if (!member) return interaction.followUp({
+        if (!member) return await interaction.reply({
             embeds: [{
                 description: "Không tìm thấy người này trong server.",
                 color: client.config.DEF_COLOR
-            }], allowedMentions: { repliedUser: false }
-        }).then(msg => client.msgDelete(msg));
+            }], allowedMentions: { repliedUser: false },
+            ephemeral: true
+        });
 
         // lay guild id
         const dataWarn = new Database({ path: "./data/warnings/" + interaction.guild.id + ".json" });
@@ -75,7 +78,7 @@ module.exports = {
             color: client.config.DEF_COLOR
         }]}).catch(()=> {});
 
-        interaction.followUp({
+        await interaction.reply({
             embeds: [{
                 description: "Bạn đã cảnh cáo **" + member.user.tag + "** lần " + userWarns + " với lí do: " + reason,
                 color: client.config.DEF_COLOR

@@ -29,51 +29,57 @@ module.exports = {
         let user = interaction.options.getMember("user");
         let reason = interaction.options.getString("reason") || "Không có";
 
-        if (!interaction.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return await interaction.followUp({
+        if (!interaction.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return await interaction.reply({
             embeds: [{
                 description: "Bạn không có quyền ``Ban Member`` để sử dụng lệnh này.",
                 color: client.config.ERR_COLOR
-            }], allowedMentions: { repliedUser: false }
-        }).then(msg => client.msgDelete(msg));
+            }], allowedMentions: { repliedUser: false },
+            ephemeral: true
+        });
 
-        if (!interaction.guild.me.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return await interaction.followUp([{
+        if (!interaction.guild.me.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return await interaction.reply([{
             embeds: [{
                 description: "Bot không có quyền ``Ban Member`` để cấm người dùng.",
                 color: client.config.ERR_COLOR
-            }], allowedMentions: { repliedUser: false }
-        }]).then(msg => client.msgDelete(msg));
+            }], allowedMentions: { repliedUser: false },
+            ephemeral: true
+        }]);
         
         let userToBan = user.user.id;
 
-        if (userToBan == interaction.user.id) return await interaction.followUp({
+        if (userToBan == interaction.user.id) return await interaction.reply({
             embeds: [{
                 description: "Bạn không thể cấm chính mình.",
                 color: client.config.ERR_COLOR
-            }], allowedMentions: { repliedUser: false }
-        }).then(msg => client.msgDelete(msg));
+            }], allowedMentions: { repliedUser: false },
+            ephemeral: true
+        });
 
-        if (user == client.user) return interaction.followUp({
+        if (user == client.user) return interaction.reply({
             embeds: [{
                 description: "Mình không thể ban chính mình.",
                 color: client.config.ERR_COLOR
-            }], allowedMentions: { repliedUser: false }
-        }).then(msg => client.msgDelete(msg));
+            }], allowedMentions: { repliedUser: false },
+            ephemeral: true
+        });
         
         const member = await interaction.guild.members.fetch(userToBan);
 
-        if (!member) return interaction.followUp({
+        if (!member) return interaction.reply({
             embeds: [{
                 description: "Bạn phải cung cấp người dùng trong server này.",
                 color: client.config.ERR_COLOR
-            }], allowedMentions: { repliedUser: false }
-        }).then(msg => client.msgDelete(msg));
+            }], allowedMentions: { repliedUser: false },
+            ephemeral: true
+        });
 
-        if (!member.bannable) return interaction.followUp({
+        if (!member.bannable) return interaction.reply({
             embeds: [{
                 description: "Bot không đủ quyền để cấm người này.",
                 color: client.config.ERR_COLOR
-            }], allowedMentions: { repliedUser: false }
-        }).then(msg => client.msgDelete(msg));
+            }], allowedMentions: { repliedUser: false },
+            ephemeral: true
+        });
 
         // punish
         await member.send({embeds: [{
@@ -85,8 +91,8 @@ module.exports = {
 
         await sleep(2000);
         
-        await member.ban({ days: 7, reason: reason }).then(() => {
-            interaction.followUp({
+        await member.ban({ days: 7, reason: reason }).then(async() => {
+            await interaction.reply({
                 embeds: [{
                     description: "**" + member.user.tag + "** đã bị cấm với lí do: *" + reason + "*.",
                     color: client.config.DEF_COLOR

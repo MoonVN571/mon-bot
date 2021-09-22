@@ -30,19 +30,21 @@ module.exports = {
         let reason = interaction.options.getString("reason") || "Không có";
 
         if (!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES))
-        return interaction.followUp({
+        return await interaction.reply({
             embeds: [{
-                description: "Bạn không có quyền quản lí tin nhắn để dùng lệnh này.",
+                description: "Bạn không có quyền ``Quản lí Tin nhắn`` để dùng lệnh này.",
                 color: client.config.ERR_COLOR
-            }], allowedMentions: { repliedUser: false }
+            }], allowedMentions: { repliedUser: false },
+            ephemeral: true
         });
 
         if (!interaction.guild.me.permissions.has(Permissions.FLAGS.MANAGE_CHANNELS)
-        ) return interaction.followUp({
+        ) return await interaction.reply({
             embeds: [{
                 description: "Bot không có quyền ``Quản lí Kênh`` để mute người này.",
                 color: client.config.ERR_COLOR
-            }], allowedMentions: { repliedUser: false }
+            }], allowedMentions: { repliedUser: false },
+            ephemeral: true
         });
 
         // Find and check role
@@ -55,11 +57,12 @@ module.exports = {
 
         const member = await interaction.guild.members.fetch(user);
 
-        if (member.user == client.user) return interaction.followUp({
+        if (member.user == client.user) return await interaction.reply({
             embeds: [{
                 description: "Mình không thể mute chính mính.",
                 color: client.config.ERR_COLOR
-            }], allowedMentions: { repliedUser: false }
+            }], allowedMentions: { repliedUser: false },
+            ephemeral: true
         });
 
         // first time
@@ -77,19 +80,21 @@ module.exports = {
             });
         }
 
-        if (member.roles.cache.some(r => r.name == "Muted")) return interaction.followUp({
+        if (member.roles.cache.some(r => r.name == "Muted")) return  await interaction.reply({
             embeds: [{
                 description: "Người đã bị mute từ trước.",
                 color: client.config.ERR_COLOR
-            }], allowedMentions: { repliedUser: false }
-        }).then(msg => client.msgDelete(msg, 5000));
+            }], allowedMentions: { repliedUser: false },
+            ephemeral: true
+        });
 
         // check position role
-        if (interaction.guild.me.roles.highest.position < getMuteRole.position) return interaction.followUp({
+        if (interaction.guild.me.roles.highest.position < getMuteRole.position) return  await interaction.reply({
             embeds: [{
                 description: "Role ``Muted`` phải ở dưới role cao nhất của bot.",
                 color: client.config.ERR_COLOR
-            }], allowedMentions: { repliedUser: false }
+            }], allowedMentions: { repliedUser: false },
+            ephemeral: true
         });
 
         member.roles.add(getMuteRole, "MUTED, reason: " + reason).then(async member => {
@@ -97,10 +102,10 @@ module.exports = {
                 title: "MUTED",
                 description: "Bạn đã bị mute tại server **" + interaction.guild.name + "**, lí do: *" + reason + "*.",
                 timestamp: new Date(),
-                color: client.config.DEF_COLOR
+                color: client.config.DEF_COLOR,
             }]}).catch(()=> {});
     
-            interaction.followUp({
+             await interaction.reply({
                 embeds: [{
                     description: "Bạn đã mute " + member.user.toString() + " với lí do: " + reason + ".",
                     color: client.config.DEF_COLOR
