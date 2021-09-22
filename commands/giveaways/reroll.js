@@ -2,7 +2,10 @@ const { Client, Message, MessageEmbed } = require('discord.js');
 const Database = require('simplest.db');
 module.exports = {
     name: "reroll",
+    description: "Lấy người thắng mởi của giveaway",
     aliases: ['rr'],
+    ex: "<PREFIX>reroll <EXAMPLE_ID>",
+    usage: "<PREFIX>rr <ID GA>",
     /**
      * 
      * @param {Client} client 
@@ -10,22 +13,22 @@ module.exports = {
      * @param {String[]} args 
      */
     async execute(client, message, args) {
+        if (!args[0])
+            return message.reply({
+                embeds: [{
+                    description: "Cung cấp ID tin nhắn giveaway.\nCách sử dụng: " + client.prefix + "rr <ID>",
+                    color: client.config.ERR_COLOR
+                }], allowedMentions: { repliedUser: false }
+            }).then(msg => client.msgDelete(msg));
+
         // check author
-        const dataAuthor = new Database({ path: "./databases/giveaway/author.json" });
+        const dataAuthor = new Database({ path: "./data/giveaway/author.json" });
 
         // check author of message id
         if (dataAuthor.get(args[0]) != message.author.id)
             return message.reply({
                 embeds: [{
                     description: "Bạn không sỡ hữu giveaway này.",
-                    color: client.config.ERR_COLOR
-                }], allowedMentions: { repliedUser: false }
-            }).then(msg => client.msgDelete(msg));
-
-        if (!args[0])
-            return message.reply({
-                embeds: [{
-                    description: "Cung cấp ID tin nhắn giveaway.\nCách sử dụng: " + client.prefix + "rr <ID>",
                     color: client.config.ERR_COLOR
                 }], allowedMentions: { repliedUser: false }
             }).then(msg => client.msgDelete(msg));

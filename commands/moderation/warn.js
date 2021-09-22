@@ -109,7 +109,7 @@ module.exports = {
                         inline: true
                     }, {
                         name: "Lí do cảnh cáo",
-                        value: reason + " (" + userWarns + "warns)",
+                        value: reason + " (" + userWarns + " cảnh cáo)",
                         inline: false
                     },
                 ],

@@ -8,7 +8,8 @@ const client = new Client({
         Intents.FLAGS.GUILD_PRESENCES,
         Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
         Intents.FLAGS.GUILD_WEBHOOKS
-    ]
+    ],
+    allowedMentions: { parse: ['users'] }
 });
 
 module.exports = client;
@@ -85,12 +86,13 @@ async function sendWarn(error) {
 }
 
 async function sendLog(content) {
-    console.log(content);
+    // console.log(content);
     if(!content) return;
     hook("Send Logs", process.env.WEBHOOK_LOGS, `\`\`\`${content}\`\`\``);
 }
 
 function msgDelete(msg,timeout) {
+    if(!msg) return;
     if(!timeout) timeout = 5000;
     if(msg.deletable) setTimeout(() => msg.delete(), timeout);
 }

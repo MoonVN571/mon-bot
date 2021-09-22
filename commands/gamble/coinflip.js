@@ -21,7 +21,7 @@ module.exports = {
 
         let sotien = args[1];
 
-        if (!sotien) sotien = args[0];
+        if (!sotien) sotien = args[0] || 1;
         if (sotien === "all") sotien = getMoney(message.author.id);
         if (sotien > maxBet) sotien = maxBet;
 

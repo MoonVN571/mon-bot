@@ -1,5 +1,4 @@
 const ms = require('ms');
-
 module.exports = {
     name: "reminder",
     description: "Nhắc nhở cho bạn.",

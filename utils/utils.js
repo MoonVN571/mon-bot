@@ -1,6 +1,7 @@
 const Axios = require('axios');
 const Canvas = require('canvas');
 const Fs = require('fs');
+const ms = require('ms');
 
 require("dotenv").config();
 
@@ -18,6 +19,75 @@ function trimText(arr, maxLen, text) {
         arr.push(text.replace("{COUNT}", len));
     }
     return arr;
+}
+
+function checkDupe(arr) {
+    return arr.some( function(item) {
+        if(!isNaN(item)) return;
+        return arr.indexOf(item) !== arr.lastIndexOf(item);
+    });
+}
+
+function getTick(time){
+    var hms = '';
+
+    let checkValid = checkDupe(time.split(""));
+    if(checkValid) return false;
+
+    if(ms(time)) hms = ms(time, { long: true}) / 1000;
+
+    if(!ms(time)) {
+        let checkHM = time.includes("h") && time.includes("m");
+        let checkMS = time.includes("s") && time.includes("s");
+        let checkHS = time.includes("h") && time.includes("s");
+        let checkHMS = time.includes("h") &&time.includes("m") && time.includes("s");
+
+        if(!checkHS && !checkHM && !checkHMS) return false;
+        // check valid time
+
+        if(checkHM) {
+            // valid format tiime
+            if(checkArr(time.split(""))) {
+                console.log("1",time);
+                hms = `${time.split("h")[0]}:${time.split("m")[0].split("h")[1]}:00`;
+            }
+        } else if(checkHS) {
+            // valid format tiime
+            if(checkArr(time.split(""))) {
+                console.log("2",time);
+                hms = `${time.split("h")[0]}:00:${time.split("h")[1].split("s")[0]}`;
+            }
+        } else if(checkMS) {
+            if(checkArr(time.split(""))) {
+                console.log("2",time);
+                hms = `00:${time.split("m")[0]}:${time.split("m")[1].split("s")[0]}`;
+            }
+        } else if(checkHMS) {
+            // valid format tiime
+            if(checkArr(time.split(""))) {
+                console.log(time);
+                hms = `${time.split("h")[0]}:${time.split("m")[0].split("h")[1]}:${time.split("m")[1].split("s")[0]}`
+            }
+        }
+
+        async function checkArr(data) {
+            let stt = true; 
+            data.forEach(v => {
+                if(isNaN(v) && !(v == "h" || v == "m" || v == "s"))  stt = false;
+            });
+            return stt;
+        }
+
+    }
+
+    var a;
+    if(isNaN(hms)) a = hms.split(':');
+    if(a) var seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]); 
+    
+    if(!isNaN(hms)) var seconds = hms;
+
+    if(!seconds) return false;
+    return seconds * 1000;
 }
 
 /**
@@ -123,7 +193,7 @@ function calculate(time, ga) {
     hours = parseInt(((temp - days * 86400) / 3600));
     minutes = parseInt(((temp - days * 86400 - hours * 3600)) / 60);
     
-    if(hours == 0 || !hours) {
+    if(minutes == 0 || hours == 0 || !minutes || !hours) {
         seconds = (temp % 60).toFixed(1);
     } else {
         seconds = parseInt(temp % 60);
@@ -134,7 +204,7 @@ function calculate(time, ga) {
     var string = "1 giây";
     if(seconds > 0) string = seconds + " giây";
     if(minutes > 0) string = minutes + " phút " + string;
-    if(hours > 0)   string = hours   + " phút " + string;
+    if(hours > 0)   string = hours   + " giờ " + string;
     if(days > 0)    string = days    + " ngày " + string;
     return string;
 }
@@ -217,5 +287,6 @@ module.exports = {
     validImageUrl,
     sodep,
     sleep,
-    trimText
+    trimText,
+    getTick
 };

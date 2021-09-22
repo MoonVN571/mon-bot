@@ -5,7 +5,7 @@ module.exports = {
     name: "tts-language",
     description: "Thay đôi ngôn ngữ TTS",
     delay: 5,
-    usage: "<PREFIX>tts-language [ngôn ngữ]",
+    usage: "<PREFIX>tts-language <ngôn ngữ>",
     ex: "<PREFIX>tts-language vn",
 
     execute(client, message, args) {

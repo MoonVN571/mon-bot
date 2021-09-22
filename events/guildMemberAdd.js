@@ -40,38 +40,53 @@ client.on('guildMemberAdd', async (member) => {
     if (!welcome) return;
     if (!client.channels.cache.get(welcome)) return guildData.delete('welcome-channel');
 
-    const canvas = Canvas.createCanvas(700, 250)
-    const ctx = canvas.getContext('2d')
-
-    let background = await Canvas.loadImage('./assets/welcome/background.png');
-
-    if (guildData.get('has-image')) background = await Canvas.loadImage('./assets/welcome/' + member.guild.id + ".png");
-
-    let x = 0
-    let y = 0
-    ctx.drawImage(background, x, y)
-
-    const pfp = await Canvas.loadImage(
-        member.user.displayAvatarURL({
-            format: 'png', size: 128,
-        })
-    )
-    x = canvas.width / 2 - pfp.width / 2
-    y = 25
-    ctx.drawImage(pfp, x, y)
-
-    ctx.fillStyle = '#ffffff'
-    ctx.font = '35px sans-serif'
-    let text = `Chào mừng, ${member.user.username}`
-    x = canvas.width / 2 - ctx.measureText(text).width / 2
-    ctx.fillText(text, x, 60 + pfp.height)
-
-    ctx.font = '30px sans-serif'
-    text = `Bạn là thành viên thứ ${member.guild.memberCount} của server!`
-    x = canvas.width / 2 - ctx.measureText(text).width / 2
-    ctx.fillText(text, x, 100 + pfp.height)
-
-    const attachment = new MessageAttachment(canvas.toBuffer())
-
+    const canvas = Canvas.createCanvas(1772, 633);
+    const ctx = canvas.getContext('2d');
+    
+    const background = await Canvas.loadImage(`./assets/welcome/welcome.png`);
+    ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+    ctx.strokeStyle = '#f2f2f2';
+    ctx.strokeRect(0, 0, canvas.width, canvas.height);
+    
+    var textString3 = `${member.user.username}`;
+    
+    if (textString3.length >= 14) {
+      ctx.font = 'bold 100px Genta';
+      ctx.fillStyle = '#f2f2f2';
+      ctx.fillText(textString3, 720, canvas.height / 2 + 20);
+    }
+    
+    else {
+      ctx.font = 'bold 150px Genta';
+      ctx.fillStyle = '#f2f2f2';
+      ctx.fillText(textString3, 720, canvas.height / 2 + 20);
+    }
+    
+    var textString2 = `#${member.user.discriminator}`;
+    ctx.font = 'bold 40px Genta';
+    ctx.fillStyle = '#f2f2f2';
+    ctx.fillText(textString2, 730, canvas.height / 2 + 58);
+    
+    var textString4 = `Bạn là thành viên thứ: #${member.guild.memberCount}`;
+    ctx.font = 'bold 60px Genta';
+    ctx.fillStyle = '#f2f2f2';
+    ctx.fillText(textString4, 750, canvas.height / 2 + 125);
+    
+    var textString4 = `${member.guild.name}`;
+    ctx.font = 'bold 60px Genta';
+    ctx.fillStyle = '#f2f2f2';
+    ctx.fillText(textString4, 700, canvas.height / 2 - 150);
+    
+    ctx.beginPath();
+    ctx.arc(315, canvas.height / 2, 250, 0, Math.PI * 2, true);//position of img
+    ctx.closePath();
+    ctx.clip();
+    
+    const avatar = await Canvas.loadImage(member.user.displayAvatarURL({ format: 'jpg' }));
+    
+    ctx.drawImage(avatar, 65, canvas.height / 2 - 250, 500, 500);
+    
+    const attachment = new MessageAttachment(canvas.toBuffer(), 'welcome-image.png');
+    
     client.channels.cache.get(welcome).send({ files: [attachment] });
 });

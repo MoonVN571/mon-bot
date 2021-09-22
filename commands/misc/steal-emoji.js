@@ -1,6 +1,5 @@
 const { Util, Permissions, Client, Message } = require('discord.js');
 const { download, remove } = require("../../utils/utils");
-
 module.exports = {
     name: "steal-emoji",
     description: "Nếu có nitro thì hãy trộm emoji cho máy chủ riêng của bạn.",
@@ -19,7 +18,7 @@ module.exports = {
     async execute(client, message, args) {
         if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS)) return message.reply({
             embeds: [{
-                description: "Bạn không có quyền ``MANAGE_EMOJIS_AND_STICKERS`` để dùng lệnh này.",
+                description: "Bạn không có quyền ``Quản lí Emojis`` để dùng lệnh này.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         }).then(msg => client.msgDelete(msg));
@@ -67,9 +66,9 @@ module.exports = {
 
         setTimeout(async() => {
             await message.reply({ embeds: [{
-                description: `Đã thêm **${countEmojis}** emoji mới: ${stealEmo.join(" ") ? stealEmo.join(" ") : "Không có"} .`,
+                description: `Có **${countEmojis}** emoji mới, đã thêm các emojis: ${stealEmo.join(" ") ? stealEmo.join(" ") : "Không có"} .`,
                 color: client.config.DEF_COLOR
-            }], allowedMentions: { repliedUser: false } });            
+            }], allowedMentions: { repliedUser: false } });
         }, 2000);
     }
 }

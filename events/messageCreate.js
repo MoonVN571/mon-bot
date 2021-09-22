@@ -3,7 +3,8 @@ const client = require('../index');
 const Database = require('simplest.db');
 const { calculate } = require('../utils/utils');
 const { Admin, dev } = require('../config.json');
-const { Collection, Permissions } = require('discord.js');
+const { Collection, Permissions, MessageEmbed } = require('discord.js');
+const { getFormat } = require('../utils/string');
 const delay = new Collection();
 client.on('messageCreate', async (message) => {
     if (message.author.bot || message.author === client.user || !message.guild) return;
@@ -86,12 +87,16 @@ client.on('messageCreate', async (message) => {
     let dataPrefix = new Database({ path: "./data/guilds/" + guildID + ".json" });
     const prefix = dataPrefix.get("prefix") || client.config.PREFIX;
 
-    if (message.content == `<@${client.user.id}>` || message.content == `<@!${client.user.id}>`) return message.reply({
-        embeds: [{
-            description: "Prefix của server là ``" + prefix + "``.",
-            color: client.config.DEF_COLOR
-        }], allowedMentions: { repliedUser: false }
-    });
+    if (message.content == `<@${client.user.id}>` || message.content == `<@!${client.user.id}>`){
+        if(!message.guild.me.permissions.has(Permissions.FLAGS.SEND_MESSAGES) || !message.guild.me.permissionsIn(message.channel).has(Permissions.FLAGS.SEND_MESSAGES)) return client.sendError(`GUILD: ${message.guild.name} - ID: ${message.guild.id}\nText: No Perm to chat`);
+
+        message.reply({
+            embeds: [{
+                description: "Prefix của server là ``" + prefix + "``.",
+                color: client.config.DEF_COLOR
+            }], allowedMentions: { repliedUser: false }
+        });
+    }
 
     let regex = /[a-z]|[A-Z]/i;
     if (message.content.split(" ")[0].match(regex)) {
@@ -114,11 +119,10 @@ client.on('messageCreate', async (message) => {
 
     client.prefix = prefix;
 
-    if(!message.guild.me.permissions.has(Permissions.FLAGS.SEND_MESSAGES)) return client.sendError(`GUILD: ${message.guild.name} - ID: ${message.guild.id}\nText: No Perm to chat`);
-
     // Delay global
     if (delay.has(message.author.id))
-        return message.reply({ content: "Nghỉ tay tí nào, dùng lệnh hơi nhanh rồi đấy!", allowedMentions: { repliedUser: false } });
+        return message.reply({ content: "Nghỉ tay tí nào, dùng lệnh hơi nhanh rồi đấy!", allowedMentions: { repliedUser: false } })
+        .then(msg => client.msgDelete(msg));
 
     delay.set(message.author.id);
     setTimeout(() => delay.delete(message.author.id), 1000);
@@ -144,9 +148,35 @@ client.on('messageCreate', async (message) => {
     } else {
 
     }
+    if(cmd.permissions) {
+        /*
+        let checkArray = cmd.permsisions;
 
+        if(message.member.permissions.has(checkArray)) {
+            shouldSkip = true;
+            message.reply({
+                embeds: [{
+                    description: "Bạn không có quyền " +  + " để sử dụng lệnh này.",
+                    color: client.config.ERR_COLOR
+                }], allowedMentions: { repliedUser: false }
+            }).then(msg => client.msgDelete(msg));
+            
+            return;
+        } */
+    }
+
+
+    message.botError = botError;
+    message.invalidUsage = invalidUsage;
+    message.errorInfo = cmd.name + " | " + errorInfo;
+
+    client.sendLog(`[${new Date().toLocaleString()}] ${message.guild.name} | ${message.channel.name} | ${message.author.tag} - ${message.author.id} : ${message.content}`);
+
+    cmd.execute(client, message, args);
+
+
+    
     function botError() {
-        console.log(cmdName);
         message.reply({
             embeds: [{
                 description: "Hệ thống gặp lỗi thử lại sau!",
@@ -154,10 +184,35 @@ client.on('messageCreate', async (message) => {
             }], allowedMentions: { repliedUser: false }
         }).then(msg => client.msgDelete(msg, 2000));
     }
-    message.botError = botError;
-    message.errorInfo = cmd.name + " | " + errorInfo;
 
-    client.sendLog(`[${new Date().toLocaleString()}] ${message.guild.name} | ${message.channel.name} | ${message.author.tag} - ${message.author.id} : ${message.content}`);
+    function invalidUsage() {
+        if(!cmd.ex) return message.reply({content: "Không tìm thấy lệnh mẫu của comamnd này thử lại sau!", allowedMentions: { repliedUser: false }});
+        if(!cmd.usage) return message.reply({content: "Không tìm thấy cách sử dụng của comamnd này thử lại sau!", allowedMentions: { repliedUser: false }});
 
-    cmd.execute(client, message, args);
+        message.reply({
+            content: "Bạn cung cấp không đúng cú pháp! Sử dụng ``" + prefix + "help " + cmd.name + "`` để xem các thông tin và ví dụ.",
+            embeds: [{
+                author: {
+                    name: "Cách sử dụng lệnh",
+                    icon_url: client.user.avatarURL()
+                },
+                color: client.config.DEF_COLOR,
+                description: getFormat(cmd.usage)
+            }], allowedMentions: { repliedUser: false }
+        });
+        
+        // const cmdEmbed = new MessageEmbed()
+        //     .setAuthor("Thông tin lệnh", client.user.avatarURL())
+        //     .setColor(client.config.DEF_COLOR)
+        //     .setFooter("Cú pháp <>: Bắt buộc - []: Không bắt buộc")
+        //     .setTimestamp();
+
+        // if (cmd.name) cmdEmbed.addField("Tên lệnh", cmd.name, true);
+        // if (cmd.description) cmdEmbed.addField("Mô tả", cmd.description, true);
+        // if (cmd.aliases) cmdEmbed.addField("Lệnh rút gọn", "``" + cmd.aliases.join("`` ``") + "``", false)
+        // if (cmd.usage) cmdEmbed.addField("Cách sử dụng", cmd.usage.replace(/<PREFIX>/ig, client.prefix).replace(/<BOT_MENTIONS>/ig, client.user.toString()));
+        // if (cmd.ex) cmdEmbed.addField("Ví dụ", cmd.ex.replace(/<PREFIX>/ig, client.prefix).replace(/<EXAMPLE_ID>/ig, "000000000000000000"), true);
+
+        // message.reply({ embeds: [cmdEmbed], allowedMentions: { repliedUser: false } });
+    }
 });

@@ -1,71 +1,74 @@
-const { Client, Message, Permissions } = require("discord.js");
+const {Client,CommandInteraction,Permissions}= require('discord.js');
 const Database = require("simplest.db");
-const { sleep } = require("../../utils/utils");
 module.exports = {
     name: "ban",
-    description: "Cấm một người dùng trong server",
-    delay: 3,
-    usage: "<PREFIX>ban <tag/id> [lí do]",
-    ex: "<PREFIX>ban <@837522183647264808> Không thích",
-    userPermissions: ["SEND_MESSAGES"],
+    description: "Cấm 1 user trong server",
+    type: "CHAT_INPUT",
+    options: [
+        {
+            name: "user",
+            type: "USER",
+            description: "Cung cấp người cần ban",
+            required: true
+        },
+        {
+            name: "reason",
+            type: "STRING",
+            description: "Lí do ban",
+            required: false
+        }
+    ],
+
     /**
      * 
      * @param {Client} client 
-     * @param {Message} message 
+     * @param {CommandInteraction} interaction 
      * @param {String[]} args 
      */
-    async execute(client, message, args) {
-        if (!message.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return message.reply({
+     execute: async (client, interaction, args) => {
+        let user = interaction.options.getMember("user");
+        let reason = interaction.options.getString("reason") || "Không có";
+
+        if (!interaction.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return await interaction.followUp({
             embeds: [{
-                description: "Bạn không có quyền để sử dụng lệnh này.",
+                description: "Bạn không có quyền ``Ban Member`` để sử dụng lệnh này.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         }).then(msg => client.msgDelete(msg));
 
-        if (!message.guild.me.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return message.reply([{
+        if (!interaction.guild.me.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return await interaction.followUp([{
             embeds: [{
-                description: "Bot không đủ quyền để cấm người dùng.",
+                description: "Bot không có quyền ``Ban Member`` để cấm người dùng.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         }]).then(msg => client.msgDelete(msg));
+        
+        let userToBan = user.user.id;
 
-        if (!args[0]) return message.reply({
-            embeds: [{
-                description: "Bạn phải cung cấp người dùng cần cấm.\nCách sử dụng: " + client.prefix + "ban <tag/id> [lí do]",
-                footer: {text:"Cú pháp <>: Bắt buộc - []: Không bắt buộc"},
-                color: client.config.ERR_COLOR
-            }], allowedMentions: { repliedUser: false }
-        }).then(msg => client.msgDelete(msg));
-
-        const reason = args.join(" ").split(args[0] + " ")[1] || "Không có";
-
-        var userToBan = message.mentions.members.first() || args[0];
-        if (userToBan) userToBan = userToBan.id;
-
-        if (userToBan == message.author.id) return message.reply({
+        if (userToBan == interaction.user.id) return await interaction.followUp({
             embeds: [{
                 description: "Bạn không thể cấm chính mình.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         }).then(msg => client.msgDelete(msg));
 
-        if (userToBan == client.user.id) return message.reply({
+        if (user == client.user) return interaction.followUp({
             embeds: [{
-                description: "Mình không thể ban chính mính.",
+                description: "Mình không thể ban chính mình.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         }).then(msg => client.msgDelete(msg));
         
-        let member = await message.guild.members.fetch(userToBan);
+        const member = await interaction.guild.members.fetch(userToBan);
 
-        if (!member) return message.reply({
+        if (!member) return interaction.followUp({
             embeds: [{
                 description: "Bạn phải cung cấp người dùng trong server này.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
-        });
+        }).then(msg => client.msgDelete(msg));
 
-        if (!member.bannable) return message.reply({
+        if (!member.bannable) return interaction.followUp({
             embeds: [{
                 description: "Bot không đủ quyền để cấm người này.",
                 color: client.config.ERR_COLOR
@@ -75,7 +78,7 @@ module.exports = {
         // punish
         await member.send({embeds: [{
             title: "BANNED",
-            description: "Bạn đã bị cấm khỏi server **" + message.guild.name + "**, lí do: *" + reason + "*.",
+            description: "Bạn đã bị cấm khỏi server **" + interaction.guild.name + "**, lí do: *" + reason + "*.",
             timestamp: new Date(),
             color: client.config.DEF_COLOR
         }]}).catch(()=> {});
@@ -83,14 +86,14 @@ module.exports = {
         await sleep(2000);
         
         await member.ban({ days: 7, reason: reason }).then(() => {
-            message.reply({
+            interaction.followUp({
                 embeds: [{
                     description: "**" + member.user.tag + "** đã bị cấm với lí do: *" + reason + "*.",
                     color: client.config.DEF_COLOR
                 }], allowedMentions: { repliedUser: false }
             });
             
-            const dataLogger = new Database({ path: './data/guilds/' + message.guild.id + ".json" });
+            const dataLogger = new Database({ path: './data/guilds/' + interaction.guild.id + ".json" });
 
             // check data
             let logChannel = dataLogger.get('moderation-channel');
@@ -106,11 +109,11 @@ module.exports = {
                     fields: [
                         {
                             name: "Người thực hiện",
-                            value: message.author.toString(),
+                            value: interaction.user.toString(),
                             inline: true
                         }, {
                             name: "Người áp dụng",
-                            value: member.user.toString(),
+                            value: member.user.tag,
                             inline: true
                         }, {
                             name: "Lí do cấm",
@@ -123,12 +126,10 @@ module.exports = {
                     color: client.config.DEF_COLOR,
                     footer: { text: member.user.id }
                 }]
-            }).catch(err => {
-                client.sendError(message.errorInfo, err);
-            });
+            }).catch(()=>{});
         }).catch(err => {
-            client.sendError(message.errorInfo, err);
-            message.botError();
+            client.sendError(interaction.errorInfo, err);
+            interaction.botError();
         });
     }
 }

@@ -1,5 +1,4 @@
 const { random } = require("../../utils/utils");
-
 module.exports = {
     name: "random",
     description: "Random số ngẫu nhiên",

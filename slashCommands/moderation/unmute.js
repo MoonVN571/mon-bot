@@ -1,22 +1,28 @@
-const { Client, Message, Permissions } = require("discord.js");
+const { Client, CommandInteraction, Permissions } = require("discord.js");
 const Database = require("simplest.db");
 
 module.exports = {
     name: "unmute",
     description: "Bỏ mute người dùng",
-    aliases: ['um'],
-    delay: 3,
-    usage: "<PREFIX>unmute <tag/id> [lí do]",
-    ex: "<PREFIX>unmute <@837522183647264808> Vì mình thích",
-
+    type: "CHAT_INPUT",
+    options: [
+        {
+            name: "user",
+            type: "USER",
+            description: "Nhập người cần unmute",
+            required: true
+        }
+    ],
     /**
      * 
      * @param {Client} client 
-     * @param {Message} message 
+     * @param {CommandInteraction} interaction 
      * @param {String[]} args 
      */
-    async execute(client, message, args) {
-        if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)
+    async execute(client, interaction, args) {
+        let userToMute = interaction.options.getMember("user");
+
+        if (!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)
         ) return interaction.followUp({
             embeds: [{
                 description: "Bạn không có quyền ``Quản lí Tin nhắn`` để dùng lệnh này.",
@@ -24,30 +30,17 @@ module.exports = {
             }], allowedMentions: { repliedUser: false }
         }).then(msg => client.msgDelete(msg));
 
-        if (!message.guild.me.permissions.has(Permissions.FLAGS.MANAGE_ROLES)
+        if (!interaction.guild.me.permissions.has(Permissions.FLAGS.MANAGE_ROLES)
         ) return interaction.followUp({
             embeds: [{
-                description: "Bot không có quyền ``Quản l1i Role`` để bỏ Mute người này.",
+                description: "Bot không có quyền ``Quản lí Role`` để bỏ Mute người này.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         }).then(msg => client.msgDelete(msg));
 
+        let getMuteRole = interaction.guild.roles.cache.find(role => role.name == "Muted");
 
-        if (!args[0]) return interaction.followUp({
-            embeds: [{
-                description: "Bạn phải cung cấp người dùng cần mute.\nCách sử dụng: " + client.prefix + "unmute <tag/id> [lí do]",
-                footer: {text:"Cú pháp <>: Bắt buộc - []: Không bắt buộc"},
-                color: client.config.ERR_COLOR
-            }], allowedMentions: { repliedUser: false }
-        }).then(msg => client.msgDelete(msg));
-
-        let getMuteRole = message.guild.roles.cache.find(role => role.name == "Muted");
-
-        var userToMute = message.mentions.members.first() || args[0];
-        if (userToMute) userToMute = userToMute.id;
-
-        const reason = args.join(" ").split(args[0] + " ")[1] || "Không có";
-        const member = message.guild.members.cache.get(userToMute);
+        const member = await interaction.guild.members.fetch(userToMute);
 
         if (!member.roles.cache.some(r => r.name == "Muted")) return interaction.followUp({
             embeds: [{
@@ -57,7 +50,7 @@ module.exports = {
         }).then(msg => client.msgDelete(msg));
 
         // check position role
-        if (message.guild.me.roles.highest.position < getMuteRole.position) return interaction.followUp({
+        if (interaction.guild.me.roles.highest.position < getMuteRole.position) return interaction.followUp({
             embeds: [{
                 description: "Role ``Muted`` phải ở dưới role cao nhất của bot.",
                 color: client.config.ERR_COLOR
@@ -65,15 +58,22 @@ module.exports = {
         }).then(msg => client.msgDelete(msg));
 
         // remove role member to user
-        member.roles.remove(getMuteRole, "UN-MUTED, reason: " + reason).then(member => {
+        member.roles.remove(getMuteRole, "UN-MUTED, Un muted by " + interaction.member.user.tag).then(async member => {
+            await member.send({embeds: [{
+                title: "UN-MUTED",
+                description: "Bạn đã được bỏ mute tại server **" + interaction.guild.name + "**.",
+                timestamp: new Date(),
+                color: client.config.DEF_COLOR
+            }]}).catch(()=> {});
+
             interaction.followUp({
                 embeds: [{
-                    description: "Bạn đã bỏ mute " + member.user.toString() + " với lí do: " + reason + ".",
+                    description: "Bạn đã bỏ mute " + member.user.toString() + ".",
                     color: client.config.DEF_COLOR
                 }], allowedMentions: { repliedUser: false }
             });
             
-            const dataLogger = new Database({ path: './data/guilds/' + message.guild.id + ".json" });
+            const dataLogger = new Database({ path: './data/guilds/' + interaction.guild.id + ".json" });
 
             // remove user from data
             dataLogger.array.extract("Muted", member.user.id);
@@ -88,21 +88,17 @@ module.exports = {
 
             channel.send({
                 embeds: [{
-                    title: "Moderation - Un-muted",
+                    title: "Moderation - Unmute",
                     fields: [
                         {
                             name: "Người thực hiện",
-                            value: message.author.toString(),
+                            value: interaction.author.toString(),
                             inline: true
                         }, {
                             name: "Người áp dụng",
                             value: member.user.toString(),
                             inline: true
-                        }, {
-                            name: "Lí do bỏ mute",
-                            value: reason,
-                            inline: false
-                        },
+                        }
                     ],
                     thumbnail: { url: member.user.avatarURL() },
                     timestamp: new Date(),
@@ -110,10 +106,10 @@ module.exports = {
                     footer: { text: member.user.id }
                 }]
             }).catch(err => {
-                client.sendError(message.errorInfo, err);
+                client.sendError(interaction.errorInfo, err);
             });
         }).catch(err => {
-            client.sendError(message.errorInfo, err);
+            client.sendError(interaction.errorInfo, err);
         });
     }
 }

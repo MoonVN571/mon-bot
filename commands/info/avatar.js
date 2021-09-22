@@ -1,5 +1,3 @@
-const { getUserId } = require('../../utils/user');
-
 module.exports = {
     name: "avatar",
     aliases: ["avt", "av"],

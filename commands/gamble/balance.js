@@ -1,7 +1,6 @@
+const { Permissions } = require('discord.js');
 const Database = require('simplest.db');
-const { getUserId } = require('../../utils/user');
 const { sodep } = require('../../utils/utils');
-
 /**
  * Color hex default: 0FF1CE
  * COlor hex error: f10f0f
@@ -12,6 +11,7 @@ module.exports = {
     description: "Xem số tiền của bạn.",
     usage: "<PREFIX>bal [username/tag/id]",
     ex: "<PREFIX>bal MoonU",
+    permissions: [Permissions.FLAGS.SEND_MESSAGES,Permissions.FLAGS.BAN_MEMBERS],
 
     async execute(client, message, args) {            
         let data = new Database({path: `./data/eco/${message.author.id}.json`});

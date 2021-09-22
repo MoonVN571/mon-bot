@@ -80,6 +80,8 @@ module.exports = {
 
         let countcategory = 0;
         readdirSync('./commands/').forEach(async dir => {
+            if(dir == "owner only") return;
+
             countcategory++;
             const commands = readdirSync(`./commands/${dir}/`).filter(file => file.endsWith('.js'));
             let cmds = [];
@@ -101,9 +103,6 @@ module.exports = {
             time: 60000,
             embeds: [defaultEmbed,defaultEmbed2]
         });
-
-        message.channel.send("Các nút chuyển trang sẽ hết hạn sau 60 giây.")
-        .then(msg => client.msgDelete(msg, 10000));
 
         let data = new Database({ path: "./data/footer.json" });
         if (!data.get("text")) return;

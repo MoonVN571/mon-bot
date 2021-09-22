@@ -26,7 +26,7 @@ module.exports = {
             }], allowedMentions: { repliedUser: false }
         });
 
-        if (args.length > 1) return message.reply({
+        if (args.length > 1 || args[0].length > 3) return message.reply({
             embeds: [{
                 description: "Bot không hỗ trợ prefix này.",
                 color: client.config.ERR_COLOR

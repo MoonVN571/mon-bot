@@ -28,9 +28,54 @@ module.exports = (client) => {
     });
 
     client.on("ready", async () => {
-        if(!dev) return await client.application.commands.set(arrayOfSlashCommands);
-        await client.guilds.cache.get("884993985968484422").commands.set(arrayOfSlashCommands); // gin
+        if(!dev) await client.application.commands.set(arrayOfSlashCommands);
+        await client.guilds.cache.get("884993985968484422").commands.set([]); // gin
         await client.guilds.cache.get("869076561075261460").commands.set(arrayOfSlashCommands);
+
+        // if(!dev) {
+            client.guilds.cache.forEach(guild => {
+                /*
+                guild.commands.set(arrayOfSlashCommands).then((cmd) => {
+                    const getRole = (cmdName) => {
+                        const perm = arrayOfSlashCommands.find((x) => x.name === cmdName).userPermissions;
+                    
+                        if(!perm) return null;
+
+                        return guild.roles.cache.filter(
+                            (x) => x.permissions.has(perm) && !x.managed
+                        );
+                    }
+
+                    const fullPerm = cmd.reduce((acc,x) => {
+                        const roles = getRole(x.name);
+                        if(!roles) return acc;
+
+                        const perms = roles.reduce((a,v) => {
+                            return [
+                                ...a,
+                                {
+                                    id: v.id,
+                                    type: "ROLE",
+                                    permission: true,
+                                    s
+                                }
+                            ]
+                        }, []);
+
+                        return [
+                            ...acc,
+                            {
+                                id: x.id,
+                                perms
+                            }
+                        ]
+                    }, []);
+                    guild.commands.set({ fullPerm });
+                });
+                */
+            });
+            return
+        // }
     });
 
 

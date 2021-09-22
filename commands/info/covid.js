@@ -3,9 +3,8 @@ const axios = require('axios');
 const csv = require('csvtojson');
 const { getTimestamp } = require("../../utils/utils");
 let link = "https://vnexpress.net/microservice/sheet/type/covid19_2021_by_day"
-
 /**
- * Shared by MokaF
+ * Shared by Moka
  */
 module.exports = {
     name: "covid",

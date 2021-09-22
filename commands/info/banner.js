@@ -1,8 +1,5 @@
 require('dotenv').config();
-
 const axios = require("axios");
-const { getUserId } = require('../../utils/user');
-
 module.exports = {
     name: "banner",
     description: "Lấy ảnh nền của người dùng",

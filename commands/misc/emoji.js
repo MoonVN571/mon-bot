@@ -1,6 +1,5 @@
 const { Client, Message, Util } = require('discord.js');
 const { parse } = require('twemoji-parser');
-
 module.exports = {
     name: "emoji",
     description: "Phóng to emoji của bạn",

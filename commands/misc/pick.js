@@ -1,5 +1,4 @@
 const { layNgauNhien } = require('../../utils/utils');
-
 module.exports = {
     name: "pick",
     description: "Lựa chọn 1 trong những thứ bạn đưa ra",

@@ -1,7 +1,5 @@
-var os = require("os");
-
-var { MessageEmbed } = require('discord.js');
-
+const os = require("os");
+const { MessageEmbed } = require('discord.js');
 const { getAge, getTimestamp } = require('../../utils/utils');
 
 module.exports = {

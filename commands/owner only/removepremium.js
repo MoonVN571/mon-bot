@@ -1,11 +1,9 @@
 const { Client, Message } = require('discord.js');
-const { addMoney } = require('../../utils/eco');
-const { sodep } = require('../../utils/utils');
 module.exports = {
-    name: "addmoney",
-    description: "Thêm tiền cho ai đó",
-    usage: "<PREFIX>addmoney <User/ID> <Số tiền>",
-    ex: "<PREFIX>addmoney @MoonU 100000",
+    name: "addpremium",
+    description: "Thêm premium server",
+    usage: "<PREFIX>addpremium <User/Sv ID>",
+    ex: "<PREFIX>addpremium <EXAMPLE_ID>",
     dev: true,
     aliases: ['am'],
 
@@ -29,7 +27,7 @@ module.exports = {
             content: "Nhập người nhận hợp lệ", allowedMentions: { repliedUser: false }
         }).then(msg => client.msgDelete(msg));
 
-        client.users.fetch(user, { cache: false }).then(async user => {
+        client.users.fetch(user).then(async user => {
             if(!args[1] || isNaN(args[1])) return message.reply({ content: "Nhập số hợp lệ", allowedMentions: { repliedUser: false } })
                 .then(msg => client.deleteMsg(msg));
             

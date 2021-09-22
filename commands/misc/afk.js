@@ -1,5 +1,4 @@
 const Database = require('simplest.db');
-
 module.exports = {
     name: "afk",
     description: "Đặt trạng thái của bạng là đang AFK.",

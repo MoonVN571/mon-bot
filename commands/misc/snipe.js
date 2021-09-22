@@ -7,8 +7,7 @@ module.exports = {
 
     async execute(client, message, args) {
         let db = new Database({ path: './data/snipe.json' });
-
-        var sniper = db.get(message.channel.id);
+        let sniper = db.get(message.channelId);
 
         if (!sniper) return message.reply({
             embeds: [{
@@ -19,12 +18,11 @@ module.exports = {
 
         let content = sniper.content;
         let betterContent = trimText(content ? content : "Không có nội dung", 950, "\nCòn lại {COUNT} từ.");
-
         message.reply({
             embeds: [{
                 author: {
-                    name: sniper.author.toString(),
-                    icon_url: sniper.avatarURL()
+                    name: sniper.author.tag,
+                    icon_url: sniper.author.avatarURL
                 },
                 description: betterContent,
                 image: { url: sniper.image },

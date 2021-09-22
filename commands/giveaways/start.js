@@ -4,7 +4,9 @@ const Database = require('simplest.db');
 
 module.exports = {
     name: "start",
-
+    description: "Tạo giveaway cho chính bạn",
+    ex: "<PREFIX>start 1h1m1s 10 Card Viettel 10k :))",
+    usage: "<PREFIX>start <thời gian> <số người win>w <giải thưởng>",
     /**
      * 
      * @param {Client} client 
@@ -12,26 +14,10 @@ module.exports = {
      * @param {String[]} args 
      */
     async execute(client, message, args) {
-        setTimeout(() => { if(message.deletable) message.delete() }, 500);
-
-        if (!args[0])
-            return message.reply({
-                embeds: [{
-                    description: "Cung cấp đơn vị thời gian theo tiếng Anh.\nCách sử dụng: " + client.prefix + "start <thời gian> <số người win> <giải thưởng>",
-                    color: client.config.ERR_COLOR
-                }], allowedMentions: { repliedUser: false }
-            }).then(msg => client.msgDelete(msg));
-
-        if (!args[1])
-            return message.reply({
-                embeds: [{
-                    description: "Cung cấp số người thắng.\nCách sử dụng: " + client.prefix + "start <thời gian> <số người win> <giải thưởng>",
-                    color: client.config.ERR_COLOR
-                }], allowedMentions: { repliedUser: false }
-            }).then(msg => client.msgDelete(msg));
+        if (!args[0] || !args[1]) return await message.invalidUsage();
 
         const thoi_han = ms(args[0], { long: true });
-        if (!thoi_han)
+        if (!thoi_han || thoi_han < 5000 || thoi_han > 86400000 * 7)
             return message.reply({
                 embeds: [{
                     description: "Thời gian không hỗ trợ.",
@@ -39,27 +25,19 @@ module.exports = {
                 }], allowedMentions: { repliedUser: false }
             }).then(msg => client.msgDelete(msg));
 
-        if (isNaN(+args[1]))
-            return message.reply({
-                embeds: [{
-                    description: "Cung cấp số người có thể thắng",
-                    color: client.config.ERR_COLOR
-                }], allowedMentions: { repliedUser: false }
-            }).then(msg => client.msgDelete(msg));
-
+        if (args[1] && !(!isNaN(args[1].split("w")[0])
+        && args[1] == args[1].split("w")[0] + "w"
+        || args[1] == args[1].split("w")[0] + "winner" || args[1] == args[1].split("w")[0] + "winners"))
+            return await message.invalidUsage();
+        
         const qua_tang = args.join(" ").split(args[0] + " " + args[1] + " ")[1];
+        if (!qua_tang) return await message.invalidUsage();
 
-        if (!qua_tang)
-            return message.reply({
-                embeds: [{
-                    description: "Cung cấp giải thưởng.",
-                    color: client.config.ERR_COLOR
-                }], allowedMentions: { repliedUser: false }
-            }).then(msg => client.msgDelete(msg));
+        setTimeout(() => { if(message.deletable) message.delete() }, 500);
 
         client.giveawaysManager.start(message.channel, {
             duration: thoi_han,
-            winnerCount: +args[1],
+            winnerCount: +args[1].split("w")[0],
             prize: qua_tang,
             hostedBy: message.author.toString(),
             messages: {

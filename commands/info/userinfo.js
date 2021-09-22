@@ -1,9 +1,5 @@
-var { MessageEmbed, Client, Message } = require('discord.js');
-const { user } = require('../..');
-const { getUserId } = require('../../utils/user');
-
+const { MessageEmbed, Client, Message } = require('discord.js');
 const { getTimestamp, getAge } = require("../../utils/utils");
-
 module.exports = {
     name: "userinfo",
     aliases: ["info", "ui"],
@@ -18,8 +14,8 @@ module.exports = {
      * @param {String[]} args 
      */
     async execute(client, message, args) {
-        var user = args[0] || message.author.id;
-        var tag = message.mentions.members.first();
+        let user = args[0] || message.author.id;
+        let tag = message.mentions.members.first();
 
         if (isNaN(user) && !tag) user = message.author.id;
         if (tag) user = tag.id;
@@ -37,7 +33,7 @@ module.exports = {
         client.users.fetch(user).then(async users => {
             if (!users) return message.reply({
                 embeds: [{
-                    description: "Bạn đã cung cấp người dùng không hợp lệ.",
+                    description: "Hãy cung cấp user hợp lệ!",
                     color: client.config.ERR_COLOR
                 }], allowedMentions: { repliedUser: false }
             });
@@ -73,7 +69,12 @@ module.exports = {
 
             message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
         }).catch(err => {
-            if(err.message == "Unknown User") return trys(message.author.id);
+            if(err.message == "Unknown User") return message.reply({
+                embeds: [{
+                    description: "Hãy cung cấp user hợp lệ!",
+                    color: client.config.ERR_COLOR
+                }], allowedMentions: { repliedUser: false }
+            });
             message.botError();
             client.sendError(message.errorInfo, err);
         });
