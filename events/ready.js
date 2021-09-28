@@ -138,9 +138,15 @@ client.on('ready',async () => {
     var i = -1;
     setInterval(() => {
         let random = [
-            `${client.guilds.cache.size}/100 servers! | WATCHING`,
-            `${Intl.NumberFormat().format(client.guilds.cache.reduce((a, g) => a + g.memberCount, 0))} users! | LISTENING`,
-            '@Mon Bot lấy prefix! | PLAYING',
+            // `${client.guilds.cache.size}/100 servers! | WATCHING`,
+            // `${Intl.NumberFormat().format(client.guilds.cache.reduce((a, g) => a + g.memberCount, 0))} users! | LISTENING`,
+            // '@Mon Bot lấy prefix! | PLAYING',
+            `Mong chờ đều gì đó... | WATCHING`,
+            `@Mon Bot - Prefix: s | LISTENING`,
+            `Bot viết bởi Moon | LISTENING`,
+            'v1.2.1 updates | WATCHING',
+            `${Intl.NumberFormat().format(client.guilds.cache.reduce((a, g) => a + g.memberCount, 0))} user và ${client.guilds.cache.size} server! | LISTENING`,
+            `Bot viết cho vui alo | PLAYING`
         ];
 
         i++;
