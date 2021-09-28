@@ -2,7 +2,7 @@ const Database = require('simplest.db');
 const client = require('../index');
 
 client.on('messageDelete', async (message) => {
-    if (message.author.bot) return;
+    if (!message.author || !message || !message.guild || message.author.bot) return;
 
     let db = new Database({ path: './data/snipe.json' });
 

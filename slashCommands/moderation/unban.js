@@ -94,7 +94,7 @@ module.exports = {
                     ],
                     thumbnail: { url: user.avatarURL() },
                     timestamp: new Date(),
-                    footer: { text: member.user.id },
+                    footer: { text: user.id },
                     color: client.config.DEF_COLOR
                 }]
             });

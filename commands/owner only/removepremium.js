@@ -1,6 +1,6 @@
 const { Client, Message } = require('discord.js');
 module.exports = {
-    name: "addpremium",
+    name: "removepremium",
     description: "Thêm premium server",
     usage: "<PREFIX>addpremium <User/Sv ID>",
     ex: "<PREFIX>addpremium <EXAMPLE_ID>",

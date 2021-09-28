@@ -9,7 +9,8 @@ const client = new Client({
         Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
         Intents.FLAGS.GUILD_WEBHOOKS
     ],
-    allowedMentions: { parse: ['users'] }
+    allowedMentions: { parse: ['users'] },
+    partials: ['USER', 'REACTION', 'MESSAGE', 'GUILD_MEMBER']
 });
 
 module.exports = client;
@@ -22,6 +23,7 @@ const config = {
     PREFIX: "s",
     ERR_COLOR: configs.color.error,
     DEF_COLOR: configs.color.default,
+    PROCESS_COLOR: configs.color.process,
     DEV: configs.dev,
     ADMINS: configs.Admin
 }
@@ -35,7 +37,6 @@ const emoji = {
 }
 
 client.emoji = emoji;
-
 client.config = config;
 
 client.slashCommands = new Collection();
@@ -50,6 +51,7 @@ client.mentions = new Set();
 
 // Giveaway module
 const { GiveawaysManager } = require('discord-giveaways');
+const Database = require('simplest.db');
 const manager = new GiveawaysManager(client, {
     storage: './data/giveaway/giveaways.json',
     forceUpdateEvery: 10000,
@@ -75,7 +77,7 @@ function hook(type, url, content) {
 // send logs
 async function sendError(type, error) {
     // await client.channels.cache.get("881016544396709898").send(error).catch(console.error);
-    console.log(error);
+    console.log(type, error);
     if(error && error.message && type) return hook("Error Logs", process.env.WEBHOOK_ERROR, type + " " + error.message);
     if(!error) return  console.log(error);
     hook("Error Logs", process.env.WEBHOOK_ERROR, type + " " + error.message);
@@ -102,6 +104,18 @@ client.msgDelete = msgDelete;
 client.sendError = sendError;
 client.sendWarn = sendWarn;
 client.sendLog = sendLog;
+
+function isPremiumServer(serverid) {
+    return true;
+    const pre = new Database({path: './data/premiumServer/data.json'});
+    let regAt = pre.get(serverid + ".expiredTime") || 0;
+    let expired = pre.get(serverid + ".expiredTime") || 0;
+    if(regAt
+    +  regAt < Date.now() + expired) return false;
+    else return true;
+}
+
+client.isPremiumServer = isPremiumServer;
 
 require("./handlers/baseHandler")(client);
 

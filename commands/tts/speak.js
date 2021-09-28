@@ -66,7 +66,7 @@ module.exports = {
             }
 
             const player = createAudioPlayer();
-            const resource = await createAudioResource(locate);
+            const resource = createAudioResource(locate);
 
             const connection = joinVoiceChannel({
                 channelId: voiceChannel.id,

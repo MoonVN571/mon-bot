@@ -9,8 +9,7 @@ module.exports = {
     execute(client, message, args) {
         if (!args[0]) return message.reply({
             embeds: [{
-                title: client.emoji.failed + " Thiếu thông tin!",
-                description: "Hãy cung cấp nội dung thông tins.",
+                description: "Cung cấp thông tin.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         });

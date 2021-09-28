@@ -13,7 +13,14 @@ module.exports = {
      * @param {String[]} args 
      */
     async execute(client, message, args) {
-        // if (!config.admin.indexOf(message.author.id) < 0) return;
+        if (!args[0])
+            return message.reply({
+                embeds: [{
+                    description: "Cung cấp Id tin nhắn của giveaway.",
+                    color: client.config.ERR_COLOR
+                }], allowedMentions: { repliedUser: false }
+            });
+
         // check author GA
         const dataAuthor = new Database({ path: "./data/giveaway/author.json" });
 
@@ -21,14 +28,6 @@ module.exports = {
             return message.reply({
                 embeds: [{
                     description: "Bạn không sỡ hữu id giveaway này.",
-                    color: client.config.ERR_COLOR
-                }], allowedMentions: { repliedUser: false }
-            });
-
-        if (!args[0])
-            return message.reply({
-                embeds: [{
-                    description: "Cung cấp Id tin nhắn của giveaway.",
                     color: client.config.ERR_COLOR
                 }], allowedMentions: { repliedUser: false }
             });
@@ -43,7 +42,6 @@ module.exports = {
 
         // xoa data va tien hanh end ga
         client.giveawaysManager.end(args[0]).then(() => {
-             
             return message.reply({
                 embeds: [{
                     description: "Bạn đã kết thúc giveaway này thành công!",

@@ -54,6 +54,8 @@ module.exports = {
 
             await users.fetchFlags().then(flag => huyHieu = flags[flag.toArray()[0]]);
 
+            if(!huyHieu) huyHieu = "Không có";
+
             const embed = new MessageEmbed()
                 .setColor(client.config.DEF_COLOR)
                 .setAuthor(users.tag, users.avatarURL({ format: 'png', dynamic: true, size: 1024 }))

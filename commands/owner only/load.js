@@ -10,7 +10,6 @@ module.exports = {
 
         if (!cmdReload) return message.reply({
             embeds: [{
-                title: client.emoji.success + "Cung cấp lệnh",
                 description: "Bạn phải nhập tên lệnh để load.\n\n*Cú pháp: " + client.prefix + "load <lệnh>*",
                 color: client.config.ERR_COLOR
             }]
@@ -40,7 +39,6 @@ module.exports = {
 
                         message.reply({
                             embeds: [{
-                                title: client.emoji.success + "Thành công",
                                 description: "Đã load lệnh ``" + cmdReload + "`` thành công!",
                                 color: client.config.DEF_COLOR
                             }], allowedMentions: { repliedUser: true }

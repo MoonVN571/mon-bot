@@ -22,16 +22,21 @@ client.on('interactionCreate', async (interaction) => {
     }
     
     function botError() {
-        console.log(cmdName);
-        interaction.followUp({
+        console.log(cmd.name);
+        interaction.reply({
             embeds: [{
                 description: "Hệ thống gặp lỗi thử lại sau!",
                 color: client.config.ERR_COLOR
-            }], allowedMentions: { repliedUser: false }
+            }], allowedMentions: { repliedUser: false },
+            ephemeral: true
         });
     }
+
     interaction.botError = botError;
     interaction.errorInfo = cmd.name + " | " + errorInfo;
-
-    await cmd.execute(client, interaction, args);
+    try {
+        await cmd.execute(client, interaction, args);
+    } catch(e) {
+        console.log(e)
+    }
 })

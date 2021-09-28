@@ -45,7 +45,7 @@ module.exports = {
         const dataWarn = new Database({ path: "./data/warnings/" + interaction.guild.id + ".json" });
         dataWarn.delete(member.user.id);
 
-        interaction.followUp({
+        interaction.reply({
             embeds: [{
                 description: "Bạn xoá hết cảnh cáo cho **" + member.user.tag + "**.",
                 color: client.config.DEF_COLOR

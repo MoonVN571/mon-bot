@@ -201,12 +201,13 @@ function calculate(time, ga) {
 
     if(ga) seconds = parseInt(temp %60);
 
-    var string = "1 giây";
+    var string = "";
     if(seconds > 0) string = seconds + " giây";
     if(minutes > 0) string = minutes + " phút " + string;
     if(hours > 0)   string = hours   + " giờ " + string;
     if(days > 0)    string = days    + " ngày " + string;
-    return string;
+    
+    return string.trim();
 }
 
 /**

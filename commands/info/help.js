@@ -1,8 +1,9 @@
 const { readdirSync } = require('fs');
 const Database = require('simplest.db');
-const { Client, Message, MessageEmbed } = require('discord.js');
+const { Client, Message, MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 const { Admin } = require('../../config.json');
 const { pagination } = require('reconlx');
+const { random } = require('../../utils/utils');
 module.exports = {
     name: "help",
     description: "Xem các lệnh có sẵn",
@@ -38,7 +39,7 @@ module.exports = {
             }).then(msg => client.msgDelete(msg));
 
             const cmdEmbed = new MessageEmbed()
-                .setAuthor("Thông tin lệnh", client.user.avatarURL())
+                .setAuthor("Thông tin về lệnh", client.user.avatarURL())
                 .setColor(client.config.DEF_COLOR)
                 .setFooter("Cú pháp <>: Bắt buộc - []: Không bắt buộc")
                 .setTimestamp();
@@ -107,6 +108,15 @@ module.exports = {
         let data = new Database({ path: "./data/footer.json" });
         if (!data.get("text")) return;
 
-        message.channel.send(data.get("text"));
+        const compo = new MessageActionRow()
+            .setComponents(
+                new MessageButton()
+                    .setEmoji('<:pre_announce:890905372427190312>')
+                    .setStyle('LINK')
+                    .setURL('https://discord.gg/invite/NVyAWXatvX')
+                    .setLabel('Tham gia Support Server')
+            )
+
+        await message.channel.send({content:data.get("text"),components: [compo]});
     }
 }

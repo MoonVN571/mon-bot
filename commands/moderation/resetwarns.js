@@ -1,3 +1,5 @@
+const { Permissions } = require('discord.js');
+const Database = require('simplest.db');
 module.exports = {
     name: "resetwarns",
     description: "Xoá số lần cảnh cáo của người dùng trong server",

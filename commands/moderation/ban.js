@@ -67,11 +67,11 @@ module.exports = {
 
         if (!member.bannable) return message.reply({
             embeds: [{
-                description: "Bot không đủ quyền để cấm người này.",
+                description: "Bot không thể cấm người này.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false }
         }).then(msg => client.msgDelete(msg));
-
+       
         // punish
         await member.send({embeds: [{
             title: "BANNED",

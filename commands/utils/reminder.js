@@ -41,7 +41,7 @@ module.exports = {
                     description: "Lời nhắc của bạn vào ``" + args[0] + "`` sau là *" + content + ".*",
                     color: client.config.DEF_COLOR
                 }], allowedMentions: { repliedUser: false }
-            });
+            }).catch(err => {});
         }, ms(args[0]));
     }
 }

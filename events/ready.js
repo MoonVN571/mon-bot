@@ -4,15 +4,94 @@ const { AutoPoster } = require('topgg-autoposter');
 const express = require('express');
 const Database = require('simplest.db');
 const { addMoney } = require('../utils/eco');
-const { random } = require('../utils/utils');
+const { random, sleep } = require('../utils/utils');
 const ms = require("ms");
+const { readdirSync } = require("fs");
+const {MessageActionRow} = require('discord.js');
 require('dotenv').config();
-client.on('ready', () => {
+client.on('ready',async () => {
     console.log(client.user.tag + " đã sẵn sàng!");
+
+    // SYNC DB BUTTONS
+    readdirSync('./data/savedGuildData/button-roles').forEach(async files => {
+        if(!files.endsWith(".json")) return;
+
+        let guildId = files.split(".")[0];
+
+        // check bot is in guild or guild exists
+        let guilds = client.guilds.cache.get(guildId);
+        if(!guilds) return;
+
+        const mainDb = new Database({path:"./data/savedGuildData/button-roles/" + guildId + '.json'});
+        
+        if(!mainDb.get('to-load')) await mainDb.set('to-load', []);
+        let getTotalButton = await mainDb.get('to-load');
+        
+        let totalButtons = mainDb.get('total-buttons');
+
+
+        getTotalButton.forEach(async buttonStat => {
+            for(let i = 0; i < totalButtons + 1; i++) { // load toàn bộ button đã lưu
+
+                // ở data split channel và id
+                let channelId = buttonStat.split(" ")[0];
+                let msgId = buttonStat.split(" ")[1];
+
+                // load embed
+                const db = new Database({path: "./data/savedGuildData/embeds/" + guildId + ".json"});
+                let eb = db.get(channelId + "." + msgId); // embed obj
+
+                // load và add button
+                let arrButtondata = await mainDb.get(channelId + "." + msgId + '.buttons');
+                const button = new MessageActionRow();
+                await arrButtondata.forEach(async data => {
+                    button.addComponents(data);
+                });
+
+                let checkChannel = client.channels.cache.get(channelId);
+                if(!checkChannel) return;
+
+                await checkChannel.messages.fetch(msgId).then(async msg => {
+                    msg.edit({
+                        embeds: [eb],
+                        components: [button]
+                    }).then(() => {
+                        // create collection
+                        const filter = (interaction) => {
+                            return !interaction.user.bot;
+                        };
+                        const collector = msg.createMessageComponentCollector({ filter,componentType: "BUTTON" });
+                        collector.on('collect', async interaction => {
+                            // load all role in this
+                            let roleArr = mainDb.get(channelId + '.' + msgId + '.roles') || [];
+                            roleArr.forEach(async roleId => {
+                                if (interaction.customId === "button-roles." + channelId + "." + msgId +"."+ roleId) {
+                                    let roleName = client.guilds.cache.get(guildId).roles.cache.get(roleId);
+                                    if(!roleName) return await interaction.reply({content: "Không tìm thấy role!"}).catch(() => {});
+                                    
+                                    if(interaction.member.roles.cache.some(r => r.name == roleName.name))
+                                        return await interaction.reply({content: "Bạn đã có role này từ trước!", ephemeral: true}).catch(() => {});
+
+
+                                    // await interaction.deferReply().catch(() => {});
+                                    
+                                    await interaction.reply({content: "Đã thêm role ``" + roleName.name + "``.", ephemeral: true}).catch(() => {});
+                                    interaction.member.roles.add(roleId).catch(() => {});
+                                }
+                            });
+                        });
+                    }).catch(() => {});
+                }).catch(() => {});
+            }
+        });
+    });
+
+
 
     if (client.config.DEV) return;
     client.user.setPresence({ activities: [{ name: 'RESTARTING', type: "PLAYING" }] });
 
+    // VOTE
     const app = express();
     const webhook = new Topgg.Webhook(process.env.AUTHENTICATION);
     
@@ -55,6 +134,7 @@ client.on('ready', () => {
     
     app.listen(5000);
 
+    // STATUS
     var i = -1;
     setInterval(() => {
         let random = [

@@ -33,6 +33,15 @@ module.exports = {
         let countEmojis = 0;
         let stealEmo = [];
 
+        if(args.length > 3 && !client.isPremiumServer(message.guildId))
+        return message.reply({
+            embeds: [{
+                description: "Chỉ có thể lấy 3 emoji 1 lần! Hãy nâng cấp Premium Server [tại đây](https://monbot.tk/discord).",
+                color: client.config.ERR_COLOR
+            }], allowedMentions: { repliedUser: false }
+        }).then(msg => client.msgDelete(msg));
+ 
+
         args.forEach(async emojis => {
             if (!emojis.endsWith(">") || !emojis.startsWith("<") || !emojis.includes(":")) return;
 
@@ -42,7 +51,6 @@ module.exports = {
             if (emoji.id) emoji = `https://cdn.discordapp.com/emojis/${emoji.id}.${emoji.animated ? "gif" : "png"}`;
 
             let fileName = emojis.split(":")[1].split(":")[0];
-
             let dir = "./assets/emoji/" + parse;
 
             await download(dir, emoji);
@@ -50,7 +58,7 @@ module.exports = {
             try {
                 require("fs").readFile(dir, async (err, data) => {
                     await message.guild.emojis.create(data, fileName.split(".")[0])
-                        .then(emo => {
+                        .then(async emo => {
                             remove(dir);
                             stealEmo.push(emo.toString());
                         })
@@ -66,7 +74,8 @@ module.exports = {
 
         setTimeout(async() => {
             await message.reply({ embeds: [{
-                description: `Có **${countEmojis}** emoji mới, đã thêm các emojis: ${stealEmo.join(" ") ? stealEmo.join(" ") : "Không có"} .`,
+                // description: `Có **${countEmojis}** emoji mới, đã thêm các emojis: ${stealEmo.join(" ") ? stealEmo.join(" ") : "Không có"} .`,
+                description: "Đã thêm emoji vào server, hãy đợi ít phút",
                 color: client.config.DEF_COLOR
             }], allowedMentions: { repliedUser: false } });
         }, 2000);

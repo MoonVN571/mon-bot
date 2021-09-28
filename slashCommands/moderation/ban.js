@@ -18,6 +18,7 @@ module.exports = {
             required: false
         }
     ],
+    userPermissions: ["BAN_MEMBERS"],
 
     /**
      * 
