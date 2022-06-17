@@ -29,6 +29,6 @@
     "reconlx": "^2.4.3",
     "simplest.db": "^1.0.1-2",
     "topgg-autoposter": "^2.0.0",
-    "twemoji-parser": "^13.1.0"
+    "twemoji-parser": "^14.0.0"
   }
 }
