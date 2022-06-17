@@ -1,5 +1,5 @@
 const { getAudioUrl } = require('google-tts-api')
-const { createAudioResource, joinVoiceChannel, createAudioPlayer } = require('@discordjs/voice');
+const { createAudioResource, joinVoiceChannel, createAudioPlayer, AudioPlayerStatus } = require('@discordjs/voice');
 const { download, remove } = require('../../utils/utils');
 const ms = require('ms');
 const { Client, Message } = require('discord.js');
@@ -23,7 +23,9 @@ module.exports = {
     async execute(client, message, args) {
         const data = new Database({path:'./data/vote.json'});
         let lastvote = data.get(`${message.author.id}.last-vote`) || 0;
-        if(message.author.id !== config.Admin && Date.now() - lastvote > ms('2d', {long:true}) && (args.length > 7 || args.join(" ").length > 50)) return message.reply({content: "Giới hạn nói mỗi lần là 7 từ! Vote bot tại https://monbot.tk/vote để được nói trên 50 từ.", allowedMentions: { repliedUser: false }})
+        // if(message.author.id !== config.Admin && Date.now() - lastvote > ms('2d', {long:true}) && (args.length > 7)) return message.reply({content: "Giới hạn nói mỗi lần là 7 từ! Vote bot tại https://monbot.tk/vote để được nói trên 50 từ.", allowedMentions: { repliedUser: false }})
+
+        if(args.join(" ").split("").length > 200) return message.reply({allowedMentions:{ repliedUser:false}, content: "Giới hạn tin nhắn là 200 chữ!"});
 
         if (!message.member.voice.channel) return message.reply({ content: 'Bạn phải vào phòng trước.', allowedMentions: { repliedUser: false } });
         if (!args.length) return message.reply({ content: 'Hãy nhập gì đó để nói.', allowedMentions: { repliedUser: false } });
@@ -42,7 +44,7 @@ module.exports = {
         const dataAi = new Database({ path: './data/guilds/' + guildID + '.json' });
         const aiLang = dataAi.get("tts-lang") || "vi";
 
-        const audioURL = await getAudioUrl(args.join(' '), {
+        const audioURL = getAudioUrl(args.join(' '), {
             lang: aiLang,
             slow: false,
             host: 'https://translate.google.com',
@@ -79,18 +81,21 @@ module.exports = {
             client.tts.set(guildID + '.speaking', true);
             client.tts.set(guildID + '.timeout', Date.now() + ms('5m'));
 
-            await player.play(resource);
-            client.tts.set(guildID + '.speaking', false);
+            player.play(resource);
+            
+            player.on(AudioPlayerStatus.Idle, () => {
+                client.tts.set(guildID + '.speaking', false);
 
-            setTimeout(() => {
-                let time = client.tts.get(guildID + '.timeout');
-                if (!time) return;
-                if (Date.now() > time && message.guild.me?.voice.channel) connection.destroy();
+                setTimeout(() => {
+                    let time = client.tts.get(guildID + '.timeout');
+                    if (!time) return;
+                    if (Date.now() > time && message.guild.me?.voice.channel) connection.destroy();
 
-                remove(locate);
+                    remove(locate);
 
-                if (!message.guild.me.voice) client.tts.delete(`${guildID}.timeout`);
-            }, ms('5m') + 1000);
+                    if (!message.guild.me.voice) client.tts.delete(`${guildID}.timeout`);
+                }, ms('5m') + 1000);
+            });
         } catch (err) {
             console.log(err);
             client.sendError(message.errorInfo, err);

@@ -31,58 +31,51 @@ client.on('ready',async () => {
 
 
         getTotalButton.forEach(async buttonStat => {
-            for(let i = 0; i < totalButtons + 1; i++) { // load toàn bộ button đã lưu
+            let channelId = buttonStat.split(" ")[0];
+            let msgId = buttonStat.split(" ")[1];
 
-                // ở data split channel và id
-                let channelId = buttonStat.split(" ")[0];
-                let msgId = buttonStat.split(" ")[1];
+            // load và add button
+            let arrButtondata = await mainDb.get(channelId + "." + msgId + '.buttons');
+            const button = new MessageActionRow();
+            await arrButtondata.forEach(async data => {
+                button.addComponents(data);
+            });
 
-                // load embed
-                const db = new Database({path: "./data/savedGuildData/embeds/" + guildId + ".json"});
-                let eb = db.get(channelId + "." + msgId); // embed obj
+            console.log(button)
 
-                // load và add button
-                let arrButtondata = await mainDb.get(channelId + "." + msgId + '.buttons');
-                const button = new MessageActionRow();
-                await arrButtondata.forEach(async data => {
-                    button.addComponents(data);
-                });
+            let checkChannel = client.channels.cache.get(channelId);
+            if(!checkChannel) return;
 
-                let checkChannel = client.channels.cache.get(channelId);
-                if(!checkChannel) return;
+            await checkChannel.messages.fetch(msgId).then(async msg => {
+                await msg.edit({
+                    components: [button]
+                }).then(() =>{
+                    const filter = (interaction) => !interaction.user.bot;
+                    const collector = msg.createMessageComponentCollector({ filter,componentType: "BUTTON" });
 
-                await checkChannel.messages.fetch(msgId).then(async msg => {
-                    msg.edit({
-                        embeds: [eb],
-                        components: [button]
-                    }).then(() => {
-                        // create collection
-                        const filter = (interaction) => {
-                            return !interaction.user.bot;
-                        };
-                        const collector = msg.createMessageComponentCollector({ filter,componentType: "BUTTON" });
-                        collector.on('collect', async interaction => {
-                            // load all role in this
-                            let roleArr = mainDb.get(channelId + '.' + msgId + '.roles') || [];
-                            roleArr.forEach(async roleId => {
-                                if (interaction.customId === "button-roles." + channelId + "." + msgId +"."+ roleId) {
-                                    let roleName = client.guilds.cache.get(guildId).roles.cache.get(roleId);
-                                    if(!roleName) return await interaction.reply({content: "Không tìm thấy role!"}).catch(() => {});
-                                    
-                                    if(interaction.member.roles.cache.some(r => r.name == roleName.name))
-                                        return await interaction.reply({content: "Bạn đã có role này từ trước!", ephemeral: true}).catch(() => {});
-
-
-                                    // await interaction.deferReply().catch(() => {});
-                                    
-                                    await interaction.reply({content: "Đã thêm role ``" + roleName.name + "``.", ephemeral: true}).catch(() => {});
-                                    interaction.member.roles.add(roleId).catch(() => {});
+                    collector.on('collect', async interaction => {
+                        // load all role in this
+                        let roleArr = mainDb.get(channelId + '.' + msgId + '.roles') || [];
+                        console.log(roleArr)
+                        roleArr.forEach(async roleId => {
+                            console.log(interaction.customId)
+                            if (interaction.customId === "button-roles." + channelId + "." + msgId +"."+ roleId) {
+                                let roleName = client.guilds.cache.get(guildId).roles.cache.get(roleId);
+                                if(!roleName) return await interaction.reply({content: "Không tìm thấy role!"}).catch(() => {});
+                                
+                                if(interaction.member.roles.cache.some(r => r.name == roleName.name)) {
+                                    interaction.member.roles.remove(roleName.id).catch(() => {});
+                                    await interaction.reply({content: "Đã bỏ role ``" + roleName.name + "``.", ephemeral: true}).catch(() => {});
+                                    return;
                                 }
-                            });
+                                
+                                interaction.member.roles.add(roleName.id).catch(() => {});
+                                await interaction.reply({content: "Đã thêm role ``" + roleName.name + "``.", ephemeral: true}).catch(() => {});
+                            }
                         });
-                    }).catch(() => {});
-                }).catch(() => {});
-            }
+                    });
+                }).catch(console.error);
+            });
         });
     });
 
@@ -138,15 +131,10 @@ client.on('ready',async () => {
     var i = -1;
     setInterval(() => {
         let random = [
-            // `${client.guilds.cache.size}/100 servers! | WATCHING`,
-            // `${Intl.NumberFormat().format(client.guilds.cache.reduce((a, g) => a + g.memberCount, 0))} users! | LISTENING`,
-            // '@Mon Bot lấy prefix! | PLAYING',
-            `Mong chờ đều gì đó... | WATCHING`,
-            `@Mon Bot - Prefix: s | LISTENING`,
-            `Bot viết bởi Moon | LISTENING`,
-            'v1.2.1 updates | WATCHING',
-            `${Intl.NumberFormat().format(client.guilds.cache.reduce((a, g) => a + g.memberCount, 0))} user và ${client.guilds.cache.size} server! | LISTENING`,
-            `Bot viết cho vui alo | PLAYING`
+            `@Mon Bot - Show bot prefix | LISTENING`,
+            `v${require('../package.json').version} Update! | WATCHING`,
+            `${Intl.NumberFormat().format(client.guilds.cache.reduce((a, g) => a + g.memberCount, 0))} users! | LISTENING`,
+            `${client.guilds.cache.size} servers! | LISTENING`,
         ];
 
         i++;

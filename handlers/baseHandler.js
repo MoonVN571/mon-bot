@@ -32,9 +32,9 @@ module.exports = (client) => {
     });
 
     client.on("ready", async () => {
-        if(!dev) await client.application.commands.set(arrayOfSlashCommands);
-        if(dev) await client.guilds.cache.get("884993985968484422").commands.set([]); // gin
-        await client.guilds.cache.get("869076561075261460").commands.set(arrayOfSlashCommands);
+         await client.application.commands.set(arrayOfSlashCommands);
+        // if(dev) await client.guilds.cache.get("884993985968484422").commands.set([]); // gin
+        // await client.guilds.cache.get("869076561075261460").commands.set([]);
 
         await sleep(2000);
         return;

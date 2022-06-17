@@ -6,4 +6,16 @@ function removeEmpty(obj) {
     return obj;
 };
 
-module.exports = { removeEmpty };
+function JSONstringify(obj, indentation = '  '){
+    const cache = [];
+    return JSON.stringify(obj, (key, value) => {
+        if (typeof value === 'object' && value !== null) {
+            if (cache.includes(value)) return;
+
+            cache.push(value);
+        }
+        return value;
+    }, indentation);
+}
+
+module.exports = { removeEmpty, JSONstringify };

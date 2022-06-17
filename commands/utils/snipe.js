@@ -16,13 +16,15 @@ module.exports = {
             }], allowedMentions: { repliedUser: false }
         }).then(msg => client.msgDelete(msg));
 
+        let user = await client.users.fetch(sniper.author);
+
         let content = sniper.content;
         let betterContent = trimText(content ? content : "Không có nội dung", 950, "\nCòn lại {COUNT} từ.");
         message.reply({
             embeds: [{
                 author: {
-                    name: sniper.author.tag,
-                    icon_url: sniper.author.avatarURL
+                    name: user.tag,
+                    icon_url: user.avatarURL()
                 },
                 description: betterContent,
                 image: { url: sniper.image },

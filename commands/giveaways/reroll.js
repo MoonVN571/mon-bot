@@ -50,7 +50,7 @@ module.exports = {
             message.reply({
                 embeds: [{
                     description: "Bạn đã reroll giveaway này thành công!",
-                    COLOR: client.config.DEF_COLOR
+                    color: client.config.DEF_COLOR
                 }], allowedMentions: { repliedUser: false }
             });
         }).catch((err) => {

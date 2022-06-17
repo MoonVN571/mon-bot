@@ -129,17 +129,17 @@ module.exports = {
             ephemeral: true
         });
 
-        let channel = interaction.options.getChannel('send_to') || interaction.channelId;
+        let channel = interaction.options.getChannel('send_to');
         let title = interaction.options.getString('title');
         let desc = interaction.options.getString('description');
         let author_value = interaction.options.getString('author_value');
         let author_url = interaction.options.getString('author_icon_url');
         let field_name = interaction.options.getString('field_name');
         let field_value = interaction.options.getString('field_value');
-        let footer_value = interaction.options.getString('title');
+        let footer_value = interaction.options.getString('footer_value');
         let footer_url = interaction.options.getString('footer_icon_url');
         let timestamp = interaction.options.getBoolean('timestamp');
-        let color = interaction.options.getBoolean('color');
+        let color = interaction.options.getString('color');
 
         let object = interaction.options.getString('object');
 
@@ -167,7 +167,7 @@ module.exports = {
                 }], ephemeral: true
             });
 
-            await client.channels.cache.get(channel).send({ embeds: [format] }).then(msg => {
+            if(!channel) interaction.channel.send({embeds: [globalEMbed]}).then(msg => {
                 const embed = new Database({ path: './data/savedGuildData/embeds/' + interaction.guildId + '.json' });
 
                 embed.set( msg.channelId + "." + msg.id, removeEmpty(JSON.parse(JSON.stringify((msg.embeds[0])))));
@@ -189,7 +189,7 @@ module.exports = {
             if (timestamp) globalEmbed.setTimestamp();
             if (color) globalEmbed.setColor(color);
 
-            await client.channels.cache.get(channel).send({ embeds: [globalEmbed] }).then(msg => {
+            await interaction.guild.channels.cache.get(channel||interaction.channel.id).send({ embeds: [globalEmbed] }).then(msg => {
                 const embed = new Database({ path: './data/savedGuildData/embeds/' + interaction.guildId + '.json' });
 
                 embed.set( msg.channelId + "." + msg.id, removeEmpty(JSON.parse(JSON.stringify((msg.embeds[0])))));

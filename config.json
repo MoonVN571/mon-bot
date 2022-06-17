@@ -1,9 +1,11 @@
 {
-    "Admin": "",
+    "Admin": "425599739837284362",
     "color": {
-        "error": "",
-        "default": ""
+        "error": "BD3939",
+        "default": "0F5B9E",
+        "process": "f0ff00"
     },
-    "Whitelist": "",
-    "dev": true
+    "Whitelist": "869076561075261460",
+    "dev": true,
+    "clientID": "885873164805107723"
 }

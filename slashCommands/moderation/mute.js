@@ -82,7 +82,7 @@ module.exports = {
 
         if (member.roles.cache.some(r => r.name == "Muted")) return  await interaction.reply({
             embeds: [{
-                description: "Người đã bị mute từ trước.",
+                description: "Người này đã bị mute từ trước.",
                 color: client.config.ERR_COLOR
             }], allowedMentions: { repliedUser: false },
             ephemeral: true

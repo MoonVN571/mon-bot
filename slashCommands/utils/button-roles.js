@@ -108,7 +108,6 @@ module.exports = {
 
         const limitDb = new Database({path: "./data/savedGuildData/button-roles/" + interaction.guildId + ".json"});
         let getLimitCount = limitDb.get("limit-roles");
-        console.log(client.isPremiumServer(interaction.guild.id), getLimitCount);
 
         if(getLimitCount > 1 && !client.isPremiumServer(interaction.guildId))
             return interaction.editReply({embeds: [{
@@ -184,7 +183,6 @@ module.exports = {
             buttonDb.array.push(checkChannel + "."  + id_msg + '.roles', role.id);
 
             msg.edit({
-                embeds: [eb],
                 components: [button]
             }).then(() => {
                 // create collection
@@ -195,13 +193,16 @@ module.exports = {
                 collector.on('collect', async interaction => {
                     // try {
                         if (interaction.customId === "button-roles." + channel + "." + id_msg +"."+ role.id) {
-                            await interaction.reply({content: "Bạn đã được thêm role ``" + role.name + "``.", ephemeral: true});
+                            // await interaction.reply({content: "Bạn đã được thêm role ``" + role.name + "``.", ephemeral: true});
 
-                            if(interaction.member.roles.cache.some(r => r.name == role.name))
-                                return interaction.reply({conent: "Bạn đã có role này từ trước!", ephemeral: true});
+                            if(interaction.member.roles.cache.some(r => r.name == role.name)) {
+                                interaction.member.roles.remove(role.id).catch(() => {});
+                                await interaction.reply({content: "Đã bỏ role ``" + role.name + "``.", ephemeral: true}).catch(() => {});
+                                return;
+                            }
                             
-                            interaction.member.roles.add(role.id);
-                            await interaction.reply({content: "Đã thêm role ``" + roleName.name + "``.", ephemeral: true}).catch(() => {});
+                            interaction.member.roles.add(role.id).catch(() => {});
+                            await interaction.reply({content: "Đã thêm role ``" + role.name + "``.", ephemeral: true}).catch(() => {});
                         }
                     // } catch(e) {
                     //     client.sendError('button',e);

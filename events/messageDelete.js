@@ -1,5 +1,6 @@
 const Database = require('simplest.db');
 const client = require('../index');
+const { JSONstringify } = require('../utils/object');
 
 client.on('messageDelete', async (message) => {
     if (!message.author || !message || !message.guild || message.author.bot) return;
@@ -8,7 +9,7 @@ client.on('messageDelete', async (message) => {
 
     db.set(message.channel.id, {
         content: message.content,
-        author: message.author,
+        author: message.author.id,
         image: message.attachments.first() ? message.attachments.first().proxyURL : ""
     });
 

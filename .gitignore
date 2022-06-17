@@ -1,12 +1,8 @@
 node_modules
 .env
-/assets/
+assets/
 test*
-/data/eco/*.json
-/data/guilds/*.json
-/data/giveaway/*.json
-/data/warnings/*.json
-/data/*.json
+data/
 package-lock.json
 TODO.js
 config.json

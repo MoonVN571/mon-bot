@@ -11,7 +11,7 @@ client.on('guildMemberAdd', async (member) => {
         if (!dev) {
             let joined = new Database({ path: "./data/joined.json" });
 
-            if (!joined.get("first-join").indexOf(member.user.id) < 0) {
+            if (joined.get("first-join")?.indexOf(member.user.id) < 0) {
                 addMoney("Join dev server", member.user.id, 50000);
                 member.send("Bạn đã được cộng 50,000$ vào tài khoản. Gõ ;bal tại kênh server để check!");
 

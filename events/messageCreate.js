@@ -45,7 +45,7 @@ client.on('messageCreate', async (message) => {
         }).then(async callback => {
             if (!callback.data || !callback.data.messages[0]) return;
             await message.channel.send(callback.data.messages[0].text).catch(err => {
-                client.sendError("Chat err", err);
+                // client.sendError("Chat err", err);
             });
         }).catch(e => {
             // console.log(e.toString());
@@ -98,6 +98,9 @@ client.on('messageCreate', async (message) => {
         });
     }
 
+    if(!message.guild.me.permissions.has(Permissions.FLAGS.SEND_MESSAGES) || !message.guild.me.permissionsIn(message.channel).has(Permissions.FLAGS.SEND_MESSAGES)) return client.sendError(`GUILD: ${message.guild.name} - ID: ${message.guild.id}\nText: No Perm to chat`);
+
+
     let regex = /[a-z]|[A-Z]/i;
     if (message.content.split(" ")[0].match(regex)) {
         if (!message.content.toLowerCase().startsWith(prefix) || !message.content.toLowerCase().startsWith(prefix)) return;
@@ -106,7 +109,6 @@ client.on('messageCreate', async (message) => {
     }
 
     var args = message.content.slice(prefix.length).trim().split(/ +/);
-
     let cmdName = args.shift().toLowerCase();
 
     let cmd = client.commands.get(cmdName)
@@ -148,6 +150,7 @@ client.on('messageCreate', async (message) => {
     } else {
 
     }
+    
     if(cmd.permissions) {
         /*
         let checkArray = cmd.permsisions;
@@ -173,8 +176,6 @@ client.on('messageCreate', async (message) => {
     client.sendLog(`[${new Date().toLocaleString()}] ${message.guild.name} | ${message.channel.name} | ${message.author.tag} - ${message.author.id} : ${message.content}`);
 
     cmd.execute(client, message, args);
-
-
     
     function botError() {
         message.reply({

@@ -1,5 +1,5 @@
 const { Util, Permissions, Client, Message } = require('discord.js');
-const { download, remove } = require("../../utils/utils");
+const { download, remove, isValidHttpUrl } = require("../../utils/utils");
 module.exports = {
     name: "steal-emoji",
     description: "Nếu có nitro thì hãy trộm emoji cho máy chủ riêng của bạn.",
@@ -32,6 +32,7 @@ module.exports = {
 
         let countEmojis = 0;
         let stealEmo = [];
+        let check = false;
 
         if(args.length > 3 && !client.isPremiumServer(message.guildId))
         return message.reply({
@@ -43,17 +44,29 @@ module.exports = {
  
 
         args.forEach(async emojis => {
-            if (!emojis.endsWith(">") || !emojis.startsWith("<") || !emojis.includes(":")) return;
+            if (!emojis.endsWith(">") || !emojis.startsWith("<") || !emojis.includes(":")) {
+                let emoji = Util.parseEmoji(emojis);
+                let parse = `${emoji.id}.${emoji.animated ? "gif" : "png"}`;
 
-            let emoji = Util.parseEmoji(emojis);
-            let parse = `${emoji.id}.${emoji.animated ? "gif" : "png"}`;
+                if (emoji.id) emoji = `https://cdn.discordapp.com/emojis/${emoji.id}.${emoji.animated ? "gif" : "png"}`;
+                
+                let fileName = emojis.split(":")[1].split(":")[0];
+                stealEmoji(fileName, emoji);
+            } else {
+                let valid = isValidHttpUrl(emojis);
+                if(!valid) return;
+                
+                let fileName = emojis.split(":")[1].split(":")[0];
+                stealEmoji(fileName, emoji);
+            
 
-            if (emoji.id) emoji = `https://cdn.discordapp.com/emojis/${emoji.id}.${emoji.animated ? "gif" : "png"}`;
+            }
+        });
 
-            let fileName = emojis.split(":")[1].split(":")[0];
+        async function stealEmoji(fileName, url) {
             let dir = "./assets/emoji/" + parse;
 
-            await download(dir, emoji);
+            await download(dir, url);
 
             try {
                 require("fs").readFile(dir, async (err, data) => {
@@ -63,18 +76,25 @@ module.exports = {
                             stealEmo.push(emo.toString());
                         })
                         .catch(e => {
-                            client.sendError(`Steal Emoji: \`\`\`${e}\`\`\``);
+                            if(!check) { 
+                                if(e.message.includes("Maximum number of emojis reached"))
+                                    return message.reply({embeds: [{
+                                        description: "Server của bạn không có đủ chỗ trống!"
+                                    }]});
+                                client.sendError(`Steal Emoji: \`\`\`${e}\`\`\``);
+                                
+                            }
+                            check = true;
                         });
                     countEmojis++;
                 });
             } catch (e) {
                 client.sendError(message.errorInfo, e);
             }
-        });
+        }
 
         setTimeout(async() => {
-            await message.reply({ embeds: [{
-                // description: `Có **${countEmojis}** emoji mới, đã thêm các emojis: ${stealEmo.join(" ") ? stealEmo.join(" ") : "Không có"} .`,
+            if(!check) await message.reply({ embeds: [{
                 description: "Đã thêm emoji vào server, hãy đợi ít phút",
                 color: client.config.DEF_COLOR
             }], allowedMentions: { repliedUser: false } });
