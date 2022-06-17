@@ -11,7 +11,7 @@
   "dependencies": {
     "@discordjs/voice": "^0.6.0",
     "@top-gg/sdk": "^3.1.2",
-    "@vitalets/google-translate-api": "^7.0.0",
+    "@vitalets/google-translate-api": "^8.0.0",
     "axios": "^0.21.1",
     "canvas": "^2.8.0",
     "csvtojson": "^2.0.10",
