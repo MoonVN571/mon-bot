@@ -19,7 +19,7 @@
     "discord.js": "^13.2.0-dev.1631275396.3183b11",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
-    "ffmpeg-static": "^4.4.0",
+    "ffmpeg-static": "^5.0.2",
     "fs": "0.0.1-security",
     "g-i-s": "^2.1.6",
     "google-tts-api": "^2.0.2",
