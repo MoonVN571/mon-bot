@@ -16,7 +16,7 @@
     "canvas": "^2.8.0",
     "csvtojson": "^2.0.10",
     "discord-giveaways": "^5.0.1",
-    "discord.js": "^13.2.0-dev.1631275396.3183b11",
+    "discord.js": "^14.12.1",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "ffmpeg-static": "^4.4.0",
